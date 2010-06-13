@@ -82,7 +82,6 @@ CC.Object = CC.extend(CC.Object, {
         if (this._observers && this._observers[key]) {
             for (var i = 0; i < this._observers[key].length; i++) {
                 var ob = this._observers[key][i];
-                //console.info('Calling observer: ', ob);
                 if (typeof(ob) == 'string') {
                     this[ob](this, key, val, oldVal);
                 } else {
@@ -96,7 +95,6 @@ CC.Object = CC.extend(CC.Object, {
     },
 
     addObserver: function(key, callback) {
-        console.info('Adding observer:', key, callback);
         if (!this._observers) {
             this._observers = {};
         }
@@ -119,7 +117,6 @@ CC.Object.prototype = {
             for ( ; i<this._observingFunctions.length; i++) {
                 f = this._observingFunctions[i];
 
-                console.info('Setting up observer: ', this, f);
                 this.addObserver(f.property, f.method);
             }
         }

@@ -6,3 +6,4 @@
 @require 'Layer.js';
 @require 'Director.js';
 @require 'Label.js';
+@require 'Sprite.js';

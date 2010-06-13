@@ -23,11 +23,14 @@ CC.Director = CC.Object.extend({
         canvas.setAttribute('width', view.clientWidth);
         canvas.setAttribute('height', view.clientHeight);
 
-        this.set('context', canvas.getContext('2d'));
+        var context = this.set('context', canvas.getContext('2d'));
 
         view.appendChild(canvas);
 
         this.set('winSize', {width: view.clientWidth, height: view.clientHeight});
+
+        // Move origin to bottom left
+        //context.translate(0, view.clientHeight);
     },
     runWithScene: function(scene) {
         if (!(scene instanceof CC.Scene)) {

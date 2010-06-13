@@ -1,5 +1,6 @@
 var HelloWorld = CC.Layer.extend({
     label: null,
+    sprite: null,
 
     init: function() {
         @super;
@@ -7,6 +8,24 @@ var HelloWorld = CC.Layer.extend({
         var size = CC.Director.get('sharedDirector.winSize');
         label.set('position', ccp(size.width / 2, size.height / 2));
         this.addChild(label);
+
+
+        var sprite = this.set('sprite', CC.Sprite.create(@base64('resources/firefox-icon.png')));
+        var size = CC.Director.get('sharedDirector.winSize');
+        sprite.set('position', ccp(100, 100));
+        this.addChild(sprite);
+
+        var sprite = this.set('sprite', CC.Sprite.create(@base64('resources/firefox-icon.png')));
+        var size = CC.Director.get('sharedDirector.winSize');
+        sprite.set('position', ccp(200, 200));
+        sprite.set('scale', 2);
+        this.addChild(sprite);
+
+        var sprite = this.set('sprite', CC.Sprite.create(@base64('resources/firefox-icon.png')));
+        var size = CC.Director.get('sharedDirector.winSize');
+        sprite.set('position', ccp(300, 200));
+        this.addChild(sprite);
+        sprite.set('scale', 0.5);
     },
 
     draw: function(context) {
@@ -14,9 +33,11 @@ var HelloWorld = CC.Layer.extend({
     visit: function() {
         @super;
 
-        var r = this.get('label.rotation');
+        var r = this.get('sprite.rotation');
 
-        this.get('label').set('rotation', r + 0.1);
+        CC.each(this._children, CC.callback(this, function(obj) {
+            obj.set('rotation', r + 0.1);
+        }));
     }
 });
 

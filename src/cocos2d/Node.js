@@ -57,7 +57,7 @@ CC.Node = CC.Object.extend({
     transform: function(context) {
         context.translate(this.position.x, this.position.y);
         context.rotate(this.get('rotation'));
-        context.translate(- (this.anchor.x * this.contentSize.width), -(this.anchor.y * this.contentSize.height));
+        context.translate(-this.anchor.x * this.contentSize.width, -this.anchor.y * this.contentSize.height);
  
     }
 });

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 from optparse import OptionParser
-import re, os
+from cStringIO import StringIO
+import re, os, base64
 
 class Builder(object):
 
@@ -41,7 +42,28 @@ class Builder(object):
         os.chdir(old_dir)
         code = self.parse_supers(code)
 
+        os.chdir(old_dir)
+        code = self.parse_base64(code)
+
         return code + '\n'
+
+    def parse_base64(self, code):
+        """
+        Parses @base64 tags to emebed binary data.
+        """
+        def replace_base64(matches):
+            binary_filename = os.getcwd() + '/' + matches.group('filename')
+            print "Embedding: %s" % binary_filename
+
+            mimetype = 'image/png'
+            data = StringIO()
+            base64.encode(open(binary_filename), data)
+
+            return '"data:%s;base64,%s"' % (mimetype, data.getvalue().replace('\n', ''))
+
+
+        load_re = re.compile('''@base64\s*\(\s*(?P<q>"|')(?P<filename>.+)(?P=q)\s*\)?''')
+        return load_re.sub(replace_base64, code)
 
     def parse_supers(self, code):
         """
