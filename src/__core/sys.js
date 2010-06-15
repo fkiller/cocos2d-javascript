@@ -1,6 +1,22 @@
-var CC = CC || {};
+exports.mergeObjects = function() {
+    var result = {};
 
-CC.copy = function(obj) {
+    for (var i = 0; i < arguments.length; i++) {
+        var obj = arguments[i];
+
+        for (var x in obj) {
+            if (!obj.hasOwnProperty(x)) {
+                continue;
+            }
+
+            result[x] = obj[x];
+        }
+    };
+
+    return result;
+};
+
+exports.copy = function(obj) {
     var copy = {};
 
     var o, x;
@@ -8,7 +24,7 @@ CC.copy = function(obj) {
         o = obj[x];
 
         if (typeof(o) == 'object') {
-            o = CC.copy(o);
+            o = arguments.callee(o);
         }
 
         copy[x] = o;
@@ -16,7 +32,7 @@ CC.copy = function(obj) {
 
     return copy;
 };
-CC.each = function(arr, func) {
+exports.each = function(arr, func) {
     var i = 0,
         len = arr.length;
     for (i = 0; i < len; i++) {
@@ -25,7 +41,7 @@ CC.each = function(arr, func) {
 
     return arr;
 };
-CC.map = function(arr, func) {
+exports.map = function(arr, func) {
     var i = 0,
         len = arr.length,
         result = [];
@@ -37,8 +53,9 @@ CC.map = function(arr, func) {
     return result;
 };
 
-CC.extend = function(target, ext) {
+exports.extend = function(target, ext) {
     if (arguments.length < 2) {
+        console.log(arguments);
         throw "You must provide at least a target and 1 object to extend from"
     }
 
@@ -102,7 +119,7 @@ CC.extend = function(target, ext) {
     return target;
 };
 
-CC.beget = function(o) {
+exports.beget = function(o) {
     var F = function(){};
     F.prototype = o
     var ret  = new F();
@@ -110,7 +127,7 @@ CC.beget = function(o) {
     return ret;
 };
 
-CC.callback = function(target, method) {
+exports.callback = function(target, method) {
     if (typeof(method) == 'string') {
         method = target[method];
     }
@@ -120,7 +137,7 @@ CC.callback = function(target, method) {
     }
 };
 
-CC.extend(Function.prototype, {
+exports.extend(Function.prototype, {
     _observing: null,
 
     observes: function() {
@@ -153,20 +170,44 @@ CC.extend(Function.prototype, {
     }
 });
 
+var ready = function() {
+    if (this._isReady) {
+        return
+    }
+
+    if (!document.body) {
+        setTimeout(function() { ready(); }, 13);
+    }
+
+    window.__isReady = true;
+
+    if (window.__readyList) {
+        var fn, i = 0;
+        while ( (fn = window.__readyList[ i++ ]) ) {
+            fn.call(document);
+        }
+
+        window.__readyList = null;
+        delete window.__readyList;
+    }
+};
+
+
 /**
  * Adapted from jQuery
  */
-CC._bindReady = function() {
-    if (CC._readyBound) {
+var bindReady = function() {
+
+    if (window.__readyBound) {
         return;
     }
 
-    CC._readyBound = true;
+    window.__readyBound = true;
 
     // Catch cases where $(document).ready() is called after the
     // browser event has already occurred.
     if ( document.readyState === "complete" ) {
-        return CC._ready();
+        return ready();
     }
 
     // Mozilla, Opera and webkit nightlies currently support this event
@@ -175,7 +216,7 @@ CC._bindReady = function() {
         //document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
         
         // A fallback to window.onload, that will always work
-        window.addEventListener( "load", CC._ready, false );
+        window.addEventListener( "load", ready, false );
 
     // If IE event model is used
     } else if ( document.attachEvent ) {
@@ -184,9 +225,10 @@ CC._bindReady = function() {
         //document.attachEvent("onreadystatechange", DOMContentLoaded);
         
         // A fallback to window.onload, that will always work
-        window.attachEvent( "onload", CC._ready );
+        window.attachEvent( "onload", ready );
 
         // If IE and not a frame
+        /*
         // continually check to see if the document is ready
         var toplevel = false;
 
@@ -197,46 +239,22 @@ CC._bindReady = function() {
         if ( document.documentElement.doScroll && toplevel ) {
             doScrollCheck();
         }
+        */
     }
 };
 
 
-CC._ready = function() {
-    if (this._isReady) {
-        return
-    }
 
-    if (!document.body) {
-        setTimeout(function() { CC._ready(); }, 13);
-    }
-
-    CC._isReady = true;
-
-    if (CC._readyList) {
-        var fn, i = 0;
-        while ( (fn = CC._readyList[ i++ ]) ) {
-            fn.call(document);
-        }
-
-        CC._readyList = null;
-        delete CC._readyList;
-    }
-};
-
-CC.ApplicationMain = function(appDelegate) {
+exports.ApplicationMain = function(appDelegate) {
     var delegate = appDelegate.create();
-    if (CC._isReady) {
+    if (window.__isReady) {
         delegate.applicationDidFinishLaunching()
     } else {
-        if (!this._readyList) {
-            this._readyList = [];
+        if (!window.__readyList) {
+            window.__readyList = [];
         }
-        this._readyList.push(function() { delegate.applicationDidFinishLaunching(); });
+        window.__readyList.push(function() { delegate.applicationDidFinishLaunching(); });
     }
 
-    CC._bindReady();
+    bindReady();
 };
-
-function ccp(x, y) {
-    return {x: x, y: y};
-}

@@ -1,1 +1,1 @@
-@require "cocos2d/main.js"
+require('./apps/hello_world/main');

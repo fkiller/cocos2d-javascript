@@ -1,4 +1,5 @@
-@require '../../cocos2d/cocos2d.js';
-@require 'HelloWorldAppDelegate.js';
+var sys = require('sys'),
+    cocos = require('../../cocos'),
+    delegate = require('./HelloWorldAppDelegate.js');
 
-CC.ApplicationMain(HelloWorldAppDelegate);
+sys.ApplicationMain(delegate.HelloWorldAppDelegate);

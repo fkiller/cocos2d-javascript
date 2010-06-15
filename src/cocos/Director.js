@@ -1,4 +1,8 @@
-CC.Director = CC.Object.extend({
+var sys = require('sys'),
+    Obj = require('object').Object,
+    Scene = require('./Scene').Scene;
+
+var Director = Obj.extend({
     canvas: null,
     context: null,
     sceneStack: null,
@@ -12,7 +16,7 @@ CC.Director = CC.Object.extend({
 
     attachInView: function(view) {
         if (!view.tagName) {
-            throw "CC.Director.attachInView must be given a HTML DOM Node";
+            throw "Director.attachInView must be given a HTML DOM Node";
         }
 
         while (view.firstChild) {
@@ -33,8 +37,8 @@ CC.Director = CC.Object.extend({
         //context.translate(0, view.clientHeight);
     },
     runWithScene: function(scene) {
-        if (!(scene instanceof CC.Scene)) {
-            throw "CC.Director.runWithScene must be given an instance of CC.Scene";
+        if (!(scene instanceof Scene)) {
+            throw "Director.runWithScene must be given an instance of Scene";
         }
 
         this.pushScene(scene);
@@ -53,7 +57,7 @@ CC.Director = CC.Object.extend({
 
     startAnimation: function() {
         animationInterval = 1.0/30;
-        this._animationTimer = setInterval(CC.callback(this, 'mainLoop'), animationInterval * 1000);
+        this._animationTimer = setInterval(sys.callback(this, 'mainLoop'), animationInterval * 1000);
     },
 
     mainLoop: function() {
@@ -85,7 +89,7 @@ CC.Director = CC.Object.extend({
 /**
  * Class methods
  */
-CC.extend(CC.Director, {
+sys.extend(Director, {
     sharedDirector: function(key) {
         if (!this._instance) {
             this._instance = this.create();
@@ -94,3 +98,5 @@ CC.extend(CC.Director, {
         return this._instance;
     }.property()
 });
+
+exports.Director = Director;

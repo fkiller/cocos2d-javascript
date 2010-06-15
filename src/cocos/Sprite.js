@@ -1,4 +1,9 @@
-CC.Sprite = CC.Node.extend({
+var sys = require('sys'),
+    Director = require('./Director').Director,
+    Node = require('./Node').Node,
+    ccp = require('geometry').ccp;
+
+exports.Sprite = Node.extend({
 	texture: null,
 	img: null,
 
@@ -8,7 +13,7 @@ CC.Sprite = CC.Node.extend({
 		var texture = this.set('texture', texture),
 			img = this.set('img', new Image);
 
-		img.onload = CC.callback(this, function() {
+		img.onload = sys.callback(this, function() {
 			this.set('contentSize', {width:img.width, height: img.height});
 		});
 

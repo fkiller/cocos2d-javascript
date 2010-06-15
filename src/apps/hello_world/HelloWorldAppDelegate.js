@@ -1,9 +1,11 @@
-@require 'HelloWorldScene.js';
+var cocos = require('../../cocos'),
+    HelloWorld = require('./HelloWorldScene').HelloWorld;
 
-var HelloWorldAppDelegate = CC.AppDelegate.extend({
+exports.HelloWorldAppDelegate = cocos.AppDelegate.extend({
     applicationDidFinishLaunching: function () {
-        var director = CC.Director.get('sharedDirector');
+        var director = cocos.Director.get('sharedDirector');
         director.attachInView(document.getElementById('hello-world'));
         director.runWithScene(HelloWorld.get('scene'));
     }
 });
+

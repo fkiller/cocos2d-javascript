@@ -1,7 +1,7 @@
-@require "core.js";
+var sys = require('sys');
 
-CC.Object = function() { this._init.apply(this, arguments); };
-CC.Object = CC.extend(CC.Object, {
+var Obj = function() { this._init.apply(this, arguments); };
+Obj = sys.extend(Obj, {
     isObject: true,
     _observers: null,
     superclass: null,
@@ -35,12 +35,12 @@ CC.Object = CC.extend(CC.Object, {
 
 
         // Add given properties to the prototype
-        newObj.prototype = CC.beget(this.prototype)
+        newObj.prototype = sys.beget(this.prototype)
         args.push(newObj.prototype);
         for (i = 0; i<arguments.length; i++) {
             args.push(arguments[i])
         }
-        CC.extend.apply(CC, args);
+        sys.extend.apply(null, args);
 
         newObj.superclass = this;
         // Create new instance
@@ -106,7 +106,7 @@ CC.Object = CC.extend(CC.Object, {
     }
 });
 
-CC.Object.prototype = {
+Obj.prototype = {
     /** @private
      * Initialise the object
      */
@@ -125,9 +125,11 @@ CC.Object.prototype = {
     init: function() {
     },
 
-    get: CC.Object.get,
-    set: CC.Object.set,
-    addObserver: CC.Object.addObserver
+    get: Obj.get,
+    set: Obj.set,
+    addObserver: Obj.addObserver
 
 
 };
+
+exports.Object = Obj;

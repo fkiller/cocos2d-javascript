@@ -1,4 +1,8 @@
-CC.Node = CC.Object.extend({
+var sys = require('sys'),
+    obj = require('object'),
+    ccp = require('geometry').ccp;
+
+exports.Node = obj.Object.extend({
     visible: true,
     position: null,
     parent: null,
@@ -37,7 +41,7 @@ CC.Node = CC.Object.extend({
         this.transform(context);
 
         // Draw background nodes
-        CC.each(this._children, function(child, i) {
+        sys.each(this._children, function(child, i) {
             if (child.zOrder < 0) {
                 child.visit(context);
             }
@@ -46,7 +50,7 @@ CC.Node = CC.Object.extend({
         this.draw(context);
 
         // Draw foreground nodes
-        CC.each(this._children, function(child, i) {
+        sys.each(this._children, function(child, i) {
             if (child.zOrder >= 0) {
                 child.visit(context);
             }
@@ -61,3 +65,4 @@ CC.Node = CC.Object.extend({
  
     }
 });
+

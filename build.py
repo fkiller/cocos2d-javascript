@@ -4,6 +4,18 @@ from optparse import OptionParser
 from cStringIO import StringIO
 import re, os, base64
 
+
+SOURCE_CODE_TEMPLATE = '''
+window.__source_files__["%s"] = (function() {
+    var exports = {};
+    (function() {
+
+%s
+    }).call(exports);
+    return exports;
+});
+'''
+
 class Builder(object):
 
     required_files = []
@@ -11,7 +23,23 @@ class Builder(object):
 
 
     def build(self, source, output=None):
-        code = self.parse(source)
+        code = open('system.js').read()
+        for root, dirs, files in os.walk(source):
+            for f in files:
+                if f[-3:] != '.js':
+                    continue
+                path = os.path.join(root, f)
+                script_name = './%s' % path[len(source) +1:] # Remove source path prefix
+
+                file_code = open(path).read()
+                file_code = self.parse_supers(file_code)
+                file_code = self.parse_base64(file_code, root)
+
+                code += SOURCE_CODE_TEMPLATE % (script_name, file_code)
+
+
+        code += '\n' + open(source + '/main.js').read()
+
         if output:
             o = open(output, 'w')
             o.write(code)
@@ -20,39 +48,18 @@ class Builder(object):
             return code
 
 
-    def parse(self, source):
-        #print "Parsing file: %s" % source
-        code = open(source).read()
-        old_dir = os.getcwd()
-
-        if source[0] == '/':
-            code_dir = os.path.dirname(source)
-        else:
-            code_dir = old_dir + '/' + os.path.dirname(source)
-
-        os.chdir(code_dir)
-        code = self.parse_requires(code)
-
-        os.chdir(code_dir)
-        code = self.parse_imports(code)
-
-        os.chdir(code_dir)
-        code = self.parse_loads(code)
-
-        os.chdir(old_dir)
+    def parse(self, code):
         code = self.parse_supers(code)
-
-        os.chdir(old_dir)
         code = self.parse_base64(code)
 
-        return code + '\n'
+        return code
 
-    def parse_base64(self, code):
+    def parse_base64(self, code, root=''):
         """
         Parses @base64 tags to emebed binary data.
         """
         def replace_base64(matches):
-            binary_filename = os.getcwd() + '/' + matches.group('filename')
+            binary_filename = root + '/' + matches.group('filename')
             print "Embedding: %s" % binary_filename
 
             mimetype = 'image/png'
@@ -170,7 +177,7 @@ def main():
     (options, args) = parser.parse_args()
 
     builder = Builder()
-    builder.build(options.input or 'main.js', options.output)
+    print builder.build(options.input or 'main.js', options.output)
 
 if __name__ == "__main__":
     main()

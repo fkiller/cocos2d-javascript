@@ -1,4 +1,8 @@
-CC.Label = CC.Node.extend({
+var Director = require('./Director').Director,
+    Node = require('./Node').Node,
+    ccp = require('geometry').ccp;
+
+exports.Label = Node.extend({
     string:   '',
     fontName: 'Helvetica',
     fontSize: 16,
@@ -28,7 +32,7 @@ CC.Label = CC.Node.extend({
     },
 
     _updateLabelContentSize: function() {
-        var ctx = CC.Director.get('sharedDirector.context');
+        var ctx = Director.get('sharedDirector.context');
         var size = {width: 0, height: this.get('fontSize')};
 
         var prevFont = ctx.font;
@@ -48,3 +52,4 @@ CC.Label = CC.Node.extend({
         console.log(size.width, size.height);
     }.observes('string', 'fontName', 'fontSize')
 });
+
