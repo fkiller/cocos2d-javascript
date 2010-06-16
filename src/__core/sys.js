@@ -258,3 +258,39 @@ exports.ApplicationMain = function(appDelegate) {
 
     bindReady();
 };
+
+
+// Taken from node/lib/sys.js
+function isArray (ar) {
+  return ar instanceof Array
+      || Array.isArray(ar)
+      || (ar && ar !== Object.prototype && isArray(ar.__proto__));
+}
+
+
+function isRegExp (re) {
+  var s = ""+re;
+  return re instanceof RegExp // easy case
+      || typeof(re) === "function" // duck-type for context-switching evalcx case
+      && re.constructor.name === "RegExp"
+      && re.compile
+      && re.test
+      && re.exec
+      && s.charAt(0) === "/"
+      && s.substr(-1) === "/";
+}
+
+
+function isDate (d) {
+  if (d instanceof Date) return true;
+  if (typeof d !== "object") return false;
+  var properties = Date.prototype && Object.getOwnPropertyNames(Date.prototype);
+  var proto = d.__proto__ && Object.getOwnPropertyNames(d.__proto__);
+  return JSON.stringify(proto) === JSON.stringify(properties);
+}
+
+
+
+exports.isArray = isArray;
+exports.isRegExp = isRegExp;
+exports.isDate = isDate;
