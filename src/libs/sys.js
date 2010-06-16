@@ -1,4 +1,4 @@
-exports.mergeObjects = function() {
+function merge() {
     var result = {};
 
     for (var i = 0; i < arguments.length; i++) {
@@ -16,7 +16,7 @@ exports.mergeObjects = function() {
     return result;
 };
 
-exports.copy = function(obj) {
+function copy(obj) {
     var copy = {};
 
     var o, x;
@@ -32,7 +32,7 @@ exports.copy = function(obj) {
 
     return copy;
 };
-exports.each = function(arr, func) {
+function each(arr, func) {
     var i = 0,
         len = arr.length;
     for (i = 0; i < len; i++) {
@@ -41,7 +41,7 @@ exports.each = function(arr, func) {
 
     return arr;
 };
-exports.map = function(arr, func) {
+function map(arr, func) {
     var i = 0,
         len = arr.length,
         result = [];
@@ -53,7 +53,7 @@ exports.map = function(arr, func) {
     return result;
 };
 
-exports.extend = function(target, ext) {
+function extend(target, ext) {
     if (arguments.length < 2) {
         console.log(arguments);
         throw "You must provide at least a target and 1 object to extend from"
@@ -119,7 +119,7 @@ exports.extend = function(target, ext) {
     return target;
 };
 
-exports.beget = function(o) {
+function beget(o) {
     var F = function(){};
     F.prototype = o
     var ret  = new F();
@@ -127,7 +127,7 @@ exports.beget = function(o) {
     return ret;
 };
 
-exports.callback = function(target, method) {
+function callback(target, method) {
     if (typeof(method) == 'string') {
         method = target[method];
     }
@@ -137,7 +137,7 @@ exports.callback = function(target, method) {
     }
 };
 
-exports.extend(Function.prototype, {
+extend(Function.prototype, {
     _observing: null,
 
     observes: function() {
@@ -170,7 +170,16 @@ exports.extend(Function.prototype, {
     }
 });
 
-var ready = function() {
+extend(String.prototype, {
+    w: function() {
+        return this.split(' ');
+    }
+});
+
+
+
+
+function ready() {
     if (this._isReady) {
         return
     }
@@ -196,7 +205,7 @@ var ready = function() {
 /**
  * Adapted from jQuery
  */
-var bindReady = function() {
+function bindReady() {
 
     if (window.__readyBound) {
         return;
@@ -245,7 +254,7 @@ var bindReady = function() {
 
 
 
-exports.ApplicationMain = function(appDelegate) {
+function ApplicationMain(appDelegate) {
     var delegate = appDelegate.create();
     if (window.__isReady) {
         delegate.applicationDidFinishLaunching()
@@ -290,7 +299,6 @@ function isDate (d) {
 }
 
 
-
-exports.isArray = isArray;
-exports.isRegExp = isRegExp;
-exports.isDate = isDate;
+each('merge copy each map extend beget callback ApplicationMain isArray isRegExp isDate'.w(), callback(this, function(name) {
+    exports[name] = eval(name);
+}));

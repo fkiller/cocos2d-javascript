@@ -7,17 +7,29 @@ exports.Sprite = Node.extend({
 	texture: null,
 	img: null,
 
-	init: function(texture) {
+    /**
+     * opts: {
+     *     file: Path to image to use as sprite atlas
+     *     rect: The rect in the sprite atlas image file to use as the sprite
+     * }
+     */
+	init: function(opts) {
 		@super;
 
-		var texture = this.set('texture', texture),
-			img = this.set('img', new Image);
+        var texture = this.set('texture', resource(opts['file'])),
+            img = this.set('img', new Image);
 
-		img.onload = sys.callback(this, function() {
-			this.set('contentSize', {width:img.width, height: img.height});
-		});
+        img.onload = sys.callback(this, function() {
+            if (opts['rect']) {
+                //this.set('contentSize', opts['rect'].size);
+                this.set('contentSize', {width:img.width, height: img.height});
+            } else {
+                this.set('contentSize', {width:img.width, height: img.height});
+            }
+        });
 
-		img.src = texture;
+        img.src = texture;
+
 
 	},
 

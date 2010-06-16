@@ -62,7 +62,8 @@ var Director = Obj.extend({
 
     mainLoop: function() {
         var context = this.get('context');
-        context.clearRect(0, 0, this.winSize.width, this.winSize.height);
+        context.fillStyle = 'rgb(0, 0, 0)';
+        context.fillRect(0, 0, this.winSize.width, this.winSize.height);
 
         if (this._nextScene) {
             this.setNextScene();

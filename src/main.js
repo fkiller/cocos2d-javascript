@@ -1,1 +1,1 @@
-require('./apps/hello_world/main');
+require('./apps/tests/SpriteTest.js');

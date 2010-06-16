@@ -1,7 +1,15 @@
-window.__filename = '__main__';
-window.__dirname = './';
-
+window.__filename       = '__main__';
+window.__dirname        = './';
 window.__source_files__ = {};
+window.__resources__    = {};
+
+function __normalisePath(path) {
+    path = path.replace(/\/.\//, '/');
+    while (path.indexOf('/../') != -1) {
+       path = path.replace(/\/[a-zA-Z_]+\/..\//, '/');
+    }
+    return path;
+}
 
 function require(sourcePath) {
     // If path doesn't start with a './' or '/' then it's a system include
@@ -18,10 +26,7 @@ function require(sourcePath) {
     }
 
     // Normalise path
-    sourcePath = sourcePath.replace(/\/.\//, '/');
-    while (sourcePath.indexOf('/../') != -1) {
-       sourcePath = sourcePath.replace(/\/[a-zA-Z_]+\/..\//, '/');
-    }
+    sourcePath = __normalisePath(sourcePath);
 
     var src = window.__source_files__[sourcePath];
     if (src == undefined) {
@@ -34,7 +39,7 @@ function require(sourcePath) {
             prevDirname = window.__dirname;
 
         window.__filename = sourcePath;
-        window.__dirname = __filename.replace(/\/[^/]+$/, '');
+        window.__dirname = __filename.replace(/\/[^\/]+$/, '');
 
         window.__source_files__[sourcePath] = window.__source_files__[sourcePath]();
 
@@ -45,3 +50,6 @@ function require(sourcePath) {
     return window.__source_files__[sourcePath];
 }
 
+function resource(path) {
+    return window.__resources__[__normalisePath(path)];
+}

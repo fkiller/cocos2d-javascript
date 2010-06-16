@@ -8,12 +8,19 @@ import re, os, base64
 SOURCE_CODE_TEMPLATE = '''
 window.__source_files__["%s"] = (function() {
     var exports = {};
+    var __filename = window.__filename;
+    var __dirname = window.__dirname;
+
     (function() {
 
 %s
     }).call(exports);
     return exports;
 });
+'''
+
+RESOURCE_TEMPLATE = '''
+window.__resources__["%s"] = "data:%s;base64,%s";
 '''
 
 class Builder(object):
@@ -25,17 +32,26 @@ class Builder(object):
     def build(self, source, output=None):
         code = open('system.js').read()
         for root, dirs, files in os.walk(source):
-            for f in files:
-                if f[-3:] != '.js':
-                    continue
-                path = os.path.join(root, f)
-                script_name = './%s' % path[len(source) +1:] # Remove source path prefix
+            if re.match(r".*/resources$", root):
+                for f in files:
+                    path = os.path.join(root, f)
+                    resources_name = './%s' % path[len(source) +1:] # Remove source path prefix
+                    mimetype = 'image/png'
+                    data = StringIO()
+                    base64.encode(open(path), data)
+                    code += RESOURCE_TEMPLATE % (resources_name, mimetype, data.getvalue().replace('\n', ''))
+            else:
+                for f in files:
+                    if f[-3:] != '.js':
+                        continue
+                    path = os.path.join(root, f)
+                    script_name = './%s' % path[len(source) +1:] # Remove source path prefix
 
-                file_code = open(path).read()
-                file_code = self.parse_supers(file_code)
-                file_code = self.parse_base64(file_code, root)
+                    file_code = open(path).read()
+                    file_code = self.parse_supers(file_code)
+                    file_code = self.parse_base64(file_code, root)
 
-                code += SOURCE_CODE_TEMPLATE % (script_name, file_code)
+                    code += SOURCE_CODE_TEMPLATE % (script_name, file_code)
 
 
         code += '\n' + open(source + '/main.js').read()
@@ -47,6 +63,8 @@ class Builder(object):
         else:
             return code
 
+    def include_script(root, filename):
+        pass
 
     def parse(self, code):
         code = self.parse_supers(code)

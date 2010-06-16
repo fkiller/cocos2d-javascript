@@ -1,4 +1,5 @@
-var Director = require('./Director').Director,
+var sys = require('sys'),
+    Director = require('./Director').Director,
     Node = require('./Node').Node,
     ccp = require('geometry').ccp;
 
@@ -6,14 +7,16 @@ exports.Label = Node.extend({
     string:   '',
     fontName: 'Helvetica',
     fontSize: 16,
-    fontColor: 'black',
+    fontColor: 'white',
 
     init: function(args) {
         @super;
 
-        this.set('fontSize', args.fontSize);
-        this.set('fontName', args.fontName);
-        this.set('string', args.string);
+        sys.each('fontSize fontName fontColor string'.w(), sys.callback(this, function(name) {
+            if (args[name]) {
+                this.set(name, args[name]);
+            }
+        }));
     },
 
     font: function(key) {
