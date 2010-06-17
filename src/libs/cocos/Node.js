@@ -61,7 +61,7 @@ exports.Node = obj.Object.extend({
     transform: function(context) {
         context.translate(this.position.x, this.position.y);
         context.rotate(this.get('rotation'));
-        context.translate(-this.anchor.x * this.contentSize.width, -this.anchor.y * this.contentSize.height);
+        context.translate(Math.round(-this.anchor.x * this.contentSize.width), Math.round(-this.anchor.y * this.contentSize.height));
  
     }
 });

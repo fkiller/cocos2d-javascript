@@ -20,30 +20,26 @@ exports.Sprite = Node.extend({
         var texture = this.set('texture', resource(opts['file'])),
             img = this.set('img', new Image);
 
-        this.set('rect', opts['rect']);
-
-        img.onload = sys.callback(this, function() {
-            if (opts['rect']) {
-                this.set('contentSize', opts['rect'].size);
-                //this.set('contentSize', {width:img.width, height: img.height});
-            } else {
+        if (opts['rect']) {
+            this.set('rect', opts['rect']);
+            this.set('contentSize', opts['rect'].size);
+        } else {
+            img.onload = sys.callback(this, function() {
                 this.set('contentSize', {width:img.width, height: img.height});
-            }
-        });
+            });
+        }
 
         img.src = texture;
-
-
     },
 
     draw: function(ctx) {
         var rect = this.get('rect');
         if (rect) {
             ctx.drawImage(this.get('img'), 
-                0, 0, // Draw at 0, 0 (translate will move to the real position)
-                this.contentSize.width * this.scale, this.contentSize.height * this.scale, // Draw size
                 rect.origin.x, rect.origin.y, // Draw slice from x,y
-                rect.size.width, rect.size.height // Draw slice size
+                rect.size.width, rect.size.height, // Draw slice size
+                0, 0, // Draw at 0, 0
+                this.contentSize.width * this.scale, this.contentSize.height * this.scale // Draw size
             );
         } else {
             ctx.drawImage(this.get('img'),

@@ -22,14 +22,13 @@ var SpriteTestDemo = cocos.Layer.extend({
 			l.set('position', ccp(s.width/2, 80));
 		}
 
-        this.addNewSprite(ccp(100, 100));
+        this.addNewSprite(ccp(s.width /2, s.height /2));
     },
 
     addNewSprite: function(point) {
-        var idx = Math.random() * 1400 / 100,
+        var idx = Math.floor(Math.random() * 1400 / 100),
             x = (idx%5) * 85,
-            y = (idx/5) * 121;
-        
+            y = (idx%3) * 121;
 
         //CCSprite *sprite = [CCSprite spriteWithFile:@"grossini_dance_atlas.png" rect:CGRectMake(x,y,85,121)];
         var sprite = cocos.Sprite.create({file: __dirname + "/resources/grossini_dance_atlas.png", rect:{origin:ccp(x, y), size:{width: 85, height: 121}}})
