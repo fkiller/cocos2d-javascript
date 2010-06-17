@@ -1,5 +1,7 @@
 var sys = require('sys'),
     obj = require('object'),
+    Scheduler = require('./Scheduler').Scheduler,
+    ActionManager = require('./ActionManager').ActionManager,
     ccp = require('geometry').ccp;
 
 exports.Node = obj.Object.extend({
@@ -10,7 +12,9 @@ exports.Node = obj.Object.extend({
     zOrder: 0,
     anchor: null,
     rotation: 0,
-    scale: 1,
+    scaleX: 1,
+    scaleY: 1,
+    isRunning: false,
 
     _children: null,
 
@@ -29,6 +33,23 @@ exports.Node = obj.Object.extend({
 
     draw: function(context) {
         // All draw code goes here
+    },
+
+    onEnter: function() {
+        this.resumeSchedulerAndActions();
+        this.set('isRunning', true);
+    },
+    onExit: function() {
+        this.pauseSchedulerAndActions();
+        this.set('isRunning', false);
+    },
+    resumeSchedulerAndActions: function() {
+        Scheduler.get('sharedScheduler').resumeTarget(this);
+        ActionManager.get('sharedManager').resumeTarget(this);
+    },
+    pauseSchedulerAndActions: function() {
+        Scheduler.get('sharedScheduler').pauseTarget(this);
+        ActionManager.get('sharedManager').pauseTarget(this);
     },
 
     visit: function(context) {
@@ -63,6 +84,10 @@ exports.Node = obj.Object.extend({
         context.rotate(this.get('rotation'));
         context.translate(Math.round(-this.anchor.x * this.contentSize.width), Math.round(-this.anchor.y * this.contentSize.height));
  
+    },
+
+    runAction: function(action) {
+        ActionManager.get('sharedManager').addAction({action: action, target: this, paused: this.get('isRunning')});
     }
 });
 

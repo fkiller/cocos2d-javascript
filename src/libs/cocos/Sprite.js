@@ -39,12 +39,12 @@ exports.Sprite = Node.extend({
                 rect.origin.x, rect.origin.y, // Draw slice from x,y
                 rect.size.width, rect.size.height, // Draw slice size
                 0, 0, // Draw at 0, 0
-                this.contentSize.width * this.scale, this.contentSize.height * this.scale // Draw size
+                this.contentSize.width * this.scaleX, this.contentSize.height * this.scaleY // Draw size
             );
         } else {
             ctx.drawImage(this.get('img'),
                 0, 0, // Draw at 0, 0 (translate will move to the real position)
-                this.contentSize.width * this.scale, this.contentSize.height * this.scale // Draw size
+                this.contentSize.width * this.scaleX, this.contentSize.height * this.scaleY // Draw size
             );
         }
     }

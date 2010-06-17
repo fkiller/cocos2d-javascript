@@ -34,6 +34,17 @@ var SpriteTestDemo = cocos.Layer.extend({
         var sprite = cocos.Sprite.create({file: __dirname + "/resources/grossini_dance_atlas.png", rect:{origin:ccp(x, y), size:{width: 85, height: 121}}})
         this.addChild(sprite);
         sprite.set('position', ccp(point.x, point.y));
+
+        var action, actionBack, seq;
+
+        action = cocos.ScaleTo.create({duration:3, scale:2});
+        sprite.runAction(action);
+
+        /*
+        actionBack = action.reverse();
+        seq = cocos.Sequence(action, actionBack);
+        sprite.runAction(cocos.RepeatForever(seq));
+        */
         
         /*
         id action;
