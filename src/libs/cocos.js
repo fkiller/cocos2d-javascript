@@ -1,6 +1,6 @@
 var sys = require('sys');
 
-exports = sys.mergeObjects(
+exports = sys.merge(
     exports,
     require('cocos/AppDelegate'),
     require('cocos/Node'),
