@@ -1,4 +1,4 @@
-var cocos = require('../../cocos'),
+var cocos = require('cocos'),
     HelloWorld = require('./HelloWorldScene').HelloWorld;
 
 exports.HelloWorldAppDelegate = cocos.AppDelegate.extend({

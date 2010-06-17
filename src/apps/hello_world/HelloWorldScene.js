@@ -1,5 +1,5 @@
 var sys = require('sys'),
-    cocos = require('../../cocos'),
+    cocos = require('cocos'),
     ccp = require('geometry').ccp;
 
 var HelloWorld = cocos.Layer.extend({

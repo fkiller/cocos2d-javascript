@@ -7,7 +7,7 @@ function require(sourcePath) {
     // If path doesn't start with a './' or '/' then it's a system include
     console.log('Requiring file: ', sourcePath, __dirname, __filename);
     if (!/^(\.\/)|\//.test(sourcePath)) {
-        sourcePath = './__core/' + sourcePath;
+        sourcePath = './libs/' + sourcePath;
     } else if (__filename != '__main__') {
         sourcePath = __dirname + '/' + sourcePath;
     }
