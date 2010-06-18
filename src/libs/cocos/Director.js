@@ -1,5 +1,6 @@
 var sys = require('sys'),
     Obj = require('object').Object,
+    Scheduler = require('./Scheduler').Scheduler,
     Scene = require('./Scene').Scene;
 
 var Director = Obj.extend({
@@ -7,6 +8,12 @@ var Director = Obj.extend({
     context: null,
     sceneStack: null,
     winSize: null,
+    isPaused: false,
+
+    // Time delta
+    dt: 0,
+    nextDeltaTimeZero: false,
+    lastUpdate: 0,
 
     _nextScene:null,
 
@@ -60,7 +67,27 @@ var Director = Obj.extend({
         this._animationTimer = setInterval(sys.callback(this, 'mainLoop'), animationInterval * 1000);
     },
 
+    calculateDeltaTime: function() {
+        var now = (new Date).getTime();
+
+        if (this.nextDeltaTimeZero) {
+            this.dt = 0;
+            this.nextDeltaTimeZero = false;
+        }
+
+        this.dt = Math.max(0, now - this.lastUpdate);
+
+        this.lastUpdate = now;
+    },
+
     mainLoop: function() {
+        this.calculateDeltaTime();
+
+        if (!this.isPaused) {
+            Scheduler.get('sharedScheduler').tick(this.dt);
+        }
+
+
         var context = this.get('context');
         context.fillStyle = 'rgb(0, 0, 0)';
         context.fillRect(0, 0, this.winSize.width, this.winSize.height);
