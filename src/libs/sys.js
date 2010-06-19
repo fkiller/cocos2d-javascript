@@ -76,8 +76,9 @@ function extend(target, ext) {
             }
 
             // Replace existing function and store reference to it in .base
-            if (val instanceof Function && val !== target[key]) {
+            if (val instanceof Function && target[key] && val !== target[key]) {
                 val.base = target[key];
+				val._isProperty = val.base._isProperty;
             }
             target[key] = val;
 

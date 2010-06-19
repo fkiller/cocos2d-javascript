@@ -68,7 +68,7 @@ var Director = Obj.extend({
     },
 
     calculateDeltaTime: function() {
-        var now = (new Date).getTime();
+        var now = (new Date).getTime() /1000;
 
         if (this.nextDeltaTimeZero) {
             this.dt = 0;

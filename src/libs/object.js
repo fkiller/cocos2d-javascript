@@ -5,6 +5,7 @@ Obj = sys.extend(Obj, {
     isObject: true,
     _observers: null,
     superclass: null,
+	_lastID: 0,
 
     /**
      * Creates a new instance of this object
@@ -107,10 +108,13 @@ Obj = sys.extend(Obj, {
 });
 
 Obj.prototype = {
+	id: 0,
     /** @private
      * Initialise the object
      */
     _init: function() {
+		this.id = ++Obj._lastID;
+
         if (this._observingFunctions) {
             var i = 0,
                 f;

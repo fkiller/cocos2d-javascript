@@ -10,7 +10,8 @@ exports.Node = obj.Object.extend({
     parent: null,
     contentSize: null,
     zOrder: 0,
-    anchor: null,
+    anchorPoint: null,
+    anchorPointInPixels: null,
     rotation: 0,
     scaleX: 1,
     scaleY: 1,
@@ -20,10 +21,15 @@ exports.Node = obj.Object.extend({
 
     init: function() {
         this.contentSize = {width: 0, height: 0};
-        this.anchor = ccp(0.5, 0.5);
+        this.anchorPoint = ccp(0.5, 0.5);
+        this.anchorPointInPixels = ccp(0, 0);
         this.position = ccp(0,0);
         this._children = [];
     },
+
+    _updateAnchorPointInPixels: function() {
+        this.anchorPointInPixels = ccp(this.contentSize.width * this.anchorPoint.x, this.contentSize.height * this.anchorPoint.y);
+    }.observes('anchorPoint', 'contentSize'),
 
     addChild: function(node) {
         console.log('Adding child node:', node);
@@ -82,7 +88,8 @@ exports.Node = obj.Object.extend({
     transform: function(context) {
         context.translate(this.position.x, this.position.y);
         context.rotate(this.get('rotation'));
-        context.translate(Math.round(-this.anchor.x * this.contentSize.width), Math.round(-this.anchor.y * this.contentSize.height));
+        //context.translate(Math.round(-this.anchorPointInPixels.x * this.scaleX), Math.round(-this.anchorPointInPixels.y * this.scaleY));
+        context.translate(-this.anchorPointInPixels.x * this.scaleX, -this.anchorPointInPixels.y * this.scaleY);
  
     },
 

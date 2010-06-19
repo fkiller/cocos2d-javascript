@@ -37,7 +37,7 @@ var SpriteTestDemo = cocos.Layer.extend({
 
         var action, actionBack, seq;
 
-        action = cocos.ScaleTo.create({duration:3, scale:2});
+        action = cocos.ScaleTo.create({duration:1, scale:2});
         sprite.runAction(action);
 
         /*

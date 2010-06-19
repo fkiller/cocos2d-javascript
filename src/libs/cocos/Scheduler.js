@@ -50,7 +50,7 @@ var Scheduler = Obj.extend({
         }
 
         if (this.scheduledMethods.indexOf(timer) > -1 || this.methodsToAdd.indexOf(timer) > -1) {
-            throw "Scheduler.schedulerTimer: timer already scheduled";
+            throw "Scheduler.scheduleTimer: timer already scheduled";
         }
 
         this.methodsToAdd.push(timer);

@@ -13,7 +13,15 @@ var Action = Obj.extend({
     },
     startWithTarget: function(target) {
         this.target = this.originalTarget = target;
-    }
+    },
+    stop: function() {
+        console.log('Stopping action:', this);
+        this.target = null;
+    },
+
+    isDone: function(key) {
+        return true;
+    }.property()
 });
 
 var FiniteTimeAction = Action.extend({
