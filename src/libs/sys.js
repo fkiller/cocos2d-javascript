@@ -17,18 +17,24 @@ function merge() {
 };
 
 function copy(obj) {
-    var copy = {};
+	var copy;
 
-    var o, x;
-    for (x in obj) {
-        o = obj[x];
+	if (obj instanceof Array) {
+		copy = [];
+		for (var i = 0, len = obj.length; i < len; i++) {
+			copy[i] = arguments.callee(obj[i]);
+		}
+	} else if (typeof(obj) == 'object') {
+		copy = {};
 
-        if (typeof(o) == 'object') {
-            o = arguments.callee(o);
-        }
-
-        copy[x] = o;
-    }
+		var o, x;
+		for (x in obj) {
+			copy[x] = arguments.callee(obj[x]);
+		}
+	} else {
+		// Primative type. Doesn't need copying
+		copy = obj;
+	}
 
     return copy;
 };

@@ -10,7 +10,7 @@ var IntervalAction = act.FiniteTimeAction.extend({
     init: function(opts) {
         @super;
 
-        var dur = opts['duration'];
+        var dur = opts['duration'] || 0;
         if (dur == 0) {
             dur = 0.0000001;
         }
@@ -99,7 +99,67 @@ var ScaleBy = ScaleTo.extend({
     }
 });
 
+var Sequence = IntervalAction.extend({
+    actions: null,
+    currentActionIndex: 0,
+    currentActionEndDuration: 0,
+
+    init: function(opts) {
+        @super;
+
+        this.actions = sys.copy(opts['actions']);
+        this.actionSequence = {};
+        
+        sys.each(this.actions, sys.callback(this, function(action) {
+            this.duration += action.duration;
+        }));
+    },
+    startWithTarget: function(target) {
+        @super;
+        this.currentActionIndex = 0;
+        this.currentActionEndDuration = this.actions[0].get('duration');
+        this.actions[0].startWithTarget(this.target);
+    },
+    stop: function() {
+        sys.each(this.actions, function(action) {
+            action.stop();
+        });
+
+        @super;
+    },
+    step: function(dt) {
+        if (this._firstTick) {
+            this._firstTick = false;
+            this.elapsed = 0;
+        } else {
+            this.elapsed += dt;
+        }
+
+        this.actions[this.currentActionIndex].step(dt);
+        this.update(Math.min(1, this.elapsed/this.duration));
+    },
+    update: function(dt) {
+        // Action finished onto the next one
+        if (this.elapsed > this.currentActionEndDuration) {
+            var previousAction = this.actions[this.currentActionIndex];
+            previousAction.update(1.0);
+            previousAction.stop();
+
+
+            this.currentActionIndex++;
+
+            if (this.currentActionIndex < this.actions.length) {
+                var currentAction = this.actions[this.currentActionIndex];
+                currentAction.startWithTarget(this.target);
+
+                this.currentActionEndDuration += currentAction.duration;
+            }
+        }
+    }
+});
+
 
 exports.IntervalAction = IntervalAction;
 exports.ScaleTo = ScaleTo;
 exports.ScaleBy = ScaleBy;
+exports.Sequence = Sequence;

@@ -88,8 +88,8 @@ exports.Node = obj.Object.extend({
     transform: function(context) {
         context.translate(this.position.x, this.position.y);
         context.rotate(this.get('rotation'));
-        //context.translate(Math.round(-this.anchorPointInPixels.x * this.scaleX), Math.round(-this.anchorPointInPixels.y * this.scaleY));
-        context.translate(-this.anchorPointInPixels.x * this.scaleX, -this.anchorPointInPixels.y * this.scaleY);
+        context.translate(Math.round(-this.anchorPointInPixels.x * this.scaleX), Math.round(-this.anchorPointInPixels.y * this.scaleY));
+        //context.translate(-this.anchorPointInPixels.x * this.scaleX, -this.anchorPointInPixels.y * this.scaleY);
  
     },
 
