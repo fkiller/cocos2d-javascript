@@ -24,6 +24,36 @@ var Action = Obj.extend({
     }.property()
 });
 
+var RepeatForever = Action.extend({
+    other: null,
+
+    init: function(action) {
+        @super();
+
+        this.other = action;
+    },
+    startWithTarget: function(target) {
+        @super;
+
+        this.other.startWithTarget(this.target);
+    },
+    step :function(dt) {
+        this.other.step(dt);
+        if (this.other.get('isDone')) {
+            var diff = dt - this.other.get('duration') - this.other.get('elapsed');
+            this.other.startWithTarget(this.target);
+
+            this.other.step(diff);
+        }
+    },
+    isDone: function() {
+        return false;
+    },
+    reverse: function() {
+        return RepeatForever.create(this.other.reverse());
+    }
+});
+
 var FiniteTimeAction = Action.extend({
     duration: 2,
 
@@ -33,4 +63,5 @@ var FiniteTimeAction = Action.extend({
 });
 
 exports.Action = Action;
+exports.RepeatForever = RepeatForever;
 exports.FiniteTimeAction = FiniteTimeAction;

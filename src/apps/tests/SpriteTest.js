@@ -40,8 +40,7 @@ var SpriteTestDemo = cocos.Layer.extend({
         action = cocos.ScaleBy.create({duration:3, scale:2});
         actionBack = action.reverse();
         seq = cocos.Sequence.create({actions:[action, actionBack]});
-        sprite.runAction(seq);
-        //sprite.runAction(action);
+        sprite.runAction(cocos.RepeatForever.create(seq));
         
         /*
         id action;
