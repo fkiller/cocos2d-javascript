@@ -12,6 +12,8 @@ exports = sys.merge(
     require('cocos/IntervalAction'),
     require('cocos/Scheduler'),
     require('cocos/ActionManager'),
+    require('cocos/TMXTiledMap'),
+    require('cocos/TMXXMLParser'),
 
     require('cocos/AppDelegate')
 );
