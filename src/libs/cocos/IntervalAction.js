@@ -40,6 +40,9 @@ var IntervalAction = act.FiniteTimeAction.extend({
 
         this.elapsed = 0.0;
         this._firstTick = true;
+    },
+    reverse: function() {
+        throw "Reverse Action not implemented"
     }
 });
 
@@ -84,6 +87,19 @@ var ScaleTo = IntervalAction.extend({
     }
 });
 
+var ScaleBy = ScaleTo.extend({
+    startWithTarget: function(target) {
+        @super;
+
+        this.deltaX = this.startScaleX * this.endScaleX - this.startScaleX;
+        this.deltaY = this.startScaleY * this.endScaleY - this.startScaleY;
+    },
+    reverse: function() {
+        return ScaleBy.create({duration: this.duration, scaleX:1/this.endScaleX, scaleY:1/this.endScaleY});
+    }
+});
+
 
 exports.IntervalAction = IntervalAction;
 exports.ScaleTo = ScaleTo;
+exports.ScaleBy = ScaleBy;
