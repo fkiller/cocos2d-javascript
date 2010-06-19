@@ -4,7 +4,7 @@ var sys = require('sys'),
 
 var SpriteTestDemo = cocos.Layer.extend({
     title: 'Sprite Test',
-    subtitle: 'Click to add more',
+    subtitle: '',
 
     init: function() {
         @super;
