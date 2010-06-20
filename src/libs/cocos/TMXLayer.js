@@ -26,6 +26,10 @@ var TMXLayer = SpriteSheet.extend({
 
 		@super({texture: tex});
 
+	},
+
+	setupTiles: function() {
+		// TODO
 	}
 });
 
