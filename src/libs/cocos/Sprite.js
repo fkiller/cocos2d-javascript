@@ -1,14 +1,15 @@
 var sys = require('sys'),
     Director = require('./Director').Director,
+    TextureAtlas = require('./TextureAtlas').TextureAtlas,
     Node = require('./Node').Node,
     ccp = require('geometry').ccp;
 
 exports.Sprite = Node.extend({
     texture: null,
-    img: null,
     rect: null,
     dirty: true,
     recursiveDirty: true,
+    quad: null,
 
     /**
      * opts: {
@@ -19,31 +20,37 @@ exports.Sprite = Node.extend({
     init: function(opts) {
         @super;
 
-        var file = opts['files'],
+        var file = opts['file'],
             texture = opts['texture'],
             rect = opts['rect'];
 
         if (!texture && file) {
-            texture = resource(file);
+            texture = TextureAtlas.create({file:file});
         } else if (!texture && !file) {
             throw "Sprite has no texture or file";
         }
 
         this.set('texture', texture);
-        
-        var img = this.set('img', new Image);
-
         if (rect) {
             this.set('rect', rect);
             this.set('contentSize', rect.size);
-        } else {
-            img.onload = sys.callback(this, function() {
-                this.set('contentSize', {width:img.width, height: img.height});
-            });
         }
 
-        img.src = texture;
+        this.quad = {
+            drawRect: {origin: ccp(0, 0), size: rect.size},
+            textureRect: rect
+        };
+
+        texture.insertQuad({quad: this.get('quad')});
     },
+
+    _updateQuad: function() {
+        if (!this.quad) {
+            return;
+        }
+
+        this.quad.drawRect.size = {width: this.rect.size.width * this.scaleX, height: this.rect.size.height * this.scaleY};
+    }.observes('scale', 'scaleX', 'scaleY', 'rect'),
 
     updateTransform: function(ctx) {
         if (!this.useSpriteSheet) {
@@ -65,6 +72,11 @@ exports.Sprite = Node.extend({
 
     draw: function(ctx) {
         var rect = this.get('rect');
+        var texture = this.get('texture');
+
+        texture.drawQuads(ctx);
+
+        /*
         if (rect) {
             ctx.drawImage(this.get('img'), 
                 rect.origin.x, rect.origin.y, // Draw slice from x,y
@@ -78,5 +90,6 @@ exports.Sprite = Node.extend({
                 this.contentSize.width * this.scaleX, this.contentSize.height * this.scaleY // Draw size
             );
         }
+        */
     }
 });

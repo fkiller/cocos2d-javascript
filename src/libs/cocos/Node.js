@@ -1,10 +1,10 @@
 var sys = require('sys'),
-    obj = require('object'),
+    Obj = require('object'),
     Scheduler = require('./Scheduler').Scheduler,
     ActionManager = require('./ActionManager').ActionManager,
     ccp = require('geometry').ccp;
 
-exports.Node = obj.Object.extend({
+exports.Node = Obj.Object.extend({
     isCocosNode: true,
     visible: true,
     position: null,
