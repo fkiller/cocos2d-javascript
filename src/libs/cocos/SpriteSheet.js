@@ -1,4 +1,5 @@
 var sys = require('sys'),
+    TextureAtlas = require('./TextureAtlas').TextureAtlas,
 	Node = require('./Node').Node;
 
 var SpriteSheet = Node.extend({
@@ -8,11 +9,16 @@ var SpriteSheet = Node.extend({
 	init: function(opts) {
 		@super;
 
-		if (opts['file']) {
-			this.texture = resource(opts['file']);
-		} else {
-			this.texture = opts['texture'];
-		}
+        var file = opts['file'],
+            texture = opts['texture'];
+
+        if (!texture && file) {
+            texture = TextureAtlas.create({file:file});
+        } else if (!texture && !file) {
+            throw "SpriteSheet has no texture or file";
+        }
+
+		this.texture = texture;
 
 		this.descendants = [];
 	},
@@ -39,6 +45,7 @@ var SpriteSheet = Node.extend({
 
 		var ret = @super;
 
+		opts['child'].set('texture', this.texture);
 		var index = this.atlasIndexForChild({child: opts['child'], z:opts['z']});
 		this.insertChild({child: opts['child'], index:index});
 
@@ -139,8 +146,8 @@ var SpriteSheet = Node.extend({
 	draw: function(ctx) {
 		sys.each(this.descendants, function(child, i) {
 			child.updateTransform(ctx);
-			child.draw(ctx);
 		});
+		this.texture.drawQuads(ctx);
 	}
 });
 

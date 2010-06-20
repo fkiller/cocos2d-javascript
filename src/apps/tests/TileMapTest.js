@@ -1,5 +1,6 @@
 var sys    = require('sys'),
     cocos  = require('cocos'),
+    path   = require('path'),
     ccp    = require('geometry').ccp;
 
 var TileMapTestDemo = cocos.Layer.extend({
@@ -15,15 +16,15 @@ var TileMapTestDemo = cocos.Layer.extend({
         label.set('position', ccp(s.width / 2, 50));
 
 
-		var subtitle = this.get('subtitle');
-		if (subtitle) {
-			var l = cocos.Label.create({string:subtitle, fontName: "Thonburi", fontSize: 16});
+        var subtitle = this.get('subtitle');
+        if (subtitle) {
+            var l = cocos.Label.create({string:subtitle, fontName: "Thonburi", fontSize: 16});
             this.addChild(l);
-			l.set('position', ccp(s.width/2, 80));
-		}
+            l.set('position', ccp(s.width/2, 80));
+        }
 
 
-        var tmx = cocos.TMXTiledMap.create(__dirname + "/resources/TileMaps/orthogonal-test2.tmx");
+        var tmx = cocos.TMXTiledMap.create({file: path.join(__dirname, "/resources/TileMaps/orthogonal-test2.tmx")});
 
         console.log('Tilemap: ', tmx);
     },

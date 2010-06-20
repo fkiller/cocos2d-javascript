@@ -24,13 +24,12 @@ exports.Sprite = Node.extend({
             texture = opts['texture'],
             rect = opts['rect'];
 
-        if (!texture && file) {
+        if (file) {
             texture = TextureAtlas.create({file:file});
         } else if (!texture && !file) {
-            throw "Sprite has no texture or file";
+            //throw "Sprite has no texture or file";
         }
 
-        this.set('texture', texture);
         if (rect) {
             this.set('rect', rect);
             this.set('contentSize', rect.size);
@@ -41,8 +40,18 @@ exports.Sprite = Node.extend({
             textureRect: rect
         };
 
-        texture.insertQuad({quad: this.get('quad')});
+        this.set('texture', texture);
     },
+
+    _updateTextureQuad: function(obj, key, texture, oldTexture) {
+        if (oldTexture) {
+            oldTexture.removeQuad({quad: this.get('quad')})
+        }
+
+        if (texture) {
+            texture.insertQuad({quad: this.get('quad')});
+        }
+    }.observes('texture'),
 
     _updateQuad: function() {
         if (!this.quad) {
@@ -71,25 +80,6 @@ exports.Sprite = Node.extend({
     },
 
     draw: function(ctx) {
-        var rect = this.get('rect');
-        var texture = this.get('texture');
-
-        texture.drawQuads(ctx);
-
-        /*
-        if (rect) {
-            ctx.drawImage(this.get('img'), 
-                rect.origin.x, rect.origin.y, // Draw slice from x,y
-                rect.size.width, rect.size.height, // Draw slice size
-                0, 0, // Draw at 0, 0
-                this.contentSize.width * this.scaleX, this.contentSize.height * this.scaleY // Draw size
-            );
-        } else {
-            ctx.drawImage(this.get('img'),
-                0, 0, // Draw at 0, 0 (translate will move to the real position)
-                this.contentSize.width * this.scaleX, this.contentSize.height * this.scaleY // Draw size
-            );
-        }
-        */
+        this.get('texture').drawQuad(ctx, this.quad);
     }
 });

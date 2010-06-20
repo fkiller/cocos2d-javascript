@@ -42,14 +42,17 @@ var TextureAtlas = Obj.extend({
 	drawQuads: function(ctx) {
 		sys.each(this.quads, sys.callback(this, function(quad) {
 			if (!quad) return;
-
-            ctx.drawImage(this.get('imgElement'), 
-                quad.textureRect.origin.x, quad.textureRect.origin.y, // Draw slice from x,y
-                quad.textureRect.size.width, quad.textureRect.size.height, // Draw slice size
-                quad.drawRect.origin.x, quad.drawRect.origin.y, // Draw at 0, 0
-                quad.drawRect.size.width, quad.drawRect.size.height // Draw size
-            );
+			this.drawQuad(ctx, quad);
 		}));
+	},
+
+	drawQuad: function(ctx, quad) {
+		ctx.drawImage(this.get('imgElement'), 
+			quad.textureRect.origin.x, quad.textureRect.origin.y, // Draw slice from x,y
+			quad.textureRect.size.width, quad.textureRect.size.height, // Draw slice size
+			quad.drawRect.origin.x, quad.drawRect.origin.y, // Draw at 0, 0
+			quad.drawRect.size.width, quad.drawRect.size.height // Draw size
+		);
 	}
 
 });

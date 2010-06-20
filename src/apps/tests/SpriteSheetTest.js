@@ -40,7 +40,7 @@ var SpriteSheetTestDemo = cocos.Layer.extend({
             x = (idx%5) * 85,
             y = (idx%3) * 121;
 
-        var sprite = cocos.Sprite.create({texture: sheet.get('texture'), rect:{origin:ccp(x, y), size:{width: 85, height: 121}}})
+        var sprite = cocos.Sprite.create({rect:{origin:ccp(x, y), size:{width: 85, height: 121}}})
         sheet.addChild(sprite);
         sprite.set('position', ccp(point.x, point.y));
 
