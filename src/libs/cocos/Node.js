@@ -38,7 +38,7 @@ exports.Node = Obj.Object.extend({
         }
         var child = opts['child'];
 
-        console.log('Adding child node:', child);
+        //console.log('Adding child node:', child);
         child.set('parent', this);
         this.children.push(child);
 

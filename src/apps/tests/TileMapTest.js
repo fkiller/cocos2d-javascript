@@ -25,6 +25,7 @@ var TileMapTestDemo = cocos.Layer.extend({
 
 
         var tmx = cocos.TMXTiledMap.create({file: path.join(__dirname, "/resources/TileMaps/orthogonal-test2.tmx")});
+        this.addChild(tmx);
 
         console.log('Tilemap: ', tmx);
     },

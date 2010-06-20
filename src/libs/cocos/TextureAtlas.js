@@ -13,6 +13,7 @@ var sys = require('sys'),
 var TextureAtlas = Obj.extend({
 	quads: null,
 	imgElement: null,
+	texture: null,
 
 	init: function(opts) {
 		var file = opts['file'],
@@ -20,7 +21,7 @@ var TextureAtlas = Obj.extend({
 			texture = opts['texture'];
 		
 		// Create texture with whatever we were given
-		var texture = Texture2D.create({texture: texture, file: file, data: data});
+		var texture = this.set('texture', Texture2D.create({texture: texture, file: file, data: data}));
 		this.imgElement = texture.get('imgElement');
 
 		this.quads = [];

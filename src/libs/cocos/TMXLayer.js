@@ -1,5 +1,6 @@
 var sys = require('sys'),
     SpriteSheet = require('./SpriteSheet').SpriteSheet;
+    Sprite = require('./Sprite').Sprite;
     TMXOrientationOrtho = require('./TMXOrientation').TMXOrientationOrtho,
     TMXOrientationHex   = require('./TMXOrientation').TMXOrientationHex,
     TMXOrientationIso   = require('./TMXOrientation').TMXOrientationIso,
@@ -25,10 +26,10 @@ var TMXLayer = SpriteSheet.extend({
 
         var tex = null;
         if (tilesetInfo) {
-            tex = resource(tilesetInfo.sourceImage);
+            tex = tilesetInfo.sourceImage;
         }
 
-        @super({texture: tex});
+        @super({file: tex});
 
         this.layerName = layerInfo.get('name');
         this.layerSize = layerInfo.get('layerSize');
@@ -38,7 +39,7 @@ var TMXLayer = SpriteSheet.extend({
         this.opacity = layerInfo.get('opacity');
         this.properties = sys.copy(layerInfo.properties);
 
-        this.tilesetInfo = tilesetInfo;
+        this.tileset = tilesetInfo;
         this.mapTileSize = mapInfo.get('tileSize');
         this.layerOrientation = mapInfo.get('orientation');
 
@@ -67,7 +68,42 @@ var TMXLayer = SpriteSheet.extend({
     },
 
     setupTiles: function() {
-        // TODO
+        this.tileset.set('imageSize', this.get('texture.contentSize'));
+
+
+        for (var y=0; y < this.layerSize.height; y++) {
+            for (var x=0; x < this.layerSize.width; x++) {
+                
+                var pos = x + this.layerSize.width * y,
+                    gid = this.tiles[pos];
+                
+                if (gid != 0) {
+                    this.appendTile({gid:gid, position:ccp(x,y)});
+                    
+                    // Optimization: update min and max GID rendered by the layer
+                    this.minGID = Math.min(gid, this.minGID);
+                    this.maxGID = Math.max(gid, this.maxGID);
+                }
+            }
+        }
+        
+    },
+    appendTile: function(opts) {
+        var gid = opts['gid'],
+            pos = opts['position'];
+
+        var z = pos.x + pos.y * this.layerSize.width;
+            
+        
+        var rect = this.tileset.rectForGID(gid);
+        var tile = Sprite.create({rect: rect});
+        tile.set('position', this.positionAt(pos));
+        tile.set('anchorPoint', ccp(0, 0));
+        tile.set('opacity', this.get('opacity'));
+        this.addChild(tile);
+    },
+    positionAt: function(pos) {
+        return ccp(1, 1);
     }
 });
 

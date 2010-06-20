@@ -166,7 +166,17 @@ var TMXTilesetInfo = Obj.extend({
     },
 
     rectForGID: function(gid) {
-        // TODO
+        var rect = {size:{}, origin:ccp(0,0)};
+        rect.size = sys.copy(this.tileSize);
+        
+        gid = gid - this.firstGID;
+        
+        var max_x = Math.floor((this.imageSize.width - this.margin*2 + this.spacing) / (this.tileSize.width + this.spacing));
+        
+        rect.origin.x = (gid % max_x) * (this.tileSize.width + this.spacing) + this.margin;
+        rect.origin.y = Math.floor(gid / max_x) * (this.tileSize.height + this.spacing) + this.margin;
+        
+        return rect;
     }
 });
 

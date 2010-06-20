@@ -22,10 +22,14 @@ exports.Sprite = Node.extend({
 
         var file = opts['file'],
             texture = opts['texture'],
+            spritesheet = opts['spritesheet'],
             rect = opts['rect'];
 
         if (file) {
             texture = TextureAtlas.create({file:file});
+        } else if (spritesheet) {
+            texture = spritesheet.get('textureAtlas');
+            this.set('useSpriteSheet', true);
         } else if (!texture && !file) {
             //throw "Sprite has no texture or file";
         }

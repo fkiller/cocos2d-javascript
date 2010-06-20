@@ -23,6 +23,7 @@ var Texture2D = Obj.extend({
 			this.set('size', {width:this.imgElement.width, height: this.imgElement.height});
 		});
 		this.imgElement.src = data;
+		this.set('size', {width:this.imgElement.width, height: this.imgElement.height});
 	},
 
 	drawAtPoint: function(ctx, point) {
@@ -37,6 +38,10 @@ var Texture2D = Obj.extend({
 
 	data: function() {
 		return this.imgElement.src;
+	}.property(),
+
+	contentSize: function() {
+		return this.size;
 	}.property()
 });
 
