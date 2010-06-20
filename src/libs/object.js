@@ -95,6 +95,16 @@ Obj = sys.extend(Obj, {
         return val;
     },
 
+	// Increment integer value
+	inc: function(key) {
+		return this.set(key, this.get(key) +1);
+	},
+
+	// Decrement integer value
+	dec: function(key) {
+		return this.set(key, this.get(key) -1);
+	},
+
     addObserver: function(key, callback) {
         if (!this._observers) {
             this._observers = {};
@@ -131,6 +141,8 @@ Obj.prototype = {
 
     get: Obj.get,
     set: Obj.set,
+    inc: Obj.inc,
+    dec: Obj.dec,
     addObserver: Obj.addObserver
 
 

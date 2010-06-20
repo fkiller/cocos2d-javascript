@@ -13,7 +13,7 @@ function __normalisePath(path) {
 
 function require(sourcePath) {
     // If path doesn't start with a './' or '/' then it's a system include
-    console.log('Requiring file: ', sourcePath, __dirname, __filename);
+    console.log('Requiring: "%s" for: %s ', sourcePath, __filename);
     if (!/^(\.\/)|\//.test(sourcePath)) {
         sourcePath = './libs/' + sourcePath;
     } else if (__filename != '__main__') {

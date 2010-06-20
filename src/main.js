@@ -1,1 +1,1 @@
-require('./apps/tests/TileMapTest.js');
+require('./apps/tests/SpriteSheetTest.js');

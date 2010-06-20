@@ -14,6 +14,7 @@ exports = sys.merge(
     require('cocos/ActionManager'),
     require('cocos/TMXTiledMap'),
     require('cocos/TMXXMLParser'),
+    require('cocos/SpriteSheet'),
 
     require('cocos/AppDelegate')
 );

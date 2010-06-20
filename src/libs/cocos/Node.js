@@ -18,14 +18,14 @@ exports.Node = obj.Object.extend({
     scaleY: 1,
     isRunning: false,
 
-    _children: null,
+    children: null,
 
     init: function() {
         this.contentSize = {width: 0, height: 0};
         this.anchorPoint = ccp(0.5, 0.5);
         this.anchorPointInPixels = ccp(0, 0);
         this.position = ccp(0,0);
-        this._children = [];
+        this.children = [];
     },
 
     _updateAnchorPointInPixels: function() {
@@ -33,16 +33,16 @@ exports.Node = obj.Object.extend({
     }.observes('anchorPoint', 'contentSize'),
 
     addChild: function(opts) {
-        var child;
         if (opts.isCocosNode) {
-            child = opts;
-        } else {
-            child = opts['child'];
+            return arguments.callee.call(this, {child:opts, z:0});
         }
+        var child = opts['child'];
 
         console.log('Adding child node:', child);
         child.set('parent', this);
-        this._children.push(child);
+        this.children.push(child);
+
+        return child;
     },
 
     draw: function(context) {
@@ -76,7 +76,7 @@ exports.Node = obj.Object.extend({
         this.transform(context);
 
         // Draw background nodes
-        sys.each(this._children, function(child, i) {
+        sys.each(this.children, function(child, i) {
             if (child.zOrder < 0) {
                 child.visit(context);
             }
@@ -85,7 +85,7 @@ exports.Node = obj.Object.extend({
         this.draw(context);
 
         // Draw foreground nodes
-        sys.each(this._children, function(child, i) {
+        sys.each(this.children, function(child, i) {
             if (child.zOrder >= 0) {
                 child.visit(context);
             }

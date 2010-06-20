@@ -33,10 +33,43 @@ var SpriteSheet = Node.extend({
 	},
 
 	addChild: function(opts) {
+        if (opts.isCocosNode) {
+            return arguments.callee.call(this, {child:opts, z:0});
+        }
+
 		var ret = @super;
 
 		var index = this.atlasIndexForChild({child: opts['child'], z:opts['z']});
-		this.insertChild({child: opts['child'], atlasIndex:index});
+		this.insertChild({child: opts['child'], index:index});
+
+		return ret;
+	},
+
+	insertChild: function(opts) {
+		var sprite = opts['child'],
+			index = opts['index'];
+
+		sprite.set('useSpriteSheet', true);
+		sprite.set('atlastIndex', index);
+		sprite.set('dirty', true);
+
+		this.descendants[index] = sprite;
+
+		// Update indices
+		sys.each(this.descendants, function(child, i) {
+			if (i > index) {
+				child.inc('atlastIndex');
+			}
+		});
+
+		// Add children
+		sys.each(sprite.children, sys.callback(this, function(child, i) {
+			if (!child) {
+				return;
+			}
+			var index = this.atlasIndexForChild({child:child, z:child.zOrder});
+			this.insertChild({child: child, index: index});
+		}));
 	},
 
 
@@ -60,7 +93,7 @@ var SpriteSheet = Node.extend({
 	
 
 	atlasIndexForChild: function(opts) {
-		var sprite = opts['sprite'],
+		var sprite = opts['child'],
 			z = opts['z'];
 
 		var siblings = sprite.get('parent.children'),
@@ -101,6 +134,13 @@ var SpriteSheet = Node.extend({
 		}
 
 		throw "Should not happen. Error calculating Z on SpriteSheet";
+	},
+
+	draw: function(ctx) {
+		sys.each(this.descendants, function(child, i) {
+			child.updateTransform(ctx);
+			child.draw(ctx);
+		});
 	}
 });
 

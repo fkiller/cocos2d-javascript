@@ -7,6 +7,8 @@ exports.Sprite = Node.extend({
     texture: null,
     img: null,
     rect: null,
+    dirty: true,
+    recursiveDirty: true,
 
     /**
      * opts: {
@@ -17,12 +19,23 @@ exports.Sprite = Node.extend({
     init: function(opts) {
         @super;
 
-        var texture = this.set('texture', resource(opts['file'])),
-            img = this.set('img', new Image);
+        var file = opts['files'],
+            texture = opts['texture'],
+            rect = opts['rect'];
 
-        if (opts['rect']) {
-            this.set('rect', opts['rect']);
-            this.set('contentSize', opts['rect'].size);
+        if (!texture && file) {
+            texture = resource(file);
+        } else if (!texture && !file) {
+            throw "Sprite has no texture or file";
+        }
+
+        this.set('texture', texture);
+        
+        var img = this.set('img', new Image);
+
+        if (rect) {
+            this.set('rect', rect);
+            this.set('contentSize', rect.size);
         } else {
             img.onload = sys.callback(this, function() {
                 this.set('contentSize', {width:img.width, height: img.height});
@@ -30,6 +43,24 @@ exports.Sprite = Node.extend({
         }
 
         img.src = texture;
+    },
+
+    updateTransform: function(ctx) {
+        if (!this.useSpriteSheet) {
+            throw "updateTransform is only valid when Sprite is being rendered using a SpriteSheet"
+        }
+
+        if (!this.visible) {
+            this.set('dirty', false);
+            this.set('recursiveDirty', false);
+            return;
+        }
+
+
+        this.transform(ctx);
+
+        this.set('dirty', false);
+        this.set('recursiveDirty', false);
     },
 
     draw: function(ctx) {
