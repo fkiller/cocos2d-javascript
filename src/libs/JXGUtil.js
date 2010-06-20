@@ -28,7 +28,7 @@
  */
 
 // Added for Cocos2d compatibility
-JXG = {};
+var JXG = {};
 
 /**
   * @class Util class
