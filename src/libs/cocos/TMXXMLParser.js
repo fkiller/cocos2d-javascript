@@ -1,4 +1,5 @@
 var sys = require('sys'),
+	path = require('path'),
 	ccp = require('geometry').ccp,
     base64 = require('base64'),
     gzip   = require('gzip'),
@@ -24,6 +25,7 @@ var TMXMapInfo = Obj.extend({
 		this.objectGroups = [];
 		this.properties = {};
 		this.tileProperties = {};
+		this.filename = tmxFile;
 
 		this.parseXMLFile(tmxFile);
 	},
@@ -32,6 +34,7 @@ var TMXMapInfo = Obj.extend({
 		var parser = new DOMParser();
 		doc = parser.parseFromString(resource(xmlFile), 'text/xml');
 
+		// PARSE <map>
 		var map = doc.documentElement;
 
 		// Set Orientation
@@ -50,32 +53,83 @@ var TMXMapInfo = Obj.extend({
 		default:
 			throw "cocos2d: TMXFomat: Unsupported orientation: " + map.getAttribute('orientation');
 		}
-
-		// Set map site
 		this.mapSize = {width: parseInt(map.getAttribute('width'), 10), height: parseInt(map.getAttribute('height'), 10)}
 		this.tileSize = {width: parseInt(map.getAttribute('tilewidth'), 10), height: parseInt(map.getAttribute('tileheight'), 10)}
 
 
-		// Parse tilesets
+		// PARSE <tilesets>
+		var tilesets = map.getElementsByTagName('tileset');
+		for (var i = 0, len = tilesets.length; i < len; i++) {
+			var t = tilesets[i];
 
-		// Parse tile
+			var tileset = TMXTilesetInfo.create();
+			tileset.set('name', t.getAttribute('name'));
+			tileset.set('firstGID', parseInt(t.getAttribute('firstgid'), 10));
+			tileset.set('spacing', parseInt(t.getAttribute('spacing'), 10));
+			tileset.set('margin', parseInt(t.getAttribute('margin'), 10));
 
-		// Parse layers
-		var layers = map.getElementsByTagName('layer');
-		for (var i = 0, len = layers.length; i < len; i++) {
-			var layer = layers[i];
-			var data = layer.getElementsByTagName('data')[0];
+			var s = {};
+			s.width = parseInt(t.getAttribute('tilewidth'), 10)
+			s.height = parseInt(t.getAttribute('tileheight'), 10)
+			tileset.set('tileSize', s);
 
-			if (data.getAttribute('compression') == 'gzip') {
-				this.tiles = gzip.unzipBase64AsArray(data.firstChild.nodeValue, 4);
-			} else {
-				this.tiles = base64.decodeAsArray(data.firstChild.nodeValue, 4);
-			}
+			// PARSE <image> We assume there's only 1
+			var image = t.getElementsByTagName('image')[0];
+			tileset.set('sourceImage', path.join(path.dirname(this.filename), image.getAttribute('source')));
 
-			console.log('Number of tiles in map:', this.tiles.length);
+			this.tilesets.push(tileset);
+			delete tileset;
 		}
 
-		//
+		// PARSE <layers>
+		var layers = map.getElementsByTagName('layer');
+		for (var i = 0, len = layers.length; i < len; i++) {
+			var l = layers[i];
+			var data = l.getElementsByTagName('data')[0];
+			var layer = TMXLayerInfo.create();
+
+			layer.set('name', l.getAttribute('name'));
+			if (l.getAttribute('visible') == undefined) {
+				layer.set('visible', true);
+			} else {
+				layer.set('visible', !!parseInt(l.getAttribute('visible')));
+			}
+
+			var s = {};
+			s.width = parseInt(l.getAttribute('width'), 10)
+			s.height = parseInt(l.getAttribute('height'), 10)
+			layer.set('layerSize', s);
+
+			var opacity = l.getAttribute('opacity');
+			if (opacity == undefined) {
+				layer.set('opacity', 255);
+			} else {
+				layer.set('opacity', 255 * parseFloat(opacity));
+			}
+
+			var x = parseInt(l.getAttribute('x'), 10),
+				y = parseInt(l.getAttribute('y'), 10);
+			if (isNaN(x)) x = 0;
+			if (isNaN(y)) y = 0;
+			layer.set('offset', ccp(x, y));
+
+
+			// Unpack the tilemap data
+			if (data.getAttribute('compression') == 'gzip') {
+				layer.set('tiles', gzip.unzipBase64AsArray(data.firstChild.nodeValue, 4));
+			} else {
+				layer.set('tiles', base64.decodeAsArray(data.firstChild.nodeValue, 4));
+			}
+
+			console.log('Number of tiles in map:', layer.tiles.length);
+
+			this.layers.push(layer);
+			delete layer;
+
+		}
+
+		// TODO PARSE <tile>
+
 	}
 });
 
@@ -85,17 +139,37 @@ var TMXLayerInfo = Obj.extend({
 	tiles: null,
 	visible: true,
 	opacity: 255,
-	ownTiles: true,
 	minGID: 100000,
 	maxGID: 0,
 	properties: null,
 	offset: null,
 
 	init: function() {
+		@super;
+
 		this.properties = {};
 		this.offset = ccp(0, 0);
 	}
 });
 
+var TMXTilesetInfo = Obj.extend({
+	name: '',
+	firstGID: 0,
+	tileSize: null,
+	spacing: 0,
+	margin: 0,
+	sourceImage: null,
+	imageSize: null,
+
+	init: function() {
+		@super;
+	},
+
+	rectForGID: function(gid) {
+		// TODO
+	}
+});
+
 exports.TMXMapInfo = TMXMapInfo;
 exports.TMXLayerInfo = TMXLayerInfo;
+exports.TMXTilesetInfo = TMXTilesetInfo;

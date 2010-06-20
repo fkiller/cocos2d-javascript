@@ -25,7 +25,7 @@ var TileMapTestDemo = cocos.Layer.extend({
 
         var tmx = cocos.TMXTiledMap.create(__dirname + "/resources/TileMaps/orthogonal-test2.tmx");
 
-        console.log(tmx);
+        console.log('Tilemap: ', tmx);
     },
 
 });

@@ -5,6 +5,7 @@ var sys = require('sys'),
     ccp = require('geometry').ccp;
 
 exports.Node = obj.Object.extend({
+    isCocosNode: true,
     visible: true,
     position: null,
     parent: null,
@@ -31,10 +32,17 @@ exports.Node = obj.Object.extend({
         this.anchorPointInPixels = ccp(this.contentSize.width * this.anchorPoint.x, this.contentSize.height * this.anchorPoint.y);
     }.observes('anchorPoint', 'contentSize'),
 
-    addChild: function(node) {
-        console.log('Adding child node:', node);
-        node.set('parent', this);
-        this._children.push(node);
+    addChild: function(opts) {
+        var child;
+        if (opts.isCocosNode) {
+            child = opts;
+        } else {
+            child = opts['child'];
+        }
+
+        console.log('Adding child node:', child);
+        child.set('parent', this);
+        this._children.push(child);
     },
 
     draw: function(context) {
