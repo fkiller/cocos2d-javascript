@@ -3,6 +3,7 @@ var sys    = require('sys'),
     path   = require('path'),
     ccp    = require('geometry').ccp;
 
+var r = 0;
 var TileMapTestDemo = cocos.Layer.extend({
     title: 'Tile Map Test',
     subtitle: '',
@@ -34,6 +35,10 @@ var TileMapTestDemo = cocos.Layer.extend({
 
         this.addChild(rt);
 
+
+        setInterval(function() {
+            rt.set('position', ccp(r--, r));
+        }, 1);
         console.log('Tilemap: ', tmx);
     },
 
