@@ -23,8 +23,11 @@ window.__source_files__["%s"] = (function() {
 });
 '''
 
+IMAGE_RESOURCE_TEMPLATE = '''
+window.__resources__["%s"] = __imageResource("data:%s;base64,%s");
+'''
 BINARY_RESOURCE_TEMPLATE = '''
-window.__resources__["%s"] = "data:%s;base64,%s";
+window.__resources__["%s"] = "%s";
 '''
 TEXT_RESOURCE_TEMPLATE = '''
 window.__resources__["%s"] = %s;
@@ -48,9 +51,13 @@ class Builder(object):
                     mimetype = mimetypes.guess_type(path)[0]
                     data = StringIO()
 
+                    is_image = (mimetype.split('/')[0] == 'image')
                     is_binary = (mimetype not in TEXT_MIMETYPES)
 
-                    if is_binary:
+                    if is_image:
+                        base64.encode(open(path), data)
+                        code += IMAGE_RESOURCE_TEMPLATE % (resources_name, mimetype, data.getvalue().replace('\n', ''))
+                    elif is_binary:
                         base64.encode(open(path), data)
                         code += BINARY_RESOURCE_TEMPLATE % (resources_name, mimetype, data.getvalue().replace('\n', ''))
                     else:

@@ -18,11 +18,7 @@ var Texture2D = Obj.extend({
 
 		this.size = {width: 0, height: 0};
 
-		this.imgElement = new Image;
-		this.imgElement.onload = sys.callback(this, function() {
-			this.set('size', {width:this.imgElement.width, height: this.imgElement.height});
-		});
-		this.imgElement.src = data;
+		this.imgElement = data;
 		this.set('size', {width:this.imgElement.width, height: this.imgElement.height});
 	},
 
