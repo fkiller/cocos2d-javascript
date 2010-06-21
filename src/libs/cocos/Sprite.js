@@ -55,7 +55,7 @@ exports.Sprite = Node.extend({
         if (texture) {
             texture.insertQuad({quad: this.get('quad')});
         }
-    }.observes('texture'),
+    }.observes('textureAtlas'),
 
     _updateQuad: function() {
         if (!this.quad) {
@@ -77,7 +77,8 @@ exports.Sprite = Node.extend({
         }
 
 
-        this.transform(ctx);
+        // TextureAtlas has hard reference to this quad so we can just update it directly
+        this.quad.drawRect.origin = this.position;
 
         this.set('dirty', false);
         this.set('recursiveDirty', false);

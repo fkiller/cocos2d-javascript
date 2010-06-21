@@ -43,6 +43,7 @@ var TextureAtlas = Obj.extend({
 	drawQuads: function(ctx) {
 		sys.each(this.quads, sys.callback(this, function(quad) {
 			if (!quad) return;
+
 			this.drawQuad(ctx, quad);
 		}));
 	},

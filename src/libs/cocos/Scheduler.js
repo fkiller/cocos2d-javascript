@@ -64,7 +64,7 @@ var Scheduler = Obj.extend({
         sys.each(this.methodsToRemove, sys.callback(this, function(timer) {
             var i = this.scheduledMethods.indexOf(timer);
             if (i == -1) {
-                continue;
+                return;
             }
 
             this.scheduledMethods.splice(i, 1);

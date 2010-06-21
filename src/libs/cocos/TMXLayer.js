@@ -31,6 +31,8 @@ var TMXLayer = SpriteSheet.extend({
 
         @super({file: tex});
 
+		this.set('anchorPoint', ccp(0,0));
+
         this.layerName = layerInfo.get('name');
         this.layerSize = layerInfo.get('layerSize');
         this.tiles = layerInfo.get('tiles');
@@ -87,6 +89,7 @@ var TMXLayer = SpriteSheet.extend({
             }
         }
         
+        console.log('tiles setup', this);
     },
     appendTile: function(opts) {
         var gid = opts['gid'],
@@ -100,10 +103,31 @@ var TMXLayer = SpriteSheet.extend({
         tile.set('position', this.positionAt(pos));
         tile.set('anchorPoint', ccp(0, 0));
         tile.set('opacity', this.get('opacity'));
+
         this.addChild(tile);
     },
     positionAt: function(pos) {
-        return ccp(1, 1);
+        var ret = ccp(0, 0);
+
+        switch (this.layerOrientation) {
+        case TMXOrientationOrtho:
+            ret = this.positionForOrthoAt(pos);
+            break;
+        case TMXOrientationIso:
+            // TODO
+            break;
+        case TMXOrientationHex:
+            // TODO
+            break;
+        }
+
+        return ret;
+    },
+    positionForOrthoAt: function(pos) {
+        var x = Math.floor(pos.x * this.mapTileSize.width + 0.49);
+        var y = Math.floor(pos.y * this.mapTileSize.height + 0.49);
+        return ccp(x,y);
+        
     }
 });
 

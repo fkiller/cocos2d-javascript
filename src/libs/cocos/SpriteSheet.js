@@ -147,6 +147,7 @@ var SpriteSheet = Node.extend({
 		sys.each(this.descendants, function(child, i) {
 			child.updateTransform(ctx);
 		});
+
 		this.textureAtlas.drawQuads(ctx);
 	},
 
