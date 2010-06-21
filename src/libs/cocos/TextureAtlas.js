@@ -18,11 +18,16 @@ var TextureAtlas = Obj.extend({
 	init: function(opts) {
 		var file = opts['file'],
 			data = opts['data'],
-			texture = opts['texture'];
+			texture = opts['texture'],
+			canvas = opts['canvas'];
 		
 		// Create texture with whatever we were given
-		var texture = this.set('texture', Texture2D.create({texture: texture, file: file, data: data}));
-		this.imgElement = texture.get('imgElement');
+		if (!canvas) {
+			var texture = this.set('texture', Texture2D.create({texture: texture, file: file, data: data}));
+			this.imgElement = texture.get('imgElement');
+		} else {
+			this.imgElement = canvas;
+		}
 
 		this.quads = [];
 	},

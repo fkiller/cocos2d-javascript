@@ -44,7 +44,7 @@ exports.Sprite = Node.extend({
             textureRect: rect
         };
 
-        this.set('texture', texture);
+        this.set('textureAtlas', texture);
     },
 
     _updateTextureQuad: function(obj, key, texture, oldTexture) {
@@ -85,6 +85,6 @@ exports.Sprite = Node.extend({
     },
 
     draw: function(ctx) {
-        this.get('texture').drawQuad(ctx, this.quad);
+        this.get('textureAtlas').drawQuad(ctx, this.quad);
     }
 });

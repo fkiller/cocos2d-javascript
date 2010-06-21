@@ -26,7 +26,13 @@ var TileMapTestDemo = cocos.Layer.extend({
 
         var tmx = cocos.TMXTiledMap.create({file: path.join(__dirname, "/resources/TileMaps/orthogonal-test2.tmx")});
         tmx.set('anchorPoint', ccp(0 ,0));
-        this.addChild(tmx);
+
+        var rt = cocos.RenderTexture.create({width: tmx.mapSize.width * tmx.tileSize.width, height: tmx.mapSize.height * tmx.tileSize.height});
+        rt.set('anchorPoint', ccp(0, 0));
+
+        tmx.visit(rt.context);
+
+        this.addChild(rt);
 
         console.log('Tilemap: ', tmx);
     },
