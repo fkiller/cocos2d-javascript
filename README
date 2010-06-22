@@ -3,5 +3,17 @@ Check the LICENSE file licensing details.
 This is in the very early stages of development and should be considered
 experimental.
 
+h1. Getting it running
+To get things up and running simply run the server.py Python script:
 
-Ryan Williams <cocos2d@ryanwilliams.org>
+$ ./server.py
+
+And visit http://localhost:4000/
+
+h1. Developing
+
+The entry point for the code is src/main.js
+
+More documentation is coming when the framework is in a more usable state.
+
+© 2010 Ryan Williams <cocos2d@ryanwilliams.org>
