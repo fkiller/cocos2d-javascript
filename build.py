@@ -23,15 +23,9 @@ window.__source_files__["%s"] = (function() {
 });
 '''
 
-IMAGE_RESOURCE_TEMPLATE = '''
-window.__resources__["%s"] = __imageResource("data:%s;base64,%s");
-'''
-BINARY_RESOURCE_TEMPLATE = '''
-window.__resources__["%s"] = "%s";
-'''
-TEXT_RESOURCE_TEMPLATE = '''
-window.__resources__["%s"] = %s;
-'''
+IMAGE_RESOURCE_TEMPLATE  = 'window.__resources__["%s"] = __imageResource("data:%s;base64,%s");'
+BINARY_RESOURCE_TEMPLATE = 'window.__resources__["%s"] = "%s";'
+TEXT_RESOURCE_TEMPLATE   = 'window.__resources__["%s"] = %s;'
 
 class Builder(object):
 
@@ -39,15 +33,24 @@ class Builder(object):
     loaded_files = []
 
 
-    def build(self, source, output=None):
-        code = open('system.js').read()
+    def build(self, source, output=None, system=True):
+        if system:
+            code = open('system.js').read()
+        else:
+            code = ''
+
         for root, dirs, files in os.walk(source):
             if re.match(r".*/resources($|/)", root):
                 for f in files:
                     if f[0] == '.':
                         continue
                     path = os.path.join(root, f)
-                    resources_name = './%s' % path[len(source) +1:] # Remove source path prefix
+
+                    if system:
+                        resources_name = './libs/%s' % path[len(source) +1:] # Remove source path prefix
+                    else:
+                        resources_name = './%s' % path
+
                     mimetype = mimetypes.guess_type(path)[0]
                     data = StringIO()
 
@@ -67,16 +70,16 @@ class Builder(object):
                     if f[-3:] != '.js':
                         continue
                     path = os.path.join(root, f)
-                    script_name = './%s' % path[len(source) +1:] # Remove source path prefix
+                    if system:
+                        script_name = './libs/%s' % path[len(source) +1:] # Remove source path prefix
+                    else:
+                        script_name = './%s' % path
 
                     file_code = open(path).read()
                     file_code = self.parse_supers(file_code)
                     file_code = self.parse_base64(file_code, root)
 
                     code += SOURCE_CODE_TEMPLATE % (script_name, file_code)
-
-
-        code += '\n' + open(source + '/main.js').read()
 
         if output:
             o = open(output, 'w')

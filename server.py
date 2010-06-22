@@ -19,6 +19,16 @@ class Cocos2D(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.send_header('Content-Type', 'text/javascript')
             self.end_headers()
             self.wfile.write(code)
+
+        elif self.path == '/apps.js':
+            b = build.Builder()
+            code = b.build('apps', system=False)
+
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/javascript')
+            self.end_headers()
+            self.wfile.write(code)
+
         else:
             self.path = '/public' + self.path
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
@@ -26,7 +36,7 @@ class Cocos2D(SimpleHTTPServer.SimpleHTTPRequestHandler):
 def main():
     parser = OptionParser()
     parser.add_option("-s", "--source", dest="input",
-                      help="build source code in SRC. Default is main.js", metavar="SRC")
+                      help="build source code in SRC. Default is src", metavar="SRC")
 
     (options, args) = parser.parse_args()
 
