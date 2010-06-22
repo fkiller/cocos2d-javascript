@@ -78,7 +78,10 @@ exports.Sprite = Node.extend({
 
 
         // TextureAtlas has hard reference to this quad so we can just update it directly
-        this.quad.drawRect.origin = this.position;
+        this.quad.drawRect.origin = {
+            x: this.position.x - this.anchorPointInPixels.x * this.scaleX,
+            y: this.position.y - this.anchorPointInPixels.y * this.scaleY
+        }
 
         this.set('dirty', false);
         this.set('recursiveDirty', false);
