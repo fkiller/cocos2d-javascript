@@ -22,7 +22,6 @@ exports.RenderTexture = Node.extend({
 
         var atlas = TextureAtlas.create({canvas: this.canvas});
         this.sprite = Sprite.create({texture: atlas, rect: {origin: ccp(0,0), size: {width: width, height: height}}});
-        this.sprite.set('anchorPoint', ccp(0,0));
 
         this.addChild(this.sprite);
     }

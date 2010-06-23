@@ -3,7 +3,7 @@ var sys    = require('sys'),
     path   = require('path'),
     ccp    = require('geometry').ccp;
 
-var r = 0;
+var r = 0.0;
 var TileMapTestDemo = cocos.Layer.extend({
     title: 'Tile Map Test',
     subtitle: '',
@@ -26,19 +26,23 @@ var TileMapTestDemo = cocos.Layer.extend({
 
 
         var tmx = cocos.TMXTiledMap.create({file: path.join(__dirname, "/resources/TileMaps/orthogonal-test2.tmx")});
-        tmx.set('anchorPoint', ccp(0 ,0));
+        tmx.set('anchorPoint', ccp(0, 0));
+        tmx.set('position', ccp(0, 0));
 
         var rt = cocos.RenderTexture.create({width: tmx.mapSize.width * tmx.tileSize.width, height: tmx.mapSize.height * tmx.tileSize.height});
-        rt.set('anchorPoint', ccp(0, 0));
+        rt.set('position', ccp(Math.round(s.width/2), Math.round(s.height/2)));
 
+        rt.set('scale', 0.25);
         tmx.visit(rt.context);
 
         this.addChild(rt);
 
+        var action, actionBack, seq;
+        action = cocos.ScaleBy.create({duration:3, scale:2});
+        actionBack = action.reverse();
+        seq = cocos.Sequence.create({actions:[action, actionBack]});
+        rt.runAction(cocos.RepeatForever.create(seq));
 
-        setInterval(function() {
-            rt.set('position', ccp(r--, r));
-        }, 1);
         console.log('Tilemap: ', tmx);
     },
 

@@ -62,7 +62,7 @@ exports.Sprite = Node.extend({
             return;
         }
 
-        this.quad.drawRect.size = {width: this.rect.size.width * this.scaleX, height: this.rect.size.height * this.scaleY};
+        this.quad.drawRect.size = {width: this.rect.size.width, height: this.rect.size.height};
     }.observes('scale', 'scaleX', 'scaleY', 'rect'),
 
     updateTransform: function(ctx) {
@@ -81,6 +81,10 @@ exports.Sprite = Node.extend({
         this.quad.drawRect.origin = {
             x: this.position.x - this.anchorPointInPixels.x * this.scaleX,
             y: this.position.y - this.anchorPointInPixels.y * this.scaleY
+        }
+        this.quad.drawRect.size = {
+            width: this.rect.size.width * this.scaleX,
+            height: this.rect.size.height * this.scaleY
         }
 
         this.set('dirty', false);

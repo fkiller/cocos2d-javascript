@@ -82,6 +82,7 @@ var ScaleTo = IntervalAction.extend({
         if (!this.target) {
             return;
         }
+        
         this.target.set('scaleX', this.startScaleX + this.deltaX * t);
         this.target.set('scaleY', this.startScaleY + this.deltaY * t);
     }

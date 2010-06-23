@@ -45,7 +45,6 @@ var SpriteSheetTestDemo = cocos.Layer.extend({
         sprite.set('position', ccp(point.x, point.y));
 
 
-
         var action, actionBack, seq;
 
         action = cocos.ScaleBy.create({duration:3, scale:2});

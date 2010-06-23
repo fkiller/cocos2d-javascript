@@ -49,6 +49,19 @@ exports.Node = Obj.Object.extend({
         // All draw code goes here
     },
 
+    scale: function(key, val) {
+        if (val != undefined) {
+            this.set('scaleX', val);
+            this.set('scaleY', val);
+        }
+
+        if (this.scaleX != this.scaleY) {
+            throw "scaleX and scaleY aren't identical"
+        }
+
+        return this.scaleX;
+    }.property(),
+
     onEnter: function() {
         this.resumeSchedulerAndActions();
         this.set('isRunning', true);
@@ -96,7 +109,8 @@ exports.Node = Obj.Object.extend({
     transform: function(context) {
         context.translate(this.position.x, this.position.y);
         context.rotate(this.get('rotation'));
-        context.translate(Math.round(-this.anchorPointInPixels.x * this.scaleX), Math.round(-this.anchorPointInPixels.y * this.scaleY));
+        context.scale(this.scaleX, this.scaleY);
+        context.translate(Math.round(-this.anchorPointInPixels.x), Math.round(-this.anchorPointInPixels.y));
         //context.translate(-this.anchorPointInPixels.x * this.scaleX, -this.anchorPointInPixels.y * this.scaleY);
  
     },
