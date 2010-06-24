@@ -17,6 +17,7 @@ exports.Node = Obj.Object.extend({
     scaleX: 1,
     scaleY: 1,
     isRunning: false,
+    isRelativeAnchorPoint: true,
 
     children: null,
 
@@ -107,12 +108,26 @@ exports.Node = Obj.Object.extend({
         context.restore();
     },
     transform: function(context) {
-        context.translate(this.position.x, this.position.y);
+        // Translate
+        if (this.isRelativeAnchorPoint && (this.anchorPointInPixels.x != 0 || this.anchorPointInPixels != 0)) {
+            context.translate(Math.round(-this.anchorPointInPixels.x), Math.round(-this.anchorPointInPixels.y));
+        }
+
+        if (this.anchorPointInPixels.x != 0 || this.anchorPointInPixels != 0) {
+            context.translate(this.position.x + this.anchorPointInPixels.x, this.position.y + this.anchorPointInPixels.y);
+        } else {
+            context.translate(this.position.x, this.position.y);
+        }
+
+        // Rotate
         context.rotate(this.get('rotation'));
+
+        // Scale
         context.scale(this.scaleX, this.scaleY);
-        context.translate(Math.round(-this.anchorPointInPixels.x), Math.round(-this.anchorPointInPixels.y));
-        //context.translate(-this.anchorPointInPixels.x * this.scaleX, -this.anchorPointInPixels.y * this.scaleY);
  
+        if (this.anchorPointInPixels.x != 0 || this.anchorPointInPixels != 0) {
+            context.translate(Math.round(-this.anchorPointInPixels.x), Math.round(-this.anchorPointInPixels.y));
+        }
     },
 
     runAction: function(action) {

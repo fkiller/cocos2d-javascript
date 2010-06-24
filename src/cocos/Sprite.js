@@ -34,6 +34,10 @@ exports.Sprite = Node.extend({
             //throw "Sprite has no texture or file";
         }
 
+        if (!rect && texture) {
+            rect = {origin: ccp(0,0), size:{width: texture.texture.size.width, height: texture.texture.size.height}};
+        }
+
         if (rect) {
             this.set('rect', rect);
             this.set('contentSize', rect.size);

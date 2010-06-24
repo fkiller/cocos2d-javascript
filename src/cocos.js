@@ -16,6 +16,8 @@ exports = sys.merge(
     require('cocos/TMXXMLParser'),
     require('cocos/SpriteSheet'),
     require('cocos/RenderTexture'),
+    require('cocos/Menu'),
+    require('cocos/MenuItem'),
 
     require('cocos/AppDelegate')
 );

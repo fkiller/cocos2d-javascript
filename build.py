@@ -23,9 +23,9 @@ window.__source_files__["%s"] = (function() {
 });
 '''
 
-IMAGE_RESOURCE_TEMPLATE  = 'window.__resources__["%s"] = __imageResource("data:%s;base64,%s");'
-BINARY_RESOURCE_TEMPLATE = 'window.__resources__["%s"] = "%s";'
-TEXT_RESOURCE_TEMPLATE   = 'window.__resources__["%s"] = %s;'
+IMAGE_RESOURCE_TEMPLATE  = '\nwindow.__resources__["%s"] = __imageResource("data:%s;base64,%s");\n'
+BINARY_RESOURCE_TEMPLATE = '\nwindow.__resources__["%s"] = "%s";\n'
+TEXT_RESOURCE_TEMPLATE   = '\nwindow.__resources__["%s"] = %s;\n'
 
 class Builder(object):
 
