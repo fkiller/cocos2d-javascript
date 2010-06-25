@@ -1,6 +1,8 @@
 var sys = require('sys'),
     Obj = require('object').Object,
+    ccp = require('geometry').ccp,
     Scheduler = require('./Scheduler').Scheduler,
+    TouchDispatcher = require('./TouchDispatcher.js').TouchDispatcher,
     Scene = require('./Scene').Scene;
 
 var Director = Obj.extend({
@@ -40,8 +42,32 @@ var Director = Obj.extend({
 
         this.set('winSize', {width: view.clientWidth, height: view.clientHeight});
 
-        // Move origin to bottom left
-        //context.translate(0, view.clientHeight);
+
+        // Setup event handling
+        var touchDispatcher = TouchDispatcher.get('sharedDispatcher');
+        var mouseMove = function(evt) {
+            var touches = [{location: ccp(evt.offsetX, evt.offsetY)}];
+
+            touchDispatcher.touchesMoved({touches: touches, event:evt});
+        };
+        var mouseUp   = function(evt) {
+            document.body.removeEventListener('mousemove', mouseMove, false);
+            document.body.removeEventListener('mouseup',   mouseUp,   false);
+
+            var touches = [{location: ccp(evt.offsetX, evt.offsetY)}];
+
+            touchDispatcher.touchesEnded({touches: touches, event:evt});
+        };
+        var mouseDown = function(evt) {
+            document.body.addEventListener('mousemove', mouseMove, false);
+            document.body.addEventListener('mouseup',   mouseUp,   false);
+
+            var touches = [{location: ccp(evt.offsetX, evt.offsetY)}];
+
+            touchDispatcher.touchesBegan({touches: touches, event:evt});
+        };
+
+        canvas.addEventListener('mousedown', mouseDown, false);
     },
     runWithScene: function(scene) {
         if (!(scene instanceof Scene)) {
@@ -107,6 +133,8 @@ var Director = Obj.extend({
         this._runningScene = this._nextScene;
 
         this._nextScene = null;
+
+        this._runningScene.onEnter();
     },
 
     displayFPS: function() {

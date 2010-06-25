@@ -79,7 +79,11 @@ var Scheduler = Obj.extend({
         sys.each(this.scheduledMethods, function(obj) {
             obj.fire(dt);
         });
-    }
+	},
+
+	resumeTarget: function(target) {
+		// TODO
+	}
 });
 
 sys.extend(Scheduler, {

@@ -1,10 +1,10 @@
 var sys = require('sys'),
-    Obj = require('object'),
+    Obj = require('object').Object,
     Scheduler = require('./Scheduler').Scheduler,
     ActionManager = require('./ActionManager').ActionManager,
     ccp = require('geometry').ccp;
 
-exports.Node = Obj.Object.extend({
+exports.Node = Obj.extend({
     isCocosNode: true,
     visible: true,
     position: null,
@@ -64,12 +64,16 @@ exports.Node = Obj.Object.extend({
     }.property(),
 
     onEnter: function() {
+        sys.each(this.children, function(child) { child.onEnter(); });
+
         this.resumeSchedulerAndActions();
         this.set('isRunning', true);
     },
     onExit: function() {
         this.pauseSchedulerAndActions();
         this.set('isRunning', false);
+
+        sys.each(this.children, function(child) { child.onExit(); });
     },
     resumeSchedulerAndActions: function() {
         Scheduler.get('sharedScheduler').resumeTarget(this);

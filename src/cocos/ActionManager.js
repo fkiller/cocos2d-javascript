@@ -91,7 +91,11 @@ var ActionManager = Obj.extend({
         });
 
         delete self;
-    }
+    },
+
+	resumeTarget: function(target) {
+		// TODO
+	}
 });
 
 sys.extend(ActionManager, {

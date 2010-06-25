@@ -9,7 +9,7 @@ var kMenuStateWaiting		= 0,
 	
 
 var Menu = Layer.extend({
-	menuState: null,
+	state: null,
 	selectedItem: null,
 	opacuty: 255,
 	color: null,
@@ -44,7 +44,26 @@ var Menu = Layer.extend({
 		}
 
 		return @super;
-	}
+    },
+
+    touchBegan: function(opts) {
+        var touch = opts['touch'],
+            event = opts['event'];
+
+        if (this.state != kMenuStateWaiting || !this.visible) {
+            return false;
+        }
+
+        var selectedItem = this.itemForTouch(touch);
+        if (selectedItem) {
+            this.set('state', kMenuStateTrackingTouch);
+
+            return true;
+        }
+
+        return false;
+    }
+
 });
 
 exports.Menu = Menu;
