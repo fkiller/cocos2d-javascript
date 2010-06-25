@@ -2,7 +2,7 @@ exports.ccp = function(x, y) {
     return exports.pointMake(x, y);
 };
 
-PointZero = function() {
+exports.PointZero = function() {
     return ccp(0,0);
 };
 
