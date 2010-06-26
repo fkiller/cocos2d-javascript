@@ -18,7 +18,7 @@ var MenuItem = Node.extend({
 	},
 
 	activate: function() {
-		if (this.isEnabled) {
+		if (this.isEnabled && this.callback) {
 			this.callback(this);
 		}
 	},

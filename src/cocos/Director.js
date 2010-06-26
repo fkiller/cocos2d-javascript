@@ -45,26 +45,28 @@ var Director = Obj.extend({
 
         // Setup event handling
         var touchDispatcher = TouchDispatcher.get('sharedDispatcher');
-        var mouseMove = function(evt) {
-            var touches = [{location: ccp(evt.offsetX, evt.offsetY)}];
+        function mouseDown(evt) {
+            var touch = {location: ccp(evt.offsetX, evt.offsetY)};
 
-            touchDispatcher.touchesMoved({touches: touches, event:evt});
-        };
-        var mouseUp   = function(evt) {
-            document.body.removeEventListener('mousemove', mouseMove, false);
-            document.body.removeEventListener('mouseup',   mouseUp,   false);
+            function mouseMove(evt) {
+                touch.location = ccp(evt.offsetX, evt.offsetY);
 
-            var touches = [{location: ccp(evt.offsetX, evt.offsetY)}];
+                touchDispatcher.touchesMoved({touches: [touch], event:evt});
+            };
+            function mouseUp(evt) {
+                touch.location = ccp(evt.offsetX, evt.offsetY);
 
-            touchDispatcher.touchesEnded({touches: touches, event:evt});
-        };
-        var mouseDown = function(evt) {
+                document.body.removeEventListener('mousemove', mouseMove, false);
+                document.body.removeEventListener('mouseup',   mouseUp,   false);
+
+
+                touchDispatcher.touchesEnded({touches: [touch], event:evt});
+            };
+
             document.body.addEventListener('mousemove', mouseMove, false);
             document.body.addEventListener('mouseup',   mouseUp,   false);
 
-            var touches = [{location: ccp(evt.offsetX, evt.offsetY)}];
-
-            touchDispatcher.touchesBegan({touches: touches, event:evt});
+            touchDispatcher.touchesBegan({touches: [touch], event:evt});
         };
 
         canvas.addEventListener('mousedown', mouseDown, false);

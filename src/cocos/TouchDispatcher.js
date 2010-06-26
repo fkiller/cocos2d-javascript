@@ -1,6 +1,7 @@
 var sys = require('sys'),
     Obj = require('object').Object,
-    StandardTouchHandler = require('./TouchHandler').StandardTouchHandler;
+    StandardTouchHandler = require('./TouchHandler').StandardTouchHandler,
+    TargetedTouchHandler = require('./TouchHandler').TargetedTouchHandler;
     
 var kTouchBegan = 0,
 	kTouchMoved = 1,
@@ -8,11 +9,11 @@ var kTouchBegan = 0,
 	kTouchCancelled = 3,
 	kTouchMax = 4;
 
-var kTouchSelectorBeganBit     = 1 << 0,
-    kTouchSelectorMovedBit     = 1 << 1,
-    kTouchSelectorEndedBit     = 1 << 2,
-    kTouchSelectorCancelledBit = 1 << 3,
-    kTouchSelectorAllBits      = ( kTouchSelectorBeganBit | kTouchSelectorMovedBit | kTouchSelectorEndedBit | kTouchSelectorCancelledBit);
+var kTouchMethodBeganBit     = 1 << 0,
+    kTouchMethodMovedBit     = 1 << 1,
+    kTouchMethodEndedBit     = 1 << 2,
+    kTouchMethodCancelledBit = 1 << 3,
+    kTouchMethodAllBits      = ( kTouchMethodBeganBit | kTouchMethodMovedBit | kTouchMethodEndedBit | kTouchMethodCancelledBit);
 
     
 var TouchDispatcher = Obj.extend({
@@ -50,6 +51,21 @@ var TouchDispatcher = Obj.extend({
         }
             
     },
+
+    addTargetedDelegate: function(opts) {
+        var delegate = opts['delegate'],
+            priority = opts['priority'],
+            swallowsTouches = opts['swallowsTouches'];
+
+        var handler = TargetedTouchHandler.create({delegate:delegate, priority:priority, swallowsTouches:swallowsTouches});
+        if(!this.locked) {
+            this.forceAddHandler({handler:handler, array:this.targetedHandlers});
+        } else {
+            this.handlersToAdd.push(handler);
+            this.toAdd = true;
+        }
+    },
+
     forceAddHandler: function(opts) {
         var handler = opts['handler'],
             array = opts['array'];
@@ -73,23 +89,82 @@ var TouchDispatcher = Obj.extend({
             event   = opts['event'],
             touchType = opts['touchType'];
 
+        // Targeted touch handlers
+        if (this.targetedHandlers.length > 0 && touches.length > 0) {
+            sys.each(touches, sys.callback(this, function(touch) {
+                sys.each(this.targetedHandlers, function(handler) {
+                    var claimed = false,
+                        args = {touch: touch, event:event},
+                        claimedTouches = handler.get('claimedTouches'),
+                        delegate = handler.get('delegate');
+                        
+
+                    if (touchType == kTouchMethodBeganBit) {
+                        claimed = delegate.touchBegan(args);
+                        if (claimed) {
+                            claimedTouches.push(touch);
+                        }
+                    }
+
+                    // else (moved, ended, cancelled)
+                    else if (claimedTouches.indexOf(touch) > -1) {
+                        claimed = true;
+
+                        if (handler.get('enabledMethods') & touchType) {
+                            switch(touchType) {
+                            case kTouchMethodBeganBit:
+                                delegate.touchBegan(args);
+                                break;
+                            case kTouchMethodMovedBit:
+                                delegate.touchMoved(args);
+                                break;
+                            case kTouchMethodEndedBit:
+                                delegate.touchEnded(args);
+                                break;
+                            case kTouchMethodCancelledBit:
+                                delegate.touchCancelled(args);
+                                break;
+                            }
+                        }
+
+                        if (touchType & (kTouchMethodCancelledBit | kTouchMethodEndedBit)) {
+                            var idx = claimedTouches.indexOf(touch);
+                            if (idx > -1) {
+                                claimedTouches.splice(idx, 1);
+                            }
+                        }
+                    }
+
+                    if (claimed && handler.get('swallowsTouches')) {
+                        var idx = touches.indexOf(touch);
+                        if (idx > -1) {
+                            delete touches[idx];
+                        }
+                    }
+                });
+            }));
+        }
+
+
+
+        // Standard touch handlers
         if (this.standardHandlers.length > 0 && touches.length > 0) {
             sys.each(this.standardHandlers, function(handler) {
 
-                if (handler.get('enabledSelectors') & touchType) {
+                if (handler.get('enabledMethods') & touchType) {
                     var delegate = handler.get('delegate');
                     var args = {touches: touches, event:event};
                     switch(touchType) {
-                    case kTouchSelectorBeganBit:
+                    case kTouchMethodBeganBit:
                         delegate.touchesBegan(args);
                         break;
-                    case kTouchSelectorMovedBit:
+                    case kTouchMethodMovedBit:
                         delegate.touchesMoved(args);
                         break;
-                    case kTouchSelectorEndedBit:
+                    case kTouchMethodEndedBit:
                         delegate.touchesEnded(args);
                         break;
-                    case kTouchSelectorCancelledBit:
+                    case kTouchMethodCancelledBit:
                         delegate.touchesCancelled(args);
                         break;
                     }
@@ -126,7 +201,7 @@ var TouchDispatcher = Obj.extend({
             event = opts['event'];
 
         if (this.dispatchEvents) {
-            this.touches({touches: touches, event: event, touchType: kTouchSelectorBeganBit});
+            this.touches({touches: touches, event: event, touchType: kTouchMethodBeganBit});
         }
     },
 
@@ -135,7 +210,7 @@ var TouchDispatcher = Obj.extend({
             event = opts['event'];
 
         if (this.dispatchEvents) {
-            this.touches({touches: touches, event: event, touchType: kTouchSelectorMovedBit});
+            this.touches({touches: touches, event: event, touchType: kTouchMethodMovedBit});
         }
     },
 
@@ -144,7 +219,7 @@ var TouchDispatcher = Obj.extend({
             event = opts['event'];
 
         if (this.dispatchEvents) {
-            this.touches({touches: touches, event: event, touchType: kTouchSelectorEndedBit});
+            this.touches({touches: touches, event: event, touchType: kTouchMethodEndedBit});
         }
     },
 
@@ -153,7 +228,7 @@ var TouchDispatcher = Obj.extend({
             event = opts['event'];
 
         if (this.dispatchEvents) {
-            this.touches({touches: touches, event: event, touchType: kTouchSelectorCancelledBit});
+            this.touches({touches: touches, event: event, touchType: kTouchMethodCancelledBit});
         }
     }
 

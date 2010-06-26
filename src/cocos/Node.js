@@ -2,7 +2,7 @@ var sys = require('sys'),
     Obj = require('object').Object,
     Scheduler = require('./Scheduler').Scheduler,
     ActionManager = require('./ActionManager').ActionManager,
-    ccp = require('geometry').ccp;
+    geom = require('geometry'), ccp = geom.ccp;
 
 exports.Node = Obj.extend({
     isCocosNode: true,
@@ -18,6 +18,11 @@ exports.Node = Obj.extend({
     scaleY: 1,
     isRunning: false,
     isRelativeAnchorPoint: true,
+
+    isTransformDirty: true,
+    isInverseDirty: true,
+    inverse: null,
+    transformMatrix: null,
 
     children: null,
 
@@ -136,6 +141,59 @@ exports.Node = Obj.extend({
 
     runAction: function(action) {
         ActionManager.get('sharedManager').addAction({action: action, target: this, paused: this.get('isRunning')});
+    },
+
+    nodeToParentTransform: function() {
+        if (this.isTransformDirty) {
+            this.transformMatrix = geom.affineTransformIdentity();
+
+            if (!this.isRelativeAnchorPoint && !geom.pointEqualToPoint(this.anchorPointInPixels, ccp(0,0))) {
+                this.transformMatrix = geom.affineTransformTranslate(this.transformMatrix, this.anchorPointInPixels.x, this.anchorPointInPixels.y);
+            }
+            
+            if(!geom.pointEqualToPoint(this.position, ccp(0,0))) {
+                this.transformMatrix = geom.affineTransformTranslate(this.transformMatrix, this.position.x, this.position.y);
+            }
+
+            if(this.rotation != 0) {
+                this.transformMatrix = geom.affineTransformRotate(this.transformMatrix, -geom.degressToRadians(this.rotation));
+            }
+            if(!(this.scaleX == 1 && this.scaleY == 1)) {
+                this.transformMatrix = geom.affineTransformScale(this.transformMatrix, this.scaleX, this.scaleY);
+            }
+            
+            if(!geom.pointEqualToPoint(this.anchorPointInPixels, ccp(0,0))) {
+                this.transformMatrix = geom.affineTransformTranslate(this.transformMatrix, -this.anchorPointInPixels.x, -this.anchorPointInPixels.y);
+            }
+            
+            this.isTransformDirty = false;
+                
+        }
+
+        return this.transformMatrix;
+    },
+
+    parentToNodeTransform: function() {
+        // TODO
+    },
+
+    nodeToWorldTransform: function() {
+        var t = this.nodeToParentTransform();
+
+        var p;
+        for (p = this.get('parent'); p; p = p.get('parent')) {
+            t = geom.affineTransformConcat(t, p.nodeToParentTransform());
+        }
+
+        return t;
+    },
+
+    worldToNodeTransform: function() {
+        return geom.affineTransformInvert(this.nodeToWorldTransform());
+    },
+
+    convertToNodeSpace: function(worldPoint) {
+        return geom.pointApplyAffineTransform(worldPoint, this.worldToNodeTransform());
     }
 });
 
