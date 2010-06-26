@@ -73,7 +73,8 @@ var MenuItemImage = MenuItemSprite.extend({
 	init: function(opts) {
 		var normalI   = opts['normalImage'],
 			selectedI = opts['selectedImage'],
-			disabledI = opts['disabledImage'];
+			disabledI = opts['disabledImage'],
+			callback  = opts['callback'];
 
 		var normalImage = Sprite.create({file: normalI}),
 			selectedImage = Sprite.create({file: selectedI}),
@@ -83,7 +84,7 @@ var MenuItemImage = MenuItemSprite.extend({
 			disabledImage = Sprite.create({file: disabledI})
 		}
 
-		return @super({normalImage: normalImage, selectedImage: selectedImage, disabledImage: disabledImage});
+		return @super({normalImage: normalImage, selectedImage: selectedImage, disabledImage: disabledImage, callback: callback});
 	}
 });
 
