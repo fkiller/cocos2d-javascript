@@ -3,6 +3,8 @@ window.__dirname        = './';
 window.__source_files__ = {};
 window.__resources__    = {};
 
+INT_MIN = 1 << 31;
+
 function __normalisePath(path) {
     path = path.replace(/\/.\//, '/');
     while (path.indexOf('/../') != -1) {
