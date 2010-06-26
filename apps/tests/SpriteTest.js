@@ -82,25 +82,12 @@ var Sprite1 = SpriteDemo.extend({
         seq = cocos.Sequence.create({actions:[action, actionBack]});
         sprite.runAction(cocos.RepeatForever.create(seq));
         
-        /*
-        id action;
-        float rand = CCRANDOM_0_1();
-        
-        if( rand < 0.20 )
-            action = [CCScaleBy actionWithDuration:3 scale:2];
-        else if(rand < 0.40)
-            action = [CCRotateBy actionWithDuration:3 angle:360];
-        else if( rand < 0.60)
-            action = [CCBlink actionWithDuration:1 blinks:3];
-        else if( rand < 0.8 )
-            action = [CCTintBy actionWithDuration:2 red:0 green:-255 blue:-255];
-        else 
-            action = [CCFadeOut actionWithDuration:2];
-        id action_back = [action reverse];
-        id seq = [CCSequence actions:action, action_back, nil];
-        
-        [sprite runAction: [CCRepeatForever actionWithAction:seq]];
-        */
+	},
+	touchesEnded: function(opts) {
+		var touches = opts['touches'],
+			event = opts['event'];
+
+		this.addNewSprite(touches[0].location);
 	}
 });
 
