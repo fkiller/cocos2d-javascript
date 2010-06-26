@@ -11,14 +11,14 @@ var SpriteDemo = cocos.Layer.extend({
 
         var s = cocos.Director.get('sharedDirector.winSize');
         var label = cocos.Label.create({string: this.get('title'), fontName: 'Arial', fontSize: 32});
-        this.addChild(label);
+        this.addChild({child: label, z:1});
         label.set('position', ccp(s.width / 2, 50));
 
 
 		var subtitle = this.get('subtitle');
 		if (subtitle) {
 			var l = cocos.Label.create({string:subtitle, fontName: "Thonburi", fontSize: 16});
-            this.addChild(l);
+            this.addChild({child: l, z:1});
 			l.set('position', ccp(s.width/2, 80));
 		}
 
@@ -72,7 +72,7 @@ var Sprite1 = SpriteDemo.extend({
 
         //CCSprite *sprite = [CCSprite spriteWithFile:@"grossini_dance_atlas.png" rect:CGRectMake(x,y,85,121)];
         var sprite = cocos.Sprite.create({file: __dirname + "/resources/grossini_dance_atlas.png", rect:{origin:ccp(x, y), size:{width: 85, height: 121}}})
-        this.addChild(sprite);
+        this.addChild({child:sprite, z:0});
         sprite.set('position', ccp(point.x, point.y));
 
         var action, actionBack, seq;

@@ -42,13 +42,41 @@ exports.Node = Obj.extend({
         if (opts.isCocosNode) {
             return arguments.callee.call(this, {child:opts, z:0});
         }
-        var child = opts['child'];
 
-        //console.log('Adding child node:', child);
+        var child = opts['child'],
+            z = opts['z'],
+            tag = opts['tag'];
+
+        this.insertChild({child: child, z:z});
+
         child.set('parent', this);
-        this.children.push(child);
 
-        return child;
+        if (this.isRunning) {
+            child.onEnter();
+        }
+
+        return this;
+    },
+
+    insertChild: function(opts) {
+        var child = opts['child'],
+            z = opts['z'];
+
+        var added = false;
+
+        sys.each(this.children, sys.callback(this, function(a, i) {
+            if (a.zOrder > z) {
+                added = true;
+                this.children.splice(i, 0, child);
+                return;
+            }
+        }));
+
+        if (!added) {
+            this.children.push(child);
+        }
+
+        child.set('zOrder', z);
     },
 
     draw: function(context) {
