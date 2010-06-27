@@ -76,8 +76,26 @@ var Sprite1 = SpriteDemo.extend({
         sprite.set('position', ccp(point.x, point.y));
 
         var action, actionBack, seq;
+        var rand = Math.random();
 
-        action = cocos.ScaleBy.create({duration:3, scale:2});
+        if (rand < 0.2) {
+            action = cocos.ScaleBy.create({duration:3, scale:2});
+        } else if (rand < 0.4) {
+            action = cocos.RotateBy.create({duration:3, angle:360});
+        } else if (rand < 0.6) {
+            action = cocos.ScaleBy.create({duration:3, scale:2});
+            //action = cocos.Blink.create({duration:3, scale:2});
+        } else if (rand < 0.8) {
+            action = cocos.RotateBy.create({duration:3, angle:360});
+            //action = cocos.TintBy.create({duration:3, scale:2});
+        } else {
+            action = cocos.ScaleBy.create({duration:3, scale:2});
+            //action = cocos.FadeOut.create({duration:3, scale:2});
+        }
+
+
+
+
         actionBack = action.reverse();
         seq = cocos.Sequence.create({actions:[action, actionBack]});
         sprite.runAction(cocos.RepeatForever.create(seq));

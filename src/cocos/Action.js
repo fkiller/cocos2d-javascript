@@ -15,7 +15,6 @@ var Action = Obj.extend({
         this.target = this.originalTarget = target;
     },
     stop: function() {
-        console.log('Stopping action:', this);
         this.target = null;
     },
 

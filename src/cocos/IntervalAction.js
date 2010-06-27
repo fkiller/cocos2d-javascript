@@ -100,6 +100,61 @@ var ScaleBy = ScaleTo.extend({
     }
 });
 
+
+var RotateTo = IntervalAction.extend({
+    dstAngle: 0,
+    startAngle: 0,
+    diffAngle: 0,
+
+    init: function(opts) {
+        @super;
+
+        this.dstAngle = opts['angle'];
+    },
+    startWithTarget: function(target) {
+        @super;
+
+        this.startAngle = target.get('rotation');
+
+        if (this.startAngle > 0) {
+            this.startAngle = (this.startAngle % 360);
+        } else {
+            this.startAngle = (this.startAngle % -360);
+        }
+
+        this.diffAngle = this.dstAngle - this.startAngle;
+        if (this.diffAngle > 180) {
+            this.diffAngle -= 360;
+        } else if (this.diffAngle < -180) {
+            this.diffAngle += 360;
+        }
+    },
+    update: function(t) {
+        this.target.set('rotation', this.startAngle + this.diffAngle * t);
+    }
+});
+
+var RotateBy = RotateTo.extend({
+    angle: 0,
+
+    init: function(opts) {
+        this.angle = opts['angle'];
+    },
+    startWithTarget: function(target) {
+        @super;
+
+        this.startAngle = this.target.get('rotation');
+    },
+    update: function(t) {
+        this.target.set('rotation', this.startAngle + this.angle *t);
+    },
+    reverse: function() {
+        return RotateBy.create({duration: this.duration, angle: -this.angle});
+    }
+});
+
+
+
 var Sequence = IntervalAction.extend({
     actions: null,
     currentActionIndex: 0,
@@ -163,4 +218,6 @@ var Sequence = IntervalAction.extend({
 exports.IntervalAction = IntervalAction;
 exports.ScaleTo = ScaleTo;
 exports.ScaleBy = ScaleBy;
+exports.RotateTo = RotateTo;
+exports.RotateBy = RotateBy;
 exports.Sequence = Sequence;

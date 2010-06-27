@@ -157,7 +157,7 @@ exports.Node = Obj.extend({
         }
 
         // Rotate
-        context.rotate(this.get('rotation'));
+        context.rotate(geom.degressToRadians(this.get('rotation')));
 
         // Scale
         context.scale(this.scaleX, this.scaleY);
