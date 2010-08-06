@@ -12,7 +12,8 @@ And visit http://localhost:4000/
 
 h1. Developing
 
-The entry point for the code is src/main.js
+The entry point for the code is in public/index.html where it calls require()
+on the app you want. This is likely to change in future.
 
 More documentation is coming when the framework is in a more usable state.
 
