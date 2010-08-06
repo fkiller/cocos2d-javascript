@@ -47,21 +47,7 @@ exports.Node = Obj.extend({
             z = opts['z'],
             tag = opts['tag'];
 
-        this.insertChild({child: child, z:z});
-
-        child.set('parent', this);
-
-        if (this.isRunning) {
-            child.onEnter();
-        }
-
-        return this;
-    },
-
-    insertChild: function(opts) {
-        var child = opts['child'],
-            z = opts['z'];
-
+        //this.insertChild({child: child, z:z});
         var added = false;
 
         sys.each(this.children, sys.callback(this, function(a, i) {
@@ -77,6 +63,14 @@ exports.Node = Obj.extend({
         }
 
         child.set('zOrder', z);
+
+        child.set('parent', this);
+
+        if (this.isRunning) {
+            child.onEnter();
+        }
+
+        return this;
     },
 
     draw: function(context) {
