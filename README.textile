@@ -4,6 +4,7 @@ This is in the very early stages of development and should be considered
 experimental.
 
 h1. Getting it running
+
 To get things up and running simply run the server.py Python script:
 
 $ ./server.py
