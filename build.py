@@ -31,14 +31,18 @@ class Builder(object):
 
     required_files = []
     loaded_files = []
+    root_path = None
 
+    def __init__(self, root_path='./'):
+        self.root_path = root_path
 
     def build(self, source, output=None, system=True):
         if system:
-            code = open('system.js').read()
+            code = open(os.path.join(self.root_path, 'system.js')).read()
         else:
             code = ''
 
+        source = os.path.join(self.root_path, source)
         for root, dirs, files in os.walk(source):
             if re.match(r".*/resources($|/)", root):
                 for f in files:
@@ -49,7 +53,7 @@ class Builder(object):
                     if system:
                         resources_name = './libs/%s' % path[len(source) +1:] # Remove source path prefix
                     else:
-                        resources_name = './%s' % path
+                        resources_name = '%s' % path
 
                     mimetype = mimetypes.guess_type(path)[0]
                     data = StringIO()
@@ -73,7 +77,7 @@ class Builder(object):
                     if system:
                         script_name = './libs/%s' % path[len(source) +1:] # Remove source path prefix
                     else:
-                        script_name = './%s' % path
+                        script_name = '%s' % path
 
                     file_code = open(path).read()
                     file_code = self.parse_supers(file_code)
