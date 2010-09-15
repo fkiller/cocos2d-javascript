@@ -1,6 +1,6 @@
 var sys = require('sys'),
     Obj = require('object').Object,
-    Timer = require('./Scheduler').Timer;
+    Timer = require('./Scheduler').Timer,
     Scheduler = require('./Scheduler').Scheduler;
 
 var ActionManager = Obj.extend({
