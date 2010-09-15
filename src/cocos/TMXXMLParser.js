@@ -65,8 +65,12 @@ var TMXMapInfo = Obj.extend({
             var tileset = TMXTilesetInfo.create();
             tileset.set('name', t.getAttribute('name'));
             tileset.set('firstGID', parseInt(t.getAttribute('firstgid'), 10));
-            tileset.set('spacing', parseInt(t.getAttribute('spacing'), 10));
-            tileset.set('margin', parseInt(t.getAttribute('margin'), 10));
+            if (t.getAttribute('spacing')) {
+                tileset.set('spacing', parseInt(t.getAttribute('spacing'), 10));
+            }
+            if (t.getAttribute('margin')) {
+                tileset.set('margin', parseInt(t.getAttribute('margin'), 10));
+            }
 
             var s = {};
             s.width = parseInt(t.getAttribute('tilewidth'), 10)
