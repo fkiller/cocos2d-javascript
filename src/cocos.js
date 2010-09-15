@@ -18,6 +18,9 @@ exports = sys.merge(
     require('cocos/RenderTexture'),
     require('cocos/Menu'),
     require('cocos/MenuItem'),
+    require('cocos/KeyboardDispatcher'),
+    require('cocos/TouchDispatcher'),
+    require('cocos/TouchHandler'),
 
     require('cocos/AppDelegate')
 );

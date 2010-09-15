@@ -216,6 +216,18 @@ exports.Node = Obj.extend({
 
     convertToNodeSpace: function(worldPoint) {
         return geom.pointApplyAffineTransform(worldPoint, this.worldToNodeTransform());
+    },
+
+    acceptsFirstResponder: function() {
+        return false;
+    }.property(),
+
+    becomeFirstResponder: function() {
+        return true;
+    },
+
+    resignFirstResponder: function() {
+        return true;
     }
 });
 

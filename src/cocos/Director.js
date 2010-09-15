@@ -3,6 +3,7 @@ var sys = require('sys'),
     ccp = require('geometry').ccp,
     Scheduler = require('./Scheduler').Scheduler,
     TouchDispatcher = require('./TouchDispatcher.js').TouchDispatcher,
+    KeyboardDispatcher = require('./KeyboardDispatcher.js').KeyboardDispatcher,
     Scene = require('./Scene').Scene;
 
 var Director = Obj.extend({
@@ -44,6 +45,8 @@ var Director = Obj.extend({
 
 
         // Setup event handling
+
+        // Mouse events
         var touchDispatcher = TouchDispatcher.get('sharedDispatcher');
         function mouseDown(evt) {
             var touch = {location: ccp(evt.offsetX, evt.offsetY)};
@@ -68,8 +71,22 @@ var Director = Obj.extend({
 
             touchDispatcher.touchesBegan({touches: [touch], event:evt});
         };
-
         canvas.addEventListener('mousedown', mouseDown, false);
+
+        // Keyboard events
+        var keyboardDispatcher = KeyboardDispatcher.get('sharedDispatcher');
+        function keyDown(evt) {
+            keyboardDispatcher.keyDown({event: evt})
+        }
+        function keyUp(evt) {
+            keyboardDispatcher.keyUp({event: evt})
+        }
+        function keyPress(evt) {
+            keyboardDispatcher.keyPress({event: evt})
+        }
+        document.body.addEventListener('keydown', keyDown, false);
+        document.body.addEventListener('keyup', keyUp, false);
+        document.body.addEventListener('keypress', keyPress, false);
     },
     runWithScene: function(scene) {
         if (!(scene instanceof Scene)) {
