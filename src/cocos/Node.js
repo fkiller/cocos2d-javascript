@@ -145,9 +145,9 @@ exports.Node = Obj.extend({
         }
 
         if (this.anchorPointInPixels.x != 0 || this.anchorPointInPixels != 0) {
-            context.translate(this.position.x + this.anchorPointInPixels.x, this.position.y + this.anchorPointInPixels.y);
+            context.translate(Math.round(this.position.x + this.anchorPointInPixels.x), Math.round(this.position.y + this.anchorPointInPixels.y));
         } else {
-            context.translate(this.position.x, this.position.y);
+            context.translate(Math.round(this.position.x), Math.round(this.position.y));
         }
 
         // Rotate
