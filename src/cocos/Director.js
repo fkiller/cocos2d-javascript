@@ -84,9 +84,9 @@ var Director = Obj.extend({
         function keyPress(evt) {
             keyboardDispatcher.keyPress({event: evt})
         }
-        document.body.addEventListener('keydown', keyDown, false);
-        document.body.addEventListener('keyup', keyUp, false);
-        document.body.addEventListener('keypress', keyPress, false);
+        document.documentElement.addEventListener('keydown', keyDown, false);
+        document.documentElement.addEventListener('keyup', keyUp, false);
+        document.documentElement.addEventListener('keypress', keyPress, false);
     },
     runWithScene: function(scene) {
         if (!(scene instanceof Scene)) {
