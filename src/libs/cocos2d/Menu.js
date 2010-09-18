@@ -2,7 +2,7 @@ var sys = require('sys'),
     Layer = require('./Layer').Layer,
     Director = require('./Director').Director,
     MenuItem = require('./MenuItem').MenuItem,
-    TouchDispatcher = require('./TouchDispatcher.js').TouchDispatcher,
+    TouchDispatcher = require('./TouchDispatcher').TouchDispatcher,
     geom = require('geometry'), ccp = geom.ccp;
 
 var kMenuStateWaiting		= 0,

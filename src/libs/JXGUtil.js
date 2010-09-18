@@ -1171,4 +1171,4 @@ JXG.Util.utf8Decode = function(utftext) {
 };
 
 // Added to exports for Cocos2d
-exports = JXG;
+module.exports = JXG;

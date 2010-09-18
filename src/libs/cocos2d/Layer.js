@@ -1,6 +1,6 @@
-var Node = require('./Node.js').Node,
-    Director = require('./Director.js').Director,
-    TouchDispatcher = require('./TouchDispatcher.js').TouchDispatcher;
+var Node = require('./Node').Node,
+    Director = require('./Director').Director,
+    TouchDispatcher = require('./TouchDispatcher').TouchDispatcher;
 
 exports.Layer = Node.extend({
     isTouchEnabled: false,

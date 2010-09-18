@@ -2,7 +2,8 @@
  * Thin wrapper around JXG's GZip utils
  */
 
-var JXG = require('JXGUtil');
+var JXG = require('./JXGUtil');
+console.log(JXG);
 
 exports.unzip = function(input) {
 	return (new JXG.Util.Unzip(input)).unzip()[0][0]
