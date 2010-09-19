@@ -3,7 +3,11 @@ var sys = require('sys')
 
 var modules = 'Node Layer Scene Label Sprite Director Action IntervalAction Scheduler ActionManager TMXTiledMap TMXXMLParser SpriteSheet RenderTexture Menu MenuItem AppDelegate KeyboardDispatcher'.split(' ');
 
+/** @namespace */
+var cocos = {};
+
 sys.each(modules, function(mod, i) {
-    //exports[mod] = require('./' + mod);
-    module.exports = sys.merge(module.exports, require('./' + mod));
+    sys.extend(cocos, require('./' + mod));
 });
+
+module.exports = cocos;

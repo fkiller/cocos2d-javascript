@@ -4,7 +4,12 @@ var sys = require('sys'),
     ActionManager = require('./ActionManager').ActionManager,
     geom = require('geometry'), ccp = geom.ccp;
 
-exports.Node = Obj.extend({
+/** @member cocos
+ * @class
+ *
+ * The base class all visual elements extend from
+ */
+var Node = Obj.extend(/** @scope cocos.Node# */{
     isCocosNode: true,
     visible: true,
     position: null,
@@ -24,8 +29,15 @@ exports.Node = Obj.extend({
     inverse: null,
     transformMatrix: null,
 
+    /**
+     * The child Nodes
+     * @property {cocos.Node[]}
+     */
     children: null,
 
+    /**
+     * Initializes the object
+     */
     init: function() {
         this.contentSize = {width: 0, height: 0};
         this.anchorPoint = ccp(0.5, 0.5);
@@ -34,10 +46,20 @@ exports.Node = Obj.extend({
         this.children = [];
     },
 
+    /** @private
+     * Calculates the anchor point in pixels and updates the
+     * anchorPointInPixels property
+     */
     _updateAnchorPointInPixels: function() {
         this.anchorPointInPixels = ccp(this.contentSize.width * this.anchorPoint.x, this.contentSize.height * this.anchorPoint.y);
     }.observes('anchorPoint', 'contentSize'),
 
+    /**
+     * Add a child Node
+     * @param {Node} opts.child The child node to add
+     *
+     * @returns {Node} The parent node; 'this'.
+     */
     addChild: function(opts) {
         if (opts.isCocosNode) {
             return arguments.callee.call(this, {child:opts, z:0});
@@ -235,3 +257,4 @@ exports.Node = Obj.extend({
     }
 });
 
+module.exports.Node = Node;

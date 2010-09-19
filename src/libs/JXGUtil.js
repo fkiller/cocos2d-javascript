@@ -27,7 +27,7 @@
  * @fileoverview Utilities for uncompressing and base64 decoding
  */
 
-// Added for Cocos2d compatibility
+/** @namespace */
 var JXG = {};
 
 /**

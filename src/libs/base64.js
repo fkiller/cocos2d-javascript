@@ -2,6 +2,7 @@
  * Thin wrapper around JXG's Base64 utils
  */
 
+/** @ignore */
 var JXG = require('JXGUtil');
 
 exports.decode = function(input) {

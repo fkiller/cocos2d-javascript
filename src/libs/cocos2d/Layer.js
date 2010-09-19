@@ -2,7 +2,7 @@ var Node = require('./Node').Node,
     Director = require('./Director').Director,
     TouchDispatcher = require('./TouchDispatcher').TouchDispatcher;
 
-exports.Layer = Node.extend({
+var Layer = Node.extend({
     isTouchEnabled: false,
     isAccelerometerEnabled: false,
 
@@ -56,3 +56,4 @@ exports.Layer = Node.extend({
     }.observes('isTouchEnabled')
 });
 
+module.exports.Layer = Layer;

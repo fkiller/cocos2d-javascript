@@ -4,18 +4,19 @@ var sys = require('sys'),
     Node = require('./Node').Node,
     ccp = require('geometry').ccp;
 
-exports.Sprite = Node.extend({
+/** @member cocos
+ * @class
+ */
+var Sprite = Node.extend(/** @scope cocos.Sprite# */{
     texture: null,
     rect: null,
     dirty: true,
     recursiveDirty: true,
     quad: null,
 
-    /**
-     * opts: {
-     *     file: Path to image to use as sprite atlas
-     *     rect: The rect in the sprite atlas image file to use as the sprite
-     * }
+    /** 
+     * @param {String} opts.file Path to image to use as sprite atlas
+     * @param {Rect} opts.rect The rect in the sprite atlas image file to use as the sprite
      */
     init: function(opts) {
         @super;
@@ -99,3 +100,5 @@ exports.Sprite = Node.extend({
         this.get('textureAtlas').drawQuad(ctx, this.quad);
     }
 });
+
+module.exports.Sprite = Sprite;
