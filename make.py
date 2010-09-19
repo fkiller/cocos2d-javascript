@@ -20,16 +20,45 @@ mimetypes.add_type('application/xml', '.tmx')
 mimetypes.add_type('application/xml', '.tsx')
 
 class Compiler:
-    def make(self, source, strip_source=True):
-        code = '''
-if (!window.__resources__) { window.__resources__ = {}; }
-function __imageResource(data) {
-    var img = new Image();
-    img.src = data;
+    config = None
+    output = 'cocos2d.js'
+    header_code = ''
+    footer_code = ''
+    valid_extensions = None
 
-    return img;
-}
+    def __init__(self, config_file=None):
+        self.config = self.load_config(config_file)
+
+        module_js = os.path.join(os.path.dirname(__file__), 'module.js')
+        self.footer_code = open(module_js).read()
+        self.header_code = '''
+if (!window.__resources__) { window.__resources__ = {}; }
+if (!__imageResource) { function __imageResource(data) { var img = new Image(); img.src = data; return img; } }
 '''
+
+    def load_config(self, config_file):
+        print "Loading config:", config_file
+        f = open(config_file, 'r')
+        config = json.loads(f.read())
+        self.output = config['output']
+        self.valid_extensions = config['extensions']
+
+        return config
+        
+    def make(self):
+        code = self.header_code
+        for source, dest in self.config['folders'].items():
+            code += self.make_path(source, root_path=dest, include_header=False, include_footer=False)
+        code += self.footer_code
+        return code
+
+
+    def make_path(self, source, strip_source=True, root_path='/', include_header=True, include_footer=False):
+        print "Building:", source
+        if not include_header:
+            code = ''
+        else:
+            code = self.header_code
 
         source = os.path.normpath(source)
 
@@ -37,13 +66,19 @@ function __imageResource(data) {
             for f in files:
                 if f[0] == '.':
                     continue
+
+                if self.valid_extensions and os.path.splitext(f)[1][1:] not in self.valid_extensions:
+                    print "Skipping:", f
+                    continue
+
                 path = os.path.join(root, f)
 
-                if strip_source:
-                    resource_name = '/%s' % path[len(source) +1:] # Remove source path prefix
+                if strip_source: # Remove source path prefix
+                    resource_name = '%s%s' % (root_path, path[len(source) +1:])
                 else:
-                    resource_name = '/%s' % path
+                    resource_name = '%s%s' % (root_path, path)
 
+                print "Reading: '%s' --> '%s'" % (path, resource_name)
 
                 mimetype = mimetypes.guess_type(path)[0]
 
@@ -65,6 +100,10 @@ function __imageResource(data) {
                 else: # Binaries
                     base64.encode(open(path), data)
                     code += BINARY_RESOURCE_TEMPLATE % (resource_name, mimetype, mimetype, data.getvalue().replace('\n', ''))
+
+
+        if include_footer:
+            code += self.footer_code
 
         return code
 
@@ -102,18 +141,28 @@ function __imageResource(data) {
 
 def main():
     parser = OptionParser()
+    parser.add_option("-c", "--config", dest="config",
+                      help="configuration file. Default is make.js", metavar="CONFIG")
+
     parser.add_option("-f", "--file", dest="output",
-                      help="write code to FILE", metavar="FILE")
+                      help="write code to FILE. Overrides config file", metavar="FILE")
 
     parser.add_option("-s", "--source", dest="input",
-                      help="build source code in SRC. Default is src", metavar="SRC")
+                      help="compile everything in SRC. Config is ignored if specified", metavar="SRC")
 
     (options, args) = parser.parse_args()
 
-    compiler = Compiler()
-    code = compiler.make(options.input)
-    if options.output:
-        o = open(options.output, 'w')
+    compiler = Compiler(options.config or 'make.js')
+
+    if options.input:
+        code = compiler.make_path(options.input)
+    else:
+        code = compiler.make()
+
+    output = options.output or compiler.output
+    if output:
+        print "Writing output to:", output
+        o = open(output, 'w')
         o.write(code)
         o.close()
     else:

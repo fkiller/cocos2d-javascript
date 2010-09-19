@@ -73,6 +73,10 @@ exports.Node = Obj.extend({
         return this;
     },
 
+    removeChild: function(opts) {
+        // TODO
+    },
+
     draw: function(context) {
         // All draw code goes here
     },

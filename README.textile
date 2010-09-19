@@ -13,34 +13,31 @@ And visit http://localhost:4000/
 
 h1. Developing
 
-Everything you write will be in JavaScript.  The 2 Python scripts (make.py and
+Everything you write will be in JavaScript. The 2 Python scripts (make.py and
 server.py) are to build and serve your code during development. It would be
 very unwise to use the server.py script in production.
 
-The entry point for the code is in apps/index.js.
+The entry point for the code is in apps/index.js. 
 
-In the public/index.html you will see <script src=""> tags to include the code.
+In the public/index.html you will see <script src="cocos2d.js"> tag to include the code.
 
-* cocos2d.js is the main cocos2d framework.
-* apps.js is the example code
-* module.js is a static file in public/ and initialises everything.
+The server uses the make.py script to compile your code each time it is
+requested. This makes development a lot easier.
 
-In the future this setup will likely change.
-
-If the server sees a request for a .js file it will attempt to compile one from
-a folder with the same name. i.e. the apps.js request is actually the entire
-contents of the 'apps' folder. This is obviously very insecure and should only
-be used for development.
+Run ./server.py -h for help.
 
 More documentation is coming when the framework is in a more usable state.
 
 h1. Compiling your app
 
-To compile your code you use the make.py script.
+To compile your code you run the make.py script. Which reads the make.js file
+to work out what you want to build.
 
-e.g.
-  ./make.py -s src -f cocos2d.js
-  ./make.py -s apps -f apps.js
+When built the resulting .js file will contain all your code aswell as all your
+images and map files. This means you only need to update a single file and only
+a single HTTP request is needed to serve everything.
+
+Run ./make.py -h for help.
 
 h1. Browser Support
 

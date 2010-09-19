@@ -8,27 +8,24 @@ from make import Compiler
 import os
 
 PORT = 4000
+CODE_URL = '/cocos2d.js'
 
 class Cocos2D(SimpleHTTPServer.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == '/cocos2d.js':
-            compiler = Compiler()
-            code = compiler.make('src')
 
-            self.send_response(200)
-            self.send_header('Content-Type', 'text/javascript')
-            self.end_headers()
-            self.wfile.write(code)
-        elif self.path == '/':
+    def __init__(self, *args):
+        print "Serving as:", CODE_URL
+        self.compiler = Compiler('make.js')
+        SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, *args)
+
+
+    def do_GET(self):
+        if self.path == '/':
             self.path = '/public/index.html'
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
         else:
-            app_name = os.path.splitext(self.path[1:])[0]
-            code_path = os.path.join(os.path.dirname(__file__), app_name)
-
-            if os.path.isdir(code_path) and os.path.realpath(code_path).startswith(os.path.dirname(os.path.abspath(__file__))):
-                compiler = Compiler()
-                code = compiler.make(app_name)
+            if CODE_URL == self.path:
+                print "Building code"
+                code = self.compiler.make()
 
                 self.send_response(200)
                 self.send_header('Content-Type', 'text/javascript')
@@ -41,11 +38,12 @@ class Cocos2D(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 def main():
     parser = OptionParser()
-    parser.add_option("-s", "--source", dest="input",
-                      help="build source code in SRC. Default is src", metavar="SRC")
+    parser.add_option("-u", "--url", dest="url",
+                      help="The URL to serve the JS as. Default is '/cocos.js'", metavar="URL")
 
     (options, args) = parser.parse_args()
 
+    CODE_URL = options.url or '/cocos2d.js'
     httpd = SocketServer.ForkingTCPServer(('', PORT), Cocos2D)
     print "serving at port", PORT
     httpd.serve_forever()

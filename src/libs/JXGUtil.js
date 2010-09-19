@@ -295,22 +295,7 @@ JXG.Util.Unzip = function (barray){
             	document.write("Places["+a+"].b1="+Places[a].b1+"<br>");
         	}
         }
-    
-        /*if(show) {
-            var tmp;
-            for(tmp=currentTree;tmp<Places;tmp++) {
-                fprintf(stdout, "0x%03x  0x%03x (0x%04x)",tmp-currentTree, tmp->jump?tmp->jump-currentTree:0,(tmp->jump?tmp->jump-currentTree:0)*6+0xcf0);
-                if(!(tmp.b0 & 0x8000)) {
-                    //fprintf(stdout, "  0x%03x (%c)", tmp->b0,(tmp->b0<256 && isprint(tmp->b0))?tmp->b0:'�');
-                }
-                if(!(tmp.b1 & 0x8000)) {
-                    if((tmp.b0 & 0x8000))
-                        fprintf(stdout, "           ");
-                    fprintf(stdout, "  0x%03x (%c)", tmp->b1,(tmp->b1<256 && isprint(tmp->b1))?tmp->b1:'�');
-                }
-                fprintf(stdout, "\n");
-            }
-        }*/
+
         return 0;
     };
     
