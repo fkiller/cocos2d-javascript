@@ -37,11 +37,15 @@ class Cocos2D(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
 def main():
+    global CODE_URL
     parser = OptionParser()
     parser.add_option("-u", "--url", dest="url",
                       help="The URL to serve the JS as. Default is '/cocos.js'", metavar="URL")
 
     (options, args) = parser.parse_args()
+
+    if options.url and options.url[0] != '/':
+        options.url = '/' + options.url
 
     CODE_URL = options.url or '/cocos2d.js'
     httpd = SocketServer.ForkingTCPServer(('', PORT), Cocos2D)
