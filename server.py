@@ -4,10 +4,10 @@ from optparse import OptionParser
 import SocketServer
 import SimpleHTTPServer
 import urllib
+import threading
 from make import Compiler
-import os
+import os, sys, time, socket
 
-PORT = 4000
 CODE_URL = '/cocos2d.js'
 
 class Cocos2D(SimpleHTTPServer.SimpleHTTPRequestHandler):
@@ -40,18 +40,44 @@ def main():
     global CODE_URL
     parser = OptionParser()
     parser.add_option("-u", "--url", dest="url",
-                      help="The URL to serve the JS as. Default is '/cocos.js'", metavar="URL")
+                      help="the URL to serve the JS as. Default is '/cocos.js'", metavar="URL")
+
+    parser.add_option("-l", "--host", dest="host",
+                      help="the host/ip to listen on. Default is 127.0.0.1", metavar="HOST")
+
+    parser.add_option("-p", "--port", dest="port",
+                      help="the port to listen on. Default is 4000", metavar="PORT")
 
     (options, args) = parser.parse_args()
 
     if options.url and options.url[0] != '/':
         options.url = '/' + options.url
 
+    host = options.host or 'localhost'
+    port = int(options.port) if options.port else 4000
+
     CODE_URL = options.url or '/cocos2d.js'
-    httpd = SocketServer.ForkingTCPServer(('', PORT), Cocos2D)
-    print "serving at port", PORT
-    httpd.serve_forever()
+    httpd = SocketServer.TCPServer((host, port), Cocos2D)
+    httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    httpd_thread = threading.Thread(target=httpd.serve_forever)
+    httpd_thread.setDaemon(True)
+    httpd_thread.start()
+    print "Listening at http://%s:%d/" % (host, port)
+    
+    
+    running = True
+    while running:
+        try:
+            time.sleep(3600)
+        except (KeyboardInterrupt, SystemExit):
+            running = False
+            print "Shutting down"
+            httpd.shutdown()
+            httpd.server_close()
+
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
 
