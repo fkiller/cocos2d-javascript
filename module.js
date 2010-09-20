@@ -34,7 +34,7 @@ function resource(path) {
             // Check for index first
             if (path.exists(path.join(p, 'index.js'))) {
                 return path.join(p, 'index.js');
-            } else if (path.exists(p) + '.js') {
+            } else if (path.exists(p + '.js')) {
                 return p + '.js';
             }
         }
