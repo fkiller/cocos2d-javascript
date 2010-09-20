@@ -1,4 +1,4 @@
-var sys = require('sys')
+var sys = require('sys'),
     path = require('path');
 
 var modules = 'Node Layer Scene Label Sprite Director Action IntervalAction Scheduler ActionManager TMXTiledMap TMXXMLParser SpriteSheet RenderTexture Menu MenuItem AppDelegate KeyboardDispatcher'.split(' ');
