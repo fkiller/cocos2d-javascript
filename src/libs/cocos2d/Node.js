@@ -56,18 +56,19 @@ var Node = Obj.extend(/** @scope cocos.Node# */{
 
     /**
      * Add a child Node
-     * @param {Node} opts.child The child node to add
+     * @param {Object} params Parameters
+     * @param {cocos.Node} params.child The child node to add
      *
-     * @returns {Node} The parent node; 'this'.
+     * @returns {cocos.Node} The parent node; 'this'.
      */
-    addChild: function(opts) {
-        if (opts.isCocosNode) {
-            return arguments.callee.call(this, {child:opts, z:0});
+    addChild: function(params) {
+        if (params.isCocosNode) {
+            return arguments.callee.call(this, {child:params, z:0});
         }
 
-        var child = opts['child'],
-            z = opts['z'],
-            tag = opts['tag'];
+        var child = params['child'],
+            z = params['z'],
+            tag = params['tag'];
 
         //this.insertChild({child: child, z:z});
         var added = false;
