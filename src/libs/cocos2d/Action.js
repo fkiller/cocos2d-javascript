@@ -53,7 +53,7 @@ var Action = Obj.extend(/** @scope cocos.Action# */{
      */
     isDone: function(key) {
         return true;
-    }.property()
+    }.property(),
 
 
     /**

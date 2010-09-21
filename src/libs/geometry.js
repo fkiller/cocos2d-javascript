@@ -9,33 +9,33 @@ var geometry = {
      * @param {Number} y Y coordinate
      */
     ccp: function(x, y) {
-        return exports.pointMake(x, y);
-    };
+        return module.exports.pointMake(x, y);
+    },
 
     PointZero: function() {
         return ccp(0,0);
-    };
+    },
 
     rectMake: function(x, y, w, h) {
-        return {origin: exports.pointMake(x, y), size: exports.sizeMake(w, h)};
-    };
+        return {origin: module.exports.pointMake(x, y), size: module.exports.sizeMake(w, h)};
+    },
 
     sizeMake: function(w, h) {
         return {width: w, height: h};
-    };
+    },
 
     pointMake: function(x, y) {
         return {x: x, y: y};
-    };
+    },
 
     rectContainsPoint: function(r, p) {
         return ((p.x >= r.origin.x && p.x <= r.origin.x + r.size.width)
                 && (p.y >= r.origin.y && p.y <= r.origin.y + r.size.height));
-    };
+    },
 
     pointEqualToPoint: function(point1, point2) {
         return (point1.x == point2.x && point1.y == point2.y);
-    };
+    },
 
     pointApplyAffineTransform: function(p, trans) {
         var newPoint = ccp(0, 0);
@@ -44,7 +44,7 @@ var geometry = {
         newPoint.y = p.x * trans[0][1] + p.y * trans[1][1] + trans[2][1];
 
         return newPoint;
-    };
+    },
     affineTransformDeterminant: function(trans) {
         var det = 1,
             t = sys.copy(trans);
@@ -80,9 +80,9 @@ var geometry = {
         }
 
         return det;
-    };
+    },
     affineTransformInvert: function(trans) {
-        var newTrans = exports.affineTransformIdentity();
+        var newTrans = module.exports.affineTransformIdentity();
 
         var t = sys.copy(trans);
 
@@ -136,13 +136,13 @@ var geometry = {
 
         return newTrans;
        
-    };
+    },
 
     /**
      * Multiply 2 transform (3x3) matrices together
      */
     affineTransformConcat: function(trans1, trans2) {
-        var newTrans = exports.affineTransformIdentity();
+        var newTrans = module.exports.affineTransformIdentity();
 
         var x, y, i;
         for (x = 0; x < 3; x++) {
@@ -155,11 +155,11 @@ var geometry = {
         }
 
         return newTrans;
-    };
+    },
 
     degressToRadians: function(angle) {
         return angle / 180.0 * Math.PI;
-    };
+    },
     affineTransformTranslate: function(trans, x, y) {
         // tx = 6, ty = 7
 
@@ -168,23 +168,23 @@ var geometry = {
         newTrans[2][1] += y;
 
         return newTrans;
-    };
+    },
 
     affineTransformRotate: function(trans, angle) {
         // TODO
         return trans;
-    };
+    },
 
     affineTransformScale: function(trans, scale) {
         // TODO
         return trans;
-    };
+    },
 
     affineTransformIdentity: function() {
         return [[1, 0, 0],
                 [0, 1, 0],
                 [0, 0, 1]];
-    };
+    }
 };
 
 module.exports = geometry;

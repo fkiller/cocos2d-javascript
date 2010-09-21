@@ -8,11 +8,13 @@ var JXG = require('./JXGUtil');
 /** @namespace */
 var gzip = {
     unzip: function(input) {
-        return (new JXG.Util.Unzip(input)).unzip()[0][0]
-    };
+        return (new JXG.Util.Unzip(input)).unzip()[0][0];
+    },
+
     unzipBase64: function(input) {
-        return (new JXG.Util.Unzip(JXG.Util.Base64.decodeAsArray(input))).unzip()[0][0]
-    };
+        return (new JXG.Util.Unzip(JXG.Util.Base64.decodeAsArray(input))).unzip()[0][0];
+    },
+
     unzipBase64AsArray: function(input, bytes) {
         var bytes = bytes || 1;
 
@@ -25,7 +27,8 @@ var gzip = {
             }
         }
         return ar;
-    };
+    },
+
     unzipAsArray: function (input, bytes) {
         var bytes = bytes || 1;
 
@@ -38,7 +41,7 @@ var gzip = {
             }
         }
         return ar;
-    };
+    }
 
 };
 

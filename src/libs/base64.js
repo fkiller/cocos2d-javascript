@@ -9,7 +9,8 @@ var JXG = require('JXGUtil');
 var base64 = {
     decode: function(input) {
         return JXG.Util.Base64.decode(input);
-    };
+    },
+
     decodeAsArray: function(input, bytes) {
         var bytes = bytes || 1;
 
@@ -22,11 +23,11 @@ var base64 = {
             }
         }
         return ar;
-    };
+    },
 
     encode: function(input) {
         return JXG.Util.Base64.encode(input);
-    };
+    }
 };
 
 module.exports = base64;

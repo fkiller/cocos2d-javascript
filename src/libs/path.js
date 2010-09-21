@@ -4,19 +4,19 @@ var path = {
         var tokens = path.split('/');
         tokens.pop();
         return tokens.join('/');
-    };
+    },
     basename: function(path) {
         var tokens = path.split('/');
         return tokens[tokens.length-1];
-    };
+    },
 
     join: function () {
-        return exports.normalize(Array.prototype.join.call(arguments, "/"));
-    };
+        return module.exports.normalize(Array.prototype.join.call(arguments, "/"));
+    },
 
     exists: function(path) {
         return (window.__resources__[path] !== undefined);
-    };
+    },
 
     normalizeArray: function (parts, keepBlanks) {
       var directories = [], prev;
@@ -50,11 +50,11 @@ var path = {
         }
       }
       return directories;
-    };
+    },
 
     normalize: function (path, keepBlanks) {
-      return exports.normalizeArray(path.split("/"), keepBlanks).join("/");
-    };
+      return module.exports.normalizeArray(path.split("/"), keepBlanks).join("/");
+    }
 };
 
 module.exports = path;
