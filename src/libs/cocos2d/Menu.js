@@ -5,11 +5,19 @@ var sys = require('sys'),
     TouchDispatcher = require('./TouchDispatcher').TouchDispatcher,
     geom = require('geometry'), ccp = geom.ccp;
 
-var kMenuStateWaiting		= 0,
-	kMenuStateTrackingTouch = 1;
+/** @private
+ * @constant */
+var kMenuStateWaiting = 0;
+
+/** @private
+ * @constant */
+var kMenuStateTrackingTouch = 1;
 	
 
-var Menu = Layer.extend({
+/** @member cocos
+ * @class
+ */
+var Menu = Layer.extend(/** @scope cocos.Menu# */{
 	state: kMenuStateWaiting,
 	selectedItem: null,
 	opacuty: 255,

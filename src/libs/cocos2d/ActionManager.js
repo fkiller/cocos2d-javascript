@@ -3,7 +3,20 @@ var sys = require('sys'),
     Timer = require('./Scheduler').Timer,
     Scheduler = require('./Scheduler').Scheduler;
 
-var ActionManager = Obj.extend({
+/** @member cocos
+ * @class
+ *
+ * cocos.ActionManager is a singleton that manages all the actions. Normally you
+ * won't need to use this singleton directly. 99% of the cases you will use the
+ * cocos.Node interface, which uses this singleton. But there are some cases where
+ * you might need to use this singleton. Examples:
+ *
+ * - When you want to run an action where the target is different from a cocos.Node</li>
+ * - When you want to pause / resume the actions
+ * 
+ *
+ */
+var ActionManager = Obj.extend(/** @scope cocos.ActionManager# */{
     targets: null,
     currentTarget: null,
     currentTargetSalvaged: null,
@@ -98,7 +111,11 @@ var ActionManager = Obj.extend({
 	}
 });
 
-sys.extend(ActionManager, {
+sys.extend(ActionManager, /** @scope cocos.ActionManager */{
+    /** @field
+     * A shared singleton instance of cocos.ActionManager
+     * @type cocos.ActionManager
+     */
     sharedManager: function(key) {
         if (!this._instance) {
             this._instance = this.create();

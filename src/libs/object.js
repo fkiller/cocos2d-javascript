@@ -1,7 +1,9 @@
 var sys = require('sys');
 
+/** @class */
 var Obj = function() { this._init.apply(this, arguments); };
-Obj = sys.extend(Obj, {
+
+Obj = sys.extend(Obj, /** @scope Obj# */ {
     isObject: true,
     _observers: null,
     superclass: null,

@@ -2,7 +2,10 @@ var Node = require('./Node').Node,
     Director = require('./Director').Director,
     TouchDispatcher = require('./TouchDispatcher').TouchDispatcher;
 
-var Layer = Node.extend({
+/** @member cocos
+ * @class
+ */
+var Layer = Node.extend(/** @scope cocos.Layer# */{
     isTouchEnabled: false,
     isAccelerometerEnabled: false,
 
