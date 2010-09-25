@@ -7,7 +7,12 @@ var sys = require('sys'),
     ccp    = require('geometry').ccp,
     Node = require('./Node').Node;
 
-var TMXLayer = SpriteSheet.extend({
+/** @member cocos
+ * @class
+ *
+ * @extends cocos.SpriteSheet
+ */
+var TMXLayer = SpriteSheet.extend(/** @scope cocos.TMXLayer# */{
     layerSize: null,
     layerName: '',
     tiles: null,

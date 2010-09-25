@@ -7,7 +7,10 @@ var kTouchMethodBeganBit     = 1 << 0,
     kTouchMethodCancelledBit = 1 << 3,
     kTouchMethodAllBits      = ( kTouchMethodBeganBit | kTouchMethodMovedBit | kTouchMethodEndedBit | kTouchMethodCancelledBit);
 
-var TouchHandler = Obj.extend({
+/** @member cocos
+ * @class
+ */
+var TouchHandler = Obj.extend(/** @scope cocos.TouchHandler# */{
     delegate: null,
     priority: 0,
     enabledMethods: 0,
@@ -25,7 +28,12 @@ var TouchHandler = Obj.extend({
 
 });
 
-var StandardTouchHandler = TouchHandler.extend({
+/** @member cocos
+ * @class
+ *
+ * @extends cocos.TouchHandler
+ */
+var StandardTouchHandler = TouchHandler.extend(/** @scope cocos.StandardTouchHandler# */{
     init: function(opts) {
         @super;
 
@@ -44,7 +52,12 @@ var StandardTouchHandler = TouchHandler.extend({
     }
 });
 
-var TargetedTouchHandler = TouchHandler.extend({
+/** @member cocos
+ * @class
+ *
+ * @extends cocos.TouchHandler
+ */
+var TargetedTouchHandler = TouchHandler.extend(/** @scope cocos.TargetedTouchHandler# */{
     claimedTouches: null,
     swallowsTouches: false,
 

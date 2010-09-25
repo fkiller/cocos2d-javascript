@@ -2,7 +2,10 @@ var sys = require('sys'),
     Obj = require('object').Object;
 
 
-var Timer = Obj.extend({
+/** @member cocos
+ * @class
+ */
+var Timer = Obj.extend(/** @scope cocos.Timer# */{
     callback: null,
     interval: 0,
     elapsed: -1,
@@ -30,7 +33,10 @@ var Timer = Obj.extend({
 });
 
 
-var Scheduler = Obj.extend({
+/** @member cocos
+ * @class
+ */
+var Scheduler = Obj.extend(/** @scope cocos.Scheduler# */{
     scheduledMethods: null,
     methodsToAdd: null,
     methodsToRemove: null,
@@ -86,7 +92,8 @@ var Scheduler = Obj.extend({
 	}
 });
 
-sys.extend(Scheduler, {
+sys.extend(Scheduler, /** @scope cocos.Scheduler */{
+    /** @field */
     sharedScheduler: function(key) {
         if (!this._instance) {
             this._instance = this.create();

@@ -16,6 +16,8 @@ var kMenuStateTrackingTouch = 1;
 
 /** @member cocos
  * @class
+ *
+ * @extends cocos.Layer
  */
 var Menu = Layer.extend(/** @scope cocos.Menu# */{
 	state: kMenuStateWaiting,

@@ -2,7 +2,12 @@ var sys = require('sys'),
     TextureAtlas = require('./TextureAtlas').TextureAtlas,
 	Node = require('./Node').Node;
 
-var SpriteSheet = Node.extend({
+/** @member cocos
+ * @class
+ *
+ * @extends cocos.Node
+ */
+var SpriteSheet = Node.extend(/** @scope cocos.SpriteSheet# */{
 	textureAtlas: null,
 	descendants: null,
 

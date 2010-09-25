@@ -6,7 +6,12 @@ var sys = require('sys'),
     TMXLayer   = require('./TMXLayer').TMXLayer,
     TMXMapInfo = require('./TMXXMLParser').TMXMapInfo;
 
-var TMXTiledMap = Node.extend({
+/** @member cocos
+ * @class
+ *
+ * @extends cocos.Node
+ */
+var TMXTiledMap = Node.extend(/** @scope cocos.TMXTiledMap# */{
     mapSize: null,
     tileSize: null,
     mapOrientation: 0,

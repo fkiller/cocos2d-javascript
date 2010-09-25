@@ -10,7 +10,10 @@ var sys = require('sys'),
  }
 */
 
-var TextureAtlas = Obj.extend({
+/** @member cocos
+ * @class
+ */
+var TextureAtlas = Obj.extend(/** @scope cocos.TextureAtlas */{
 	quads: null,
 	imgElement: null,
 	texture: null,

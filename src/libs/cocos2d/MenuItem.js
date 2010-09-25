@@ -3,7 +3,12 @@ var sys = require('sys'),
     rectMake = require('geometry').rectMake,
     ccp = require('geometry').ccp;
 
-var MenuItem = Node.extend({
+/** @member cocos
+ * @class
+ *
+ * @extends cocos.Node
+ */
+var MenuItem = Node.extend(/** @scope cocos.MenuItem# */{
 	isEnabled: true,
 	isSelected: false,
 	callback: null,
@@ -33,7 +38,12 @@ var MenuItem = Node.extend({
 	}.property()
 });
 
-var MenuItemSprite = MenuItem.extend({
+/** @member cocos
+ * @class
+ *
+ * @extends cocos.MenuItem
+ */
+var MenuItemSprite = MenuItem.extend(/** @scope cocos.MenuItemSprite# */{
 	normalImage: null,
 	selectedImage: null,
 	disabledImage: null,
@@ -69,7 +79,12 @@ var MenuItemSprite = MenuItem.extend({
 	}
 });
 
-var MenuItemImage = MenuItemSprite.extend({
+/** @member cocos
+ * @class
+ *
+ * @extends cocos.MenuItemSprite
+ */
+var MenuItemImage = MenuItemSprite.extend(/** @scope cocos.MenuItemImage# */{
 	init: function(opts) {
 		var normalI   = opts['normalImage'],
 			selectedI = opts['selectedImage'],

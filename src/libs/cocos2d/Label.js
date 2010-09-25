@@ -3,12 +3,20 @@ var sys = require('sys'),
     Node = require('./Node').Node,
     ccp = require('geometry').ccp;
 
-exports.Label = Node.extend({
+/** @member cocos
+ * @class
+ *
+ * Renders a text label
+ *
+ * @extends cocos.Node
+ */
+var Label = Node.extend(/** @scope cocos.Label# */{
     string:   '',
     fontName: 'Helvetica',
     fontSize: 16,
     fontColor: 'white',
 
+    /** @ignore */
     init: function(args) {
         @super;
 
@@ -19,6 +27,10 @@ exports.Label = Node.extend({
         }));
     },
 
+    /** @field
+     * The font to use
+     * @type String
+     */
     font: function(key) {
         return this.get('fontSize') + 'px ' + this.get('fontName');
     }.property(),
@@ -34,6 +46,9 @@ exports.Label = Node.extend({
         }
     },
 
+    /**
+     * @private
+     */
     _updateLabelContentSize: function() {
         var ctx = Director.get('sharedDirector.context');
         var size = {width: 0, height: this.get('fontSize')};
@@ -56,3 +71,4 @@ exports.Label = Node.extend({
     }.observes('string', 'fontName', 'fontSize')
 });
 
+module.exports.Label = Label;

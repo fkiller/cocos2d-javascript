@@ -4,7 +4,12 @@ var sys = require('sys'),
     TextureAtlas = require('./TextureAtlas').TextureAtlas,
     ccp = require('geometry').ccp;
 
-exports.RenderTexture = Node.extend({
+/** @member cocos
+ * @class
+ *
+ * @extends cocos.Node
+ */
+var RenderTexture = Node.extend(/** @scope cocos.RenderTexture# */{
     canvas: null,
     context: null,
     sprite: null,
@@ -26,3 +31,5 @@ exports.RenderTexture = Node.extend({
         this.addChild(this.sprite);
     }
 });
+
+module.exports.RenderTexture = RenderTexture;

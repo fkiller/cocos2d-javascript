@@ -3,7 +3,7 @@ var sys = require('sys');
 /** @class */
 var Obj = function() { this._init.apply(this, arguments); };
 
-Obj = sys.extend(Obj, /** @scope Obj# */ {
+Obj = sys.extend(Obj, /** @scope Obj */ {
     isObject: true,
     _observers: null,
     superclass: null,
@@ -11,7 +11,8 @@ Obj = sys.extend(Obj, /** @scope Obj# */ {
 
     /**
      * Creates a new instance of this object
-     * var foo = CC.Object.create();
+     *
+     * @returns {Obj} An instance of this object
      */
     create: function() {
         var ret = new this();
@@ -141,10 +142,15 @@ Obj.prototype = {
     init: function() {
     },
 
+    /** @function */
     get: Obj.get,
+    /** @function */
     set: Obj.set,
+    /** @function */
     inc: Obj.inc,
+    /** @function */
     dec: Obj.dec,
+    /** @function */
     addObserver: Obj.addObserver
 
 
