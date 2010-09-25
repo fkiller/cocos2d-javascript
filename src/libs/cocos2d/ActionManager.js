@@ -1,5 +1,5 @@
 var sys = require('sys'),
-    Obj = require('object').Object,
+    Obj = require('object').Obj,
     Timer = require('./Scheduler').Timer,
     Scheduler = require('./Scheduler').Scheduler;
 

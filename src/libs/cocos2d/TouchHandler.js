@@ -1,5 +1,5 @@
 var sys = require('sys'),
-    Obj = require('object').Object;
+    Obj = require('object').Obj;
 
 var kTouchMethodBeganBit     = 1 << 0,
     kTouchMethodMovedBit     = 1 << 1,

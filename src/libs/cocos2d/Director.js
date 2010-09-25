@@ -1,5 +1,5 @@
 var sys = require('sys'),
-    Obj = require('object').Object,
+    Obj = require('object').Obj,
     ccp = require('geometry').ccp,
     Scheduler = require('./Scheduler').Scheduler,
     TouchDispatcher = require('./TouchDispatcher').TouchDispatcher,

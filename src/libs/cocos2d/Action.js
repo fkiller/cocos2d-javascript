@@ -1,5 +1,5 @@
 var sys = require('sys'),
-    Obj = require('object').Object;
+    Obj = require('object').Obj;
 
 /** @member cocos
  * @class

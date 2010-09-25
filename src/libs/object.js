@@ -156,4 +156,4 @@ Obj.prototype = {
 
 };
 
-exports.Object = Obj;
+exports.Obj = Obj;

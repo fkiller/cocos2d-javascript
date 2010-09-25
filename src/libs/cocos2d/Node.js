@@ -1,5 +1,5 @@
 var sys = require('sys'),
-    Obj = require('object').Object,
+    Obj = require('object').Obj,
     Scheduler = require('./Scheduler').Scheduler,
     ActionManager = require('./ActionManager').ActionManager,
     geom = require('geometry'), ccp = geom.ccp;

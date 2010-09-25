@@ -1,6 +1,6 @@
 var sys = require('sys'),
 	Texture2D = require('./Texture2D').Texture2D,
-    Obj = require('object').Object;
+    Obj = require('object').Obj;
 
 
 /* QUAD STRUCTURE

@@ -6,7 +6,7 @@ var sys = require('sys'),
     TMXOrientationOrtho = require('./TMXOrientation').TMXOrientationOrtho,
     TMXOrientationHex = require('./TMXOrientation').TMXOrientationHex,
     TMXOrientationIso = require('./TMXOrientation').TMXOrientationIso,
-    Obj = require('object').Object;
+    Obj = require('object').Obj;
 
 /** @member cocos
  * @class
