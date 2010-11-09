@@ -49,5 +49,16 @@ I intend for this to work in Firefox, Chrome, Safari, Opera and IE9. I
 mostly develop using Chrome so that's likely to have the best compatibility
 until I get close to an alpha quality build.
 
+Documentation
+-------------
+
+Download JsDoc 2.3 from <http://code.google.com/p/jsdoc-toolkit/>.
+
+Copy that to /usr/local/jsdoc-toolkit or wherever you like and then run:
+    
+    java -jar /usr/local/jsdoc-toolkit/jsrun.jar /usr/local/jsdoc-toolkit/app/run.js -t=/usr/local/jsdoc-toolkit/templates/jsdoc -d=./jsdocs/ -r 10 src/
+
+The documentation will appear in the jsdocs directory.
+
 © 2010 Ryan Williams <cocos2d@ryanwilliams.org>
 
