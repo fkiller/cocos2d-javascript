@@ -60,7 +60,7 @@ var Menu = Layer.extend(/** @scope cocos.Menu# */{
     },
 
     registerWithTouchDispatcher: function() {
-        TouchDispatcher.get('sharedDispatcher').addTargetedDelegate({delegate: this, priority: Number.MIN_INT+1, swallowsTouches: true});
+        TouchDispatcher.get('sharedDispatcher').addTargetedDelegate({delegate: this, priority: Number.MIN_VALUE+1, swallowsTouches: true});
     },
 
     itemForTouch: function(touch) {
