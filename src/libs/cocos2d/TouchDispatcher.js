@@ -1,5 +1,5 @@
 var sys = require('sys'),
-    Obj = require('object').Obj,
+    Thing = require('thing').Thing,
     StandardTouchHandler = require('./TouchHandler').StandardTouchHandler,
     TargetedTouchHandler = require('./TouchHandler').TargetedTouchHandler;
     
@@ -19,7 +19,7 @@ var kTouchMethodBeganBit     = 1 << 0,
 /** @member cocos
  * @class
  */
-var TouchDispatcher = Obj.extend(/** @scope cocos.TouchDispatcher# */{
+var TouchDispatcher = Thing.extend(/** @scope cocos.TouchDispatcher# */{
     targetedHandlers: null,
     standardHandlers: null,
     locked: false,

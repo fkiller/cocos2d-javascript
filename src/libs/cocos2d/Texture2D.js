@@ -1,9 +1,9 @@
 var sys = require('sys'),
-    Obj = require('object').Obj;
+    Thing = require('thing').Thing;
 
 /** @member cocos
  * @class */
-var Texture2D = Obj.extend(/** @scope cocos.Texture2D# */{
+var Texture2D = Thing.extend(/** @scope cocos.Texture2D# */{
 	imgElement: null,
 	size: null,
 

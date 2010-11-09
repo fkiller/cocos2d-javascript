@@ -1,10 +1,10 @@
 var sys = require('sys');
 
 /** @class */
-var Obj = function() { this._init.apply(this, arguments); };
+var Thing = function() { this._init.apply(this, arguments); };
 
-Obj = sys.extend(Obj, /** @scope Obj */ {
-    isObject: true,
+Thing = sys.extend(Thing, /** @scope Thing */ {
+    isThing: true,
     _observers: null,
     superclass: null,
 	_lastID: 0,
@@ -12,7 +12,7 @@ Obj = sys.extend(Obj, /** @scope Obj */ {
     /**
      * Creates a new instance of this object
      *
-     * @returns {Obj} An instance of this object
+     * @returns {Thing} An instance of this object
      */
     create: function() {
         var ret = new this();
@@ -120,13 +120,13 @@ Obj = sys.extend(Obj, /** @scope Obj */ {
     }
 });
 
-Obj.prototype = {
+Thing.prototype = {
 	id: 0,
     /** @private
      * Initialise the object
      */
     _init: function() {
-		this.id = ++Obj._lastID;
+		this.id = ++Thing._lastID;
 
         if (this._observingFunctions) {
             var i = 0,
@@ -143,17 +143,17 @@ Obj.prototype = {
     },
 
     /** @function */
-    get: Obj.get,
+    get: Thing.get,
     /** @function */
-    set: Obj.set,
+    set: Thing.set,
     /** @function */
-    inc: Obj.inc,
+    inc: Thing.inc,
     /** @function */
-    dec: Obj.dec,
+    dec: Thing.dec,
     /** @function */
-    addObserver: Obj.addObserver
+    addObserver: Thing.addObserver
 
 
 };
 
-exports.Obj = Obj;
+exports.Thing = Thing;

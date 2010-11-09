@@ -1,6 +1,6 @@
 var sys = require('sys'),
 	Texture2D = require('./Texture2D').Texture2D,
-    Obj = require('object').Obj;
+    Thing = require('thing').Thing;
 
 
 /* QUAD STRUCTURE
@@ -13,7 +13,7 @@ var sys = require('sys'),
 /** @member cocos
  * @class
  */
-var TextureAtlas = Obj.extend(/** @scope cocos.TextureAtlas */{
+var TextureAtlas = Thing.extend(/** @scope cocos.TextureAtlas */{
 	quads: null,
 	imgElement: null,
 	texture: null,

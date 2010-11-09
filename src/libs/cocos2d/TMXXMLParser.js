@@ -6,12 +6,12 @@ var sys = require('sys'),
     TMXOrientationOrtho = require('./TMXOrientation').TMXOrientationOrtho,
     TMXOrientationHex = require('./TMXOrientation').TMXOrientationHex,
     TMXOrientationIso = require('./TMXOrientation').TMXOrientationIso,
-    Obj = require('object').Obj;
+    Thing = require('thing').Thing;
 
 /** @member cocos
  * @class
  */
-var TMXMapInfo = Obj.extend(/** @scope cocos.TMXMapInfo# */{
+var TMXMapInfo = Thing.extend(/** @scope cocos.TMXMapInfo# */{
     filename: '',
     orientation: 0,
     mapSize: null,
@@ -143,7 +143,7 @@ var TMXMapInfo = Obj.extend(/** @scope cocos.TMXMapInfo# */{
 /** @member cocos
  * @class
  */
-var TMXLayerInfo = Obj.extend(/** @scope cocos.TMXLayerInfo# */{
+var TMXLayerInfo = Thing.extend(/** @scope cocos.TMXLayerInfo# */{
     name: '',
     layerSize: null,
     tiles: null,
@@ -165,7 +165,7 @@ var TMXLayerInfo = Obj.extend(/** @scope cocos.TMXLayerInfo# */{
 /** @member cocos
  * @class
  */
-var TMXTilesetInfo = Obj.extend(/** @scope cocos.TMXTilesetInfo# */{
+var TMXTilesetInfo = Thing.extend(/** @scope cocos.TMXTilesetInfo# */{
     name: '',
     firstGID: 0,
     tileSize: null,

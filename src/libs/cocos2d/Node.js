@@ -1,5 +1,5 @@
 var sys = require('sys'),
-    Obj = require('object').Obj,
+    Thing = require('thing').Thing,
     Scheduler = require('./Scheduler').Scheduler,
     ActionManager = require('./ActionManager').ActionManager,
     geom = require('geometry'), ccp = geom.ccp;
@@ -9,7 +9,7 @@ var sys = require('sys'),
  *
  * The base class all visual elements extend from
  */
-var Node = Obj.extend(/** @scope cocos.Node# */{
+var Node = Thing.extend(/** @scope cocos.Node# */{
     isCocosNode: true,
     visible: true,
     position: null,

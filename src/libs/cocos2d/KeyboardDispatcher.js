@@ -1,7 +1,7 @@
 var sys = require('sys'),
-    Obj = require('object').Obj;
+    Thing = require('thing').Thing;
 
-var KeyboardDispatcher = Obj.extend({
+var KeyboardDispatcher = Thing.extend({
     firstResponder: null,
     downKeys: null,
 

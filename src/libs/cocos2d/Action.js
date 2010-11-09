@@ -1,12 +1,12 @@
 var sys = require('sys'),
-    Obj = require('object').Obj;
+    Thing = require('thing').Thing;
 
 /** @member cocos
  * @class
  *
  * Base class for Actions
  */
-var Action = Obj.extend(/** @scope cocos.Action# */{
+var Action = Thing.extend(/** @scope cocos.Action# */{
     target: null,
     originalTarget: null,
 

@@ -1,5 +1,5 @@
 var sys = require('sys'),
-    Obj = require('object').Obj,
+    Thing = require('thing').Thing,
     Timer = require('./Scheduler').Timer,
     Scheduler = require('./Scheduler').Scheduler;
 
@@ -16,7 +16,7 @@ var sys = require('sys'),
  * 
  *
  */
-var ActionManager = Obj.extend(/** @scope cocos.ActionManager# */{
+var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
     targets: null,
     currentTarget: null,
     currentTargetSalvaged: null,

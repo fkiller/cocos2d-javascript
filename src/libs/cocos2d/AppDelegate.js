@@ -1,6 +1,6 @@
-var Obj = require('object').Obj;
+var Thing = require('thing').Thing;
 
-exports.AppDelegate = Obj.extend({
+exports.AppDelegate = Thing.extend({
     applicationDidFinishLaunching: function() {
     }
 });

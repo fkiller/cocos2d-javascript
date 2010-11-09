@@ -1,11 +1,11 @@
 var sys = require('sys'),
-    Obj = require('object').Obj;
+    Thing = require('thing').Thing;
 
 
 /** @member cocos
  * @class
  */
-var Timer = Obj.extend(/** @scope cocos.Timer# */{
+var Timer = Thing.extend(/** @scope cocos.Timer# */{
     callback: null,
     interval: 0,
     elapsed: -1,
@@ -36,7 +36,7 @@ var Timer = Obj.extend(/** @scope cocos.Timer# */{
 /** @member cocos
  * @class
  */
-var Scheduler = Obj.extend(/** @scope cocos.Scheduler# */{
+var Scheduler = Thing.extend(/** @scope cocos.Scheduler# */{
     scheduledMethods: null,
     methodsToAdd: null,
     methodsToRemove: null,

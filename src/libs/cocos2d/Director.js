@@ -1,5 +1,5 @@
 var sys = require('sys'),
-    Obj = require('object').Obj,
+    Thing = require('thing').Thing,
     ccp = require('geometry').ccp,
     Scheduler = require('./Scheduler').Scheduler,
     TouchDispatcher = require('./TouchDispatcher').TouchDispatcher,
@@ -15,7 +15,7 @@ var sys = require('sys'),
  * This class is a singleton so don't instantiate it yourself, instead use
  * cocos.Director.get('sharedDirector') to return the instance.
  */
-var Director = Obj.extend(/** @scope cocos.Director# */{
+var Director = Thing.extend(/** @scope cocos.Director# */{
     canvas: null,
     context: null,
     sceneStack: null,
