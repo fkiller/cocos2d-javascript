@@ -1,5 +1,5 @@
 var sys    = require('sys'),
-    cocos  = require('cocos'),
+    cocos  = require('cocos2d'),
     ccp    = require('geometry').ccp;
 
 
