@@ -1,13 +1,13 @@
 var Node = require('./Node').Node,
     Director = require('./Director').Director,
-    TouchDispatcher = require('./TouchDispatcher').TouchDispatcher;
+    EventDispatcher = require('./EventDispatcher').EventDispatcher;
 
 /** @member cocos
  * @class
  */
 var Layer = Node.extend(/** @scope cocos.Layer# */{
-    isTouchEnabled: false,
-    isAccelerometerEnabled: false,
+    isMouseEnabled: false,
+    mouseDelegatePriority: 0,
 
     init: function() {
         @super;
@@ -19,44 +19,31 @@ var Layer = Node.extend(/** @scope cocos.Layer# */{
         this.set('contentSize', s);
     },
 
-    registerWithTouchDispatcher: function() {
-        TouchDispatcher.get('sharedDispatcher').addStandardDelegate({delegate: this, priority: 0});
-    },
-
     onEnter: function() {
-        if (this.isTouchEnabled) {
-            this.registerWithTouchDispatcher();
+        if (this.isMouseEnabled) {
+            EventDispatcher.get('sharedDispatcher').addMouseDelegate({delegate: this, priority:this.get('mouseDelegatePriority')});
         }
 
         @super;
     },
 
     onExit: function() {
-        if (this.isTouchEnabled) {
-            TouchDispatcher.get('sharedDispatcher').removeDelegate({delegate: this});
+        if (this.isMouseEnabled) {
+            EventDispatcher.get('sharedDispatcher').removeMouseDelegate({delegate: this});
         }
 
         @super;
     },
 
-    touchBegan: function(opts) {
-        var touch = opts['touch'],
-            event = opts['event'];
-
-        throw "Layer.touchBegan override me";
-
-        return true;
-    },
-
-    _updateIsTouchEnabled: function() {
+    _updateIsMouseEnabled: function() {
         if (this.isRunning) {
-            if (this.isTouchEnabled) {
-                this.registerWithTouchDispatcher();
+            if (this.isMouseEnabled) {
+                EventDispatcher.get('sharedDispatcher').addMouseDelegate({delegate: this, priority:this.get('mouseDelegatePriority')});
             } else {
-                TouchDispatcher.get('sharedDispatcher').removeDelegate({delegate: this});
+            EventDispatcher.get('sharedDispatcher').removeMouseDelegate({delegate: this});
             }
         }
-    }.observes('isTouchEnabled')
+    }.observes('isMouseEnabled')
 });
 
 module.exports.Layer = Layer;

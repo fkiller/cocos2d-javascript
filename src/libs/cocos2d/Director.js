@@ -2,8 +2,7 @@ var sys = require('sys'),
     Thing = require('thing').Thing,
     ccp = require('geometry').ccp,
     Scheduler = require('./Scheduler').Scheduler,
-    TouchDispatcher = require('./TouchDispatcher').TouchDispatcher,
-    KeyboardDispatcher = require('./KeyboardDispatcher').KeyboardDispatcher,
+    EventDispatcher = require('./EventDispatcher').EventDispatcher,
     Scene = require('./Scene').Scene;
 
 /** @member cocos
@@ -59,32 +58,39 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
         // Setup event handling
 
         // Mouse events
-        var touchDispatcher = TouchDispatcher.get('sharedDispatcher');
+        var eventDispatcher = EventDispatcher.get('sharedDispatcher');
         function mouseDown(evt) {
-            var touch = {location: ccp(evt.offsetX, evt.offsetY)};
+            evt.locationInWindow = ccp(evt.offsetX, evt.offsetY);
 
-            function mouseMove(evt) {
-                touch.location = ccp(evt.offsetX, evt.offsetY);
+            function mouseDragged(evt) {
+                evt.locationInWindow = ccp(evt.offsetX, evt.offsetY);
 
-                touchDispatcher.touchesMoved({touches: [touch], event:evt});
+                eventDispatcher.mouseDragged(evt);
             };
             function mouseUp(evt) {
-                touch.location = ccp(evt.offsetX, evt.offsetY);
+                evt.locationInWindow = ccp(evt.offsetX, evt.offsetY);
 
-                document.body.removeEventListener('mousemove', mouseMove, false);
+                document.body.removeEventListener('mousemove', mouseDragged, false);
                 document.body.removeEventListener('mouseup',   mouseUp,   false);
 
 
-                touchDispatcher.touchesEnded({touches: [touch], event:evt});
+                eventDispatcher.mouseUp(evt);
             };
 
-            document.body.addEventListener('mousemove', mouseMove, false);
+            document.body.addEventListener('mousemove', mouseDragged, false);
             document.body.addEventListener('mouseup',   mouseUp,   false);
 
-            touchDispatcher.touchesBegan({touches: [touch], event:evt});
-        };
-        canvas.addEventListener('mousedown', mouseDown, false);
+            eventDispatcher.mouseDown(evt);
+        }
+        function mouseMoved(evt) {
+            evt.locationInWindow = ccp(evt.offsetX, evt.offsetY);
 
+            eventDispatcher.mouseMoved(evt);
+        }
+        canvas.addEventListener('mousedown', mouseDown, false);
+        canvas.addEventListener('mousemove', mouseMoved, false);
+
+        /*
         // Keyboard events
         var keyboardDispatcher = KeyboardDispatcher.get('sharedDispatcher');
         function keyDown(evt) {
@@ -99,6 +105,7 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
         document.documentElement.addEventListener('keydown', keyDown, false);
         document.documentElement.addEventListener('keyup', keyUp, false);
         document.documentElement.addEventListener('keypress', keyPress, false);
+        */
     },
 
     /**
@@ -225,7 +232,11 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
      * @type Boolean
      */
     displayFPS: function() {
-    }.property()
+    }.property(),
+
+    convertEventToCanvas: function(evt) {
+        return evt.locationInWindow;
+    }
 
 });
 

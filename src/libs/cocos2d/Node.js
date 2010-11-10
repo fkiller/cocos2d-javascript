@@ -63,12 +63,16 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
      */
     addChild: function(params) {
         if (params.isCocosNode) {
-            return arguments.callee.call(this, {child:params, z:0});
+            return arguments.callee.call(this, {child:params});
         }
 
         var child = params['child'],
             z = params['z'],
             tag = params['tag'];
+
+        if (z == undefined) {
+            z = child.get('zOrder');
+        }
 
         //this.insertChild({child: child, z:z});
         var added = false;

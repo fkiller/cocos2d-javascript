@@ -2,6 +2,21 @@ var sys = require('sys'),
     cocos = require('cocos2d'),
     ccp = require('geometry').ccp;
 
+var sceneIdx = -1;
+var transitions = [
+    "Sprite1",
+    "SpriteBatchNode1",
+];
+
+function nextAction() {
+    sceneIdx++;
+    sceneIdx = sceneIdx % transitions.length;
+
+    var r = transitions[sceneIdx];
+    var c = eval('(' + r + ')');
+    return c;
+}
+
 var SpriteDemo = cocos.Layer.extend({
     title: 'No title',
     subtitle: null,
@@ -10,7 +25,8 @@ var SpriteDemo = cocos.Layer.extend({
         @super;
 
         var s = cocos.Director.get('sharedDirector.winSize');
-        var label = cocos.Label.create({string: this.get('title'), fontName: 'Arial', fontSize: 32});
+
+        var label = cocos.Label.create({string: this.get('title'), fontName: 'Arial', fontSize: 26});
         this.addChild({child: label, z:1});
         label.set('position', ccp(s.width / 2, 50));
 
@@ -28,13 +44,12 @@ var SpriteDemo = cocos.Layer.extend({
 		var item3 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/f1.png", selectedImage:__dirname + "/resources/f2.png", callback:sys.callback(this, 'nextCallback')});
 
         var menu = cocos.Menu.create({items: [item1, item2, item3]});
+
         menu.set('position', ccp(0,0));
         item1.set('position', ccp(s.width /2 -100, s.height -30));
         item2.set('position', ccp(s.width /2,      s.height -30));
         item3.set('position', ccp(s.width /2 +100, s.height -30));
-
         this.addChild({child: menu, z:1});
-        
 	},
 
 	restartCallback: function() {
@@ -44,22 +59,21 @@ var SpriteDemo = cocos.Layer.extend({
 	},
 
 	nextCallback: function() {
+        var director = cocos.Director.get('sharedDirector');
+
+        var scene = cocos.Scene.create();
+        scene.addChild({child: nextAction().create()});
+
+        director.replaceScene(scene);
 	}
 });
-
-SpriteDemo.scene = function(key, val) {
-    var scene = cocos.Scene.create();
-    scene.addChild(this.create());
-    return scene;
-}.property();
-
 
 var Sprite1 = SpriteDemo.extend({
 	title: 'Sprite (tap screen)',
 
 	init: function() {
 		@super;
-		this.set('isTouchEnabled', true);
+		this.set('isMouseEnabled', true);
 
         var s = cocos.Director.get('sharedDirector.winSize');
         this.addNewSprite(ccp(s.width /2, s.height /2));
@@ -101,12 +115,13 @@ var Sprite1 = SpriteDemo.extend({
         sprite.runAction(cocos.RepeatForever.create(seq));
         
 	},
-	touchesEnded: function(opts) {
-		var touches = opts['touches'],
-			event = opts['event'];
+    mouseUp: function(event) {
 
-		this.addNewSprite(touches[0].location);
-	}
+        var location = cocos.Director.get('sharedDirector').convertEventToCanvas(event);
+		this.addNewSprite(location);
+
+        return true;
+    }
 });
 
 
@@ -124,7 +139,12 @@ var Sprite1 = SpriteDemo.extend({
 sys.ApplicationMain(cocos.AppDelegate.extend({
     applicationDidFinishLaunching: function () {
         var director = cocos.Director.get('sharedDirector');
+
         director.attachInView(document.getElementById('hello-world'));
-        director.runWithScene(Sprite1.get('scene'));
+
+        var scene = cocos.Scene.create();
+        scene.addChild({child: nextAction().create()});
+
+        director.runWithScene(scene);
     }
 }));
