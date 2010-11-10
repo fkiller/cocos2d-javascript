@@ -139,8 +139,10 @@ var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
             return;
         }
 
+            console.log("MD: ", this.mouseDelegates);
         for (var i = 0; i < this.mouseDelegates.length; i++) {
             var entry = this.mouseDelegates[i];
+            console.log("ENTRY: ", entry);
             if (entry.delegate.mouseUp) {
                 var swallows = entry.delegate.mouseUp(evt);
                 if (swallows) {

@@ -40,7 +40,7 @@ var Layer = Node.extend(/** @scope cocos.Layer# */{
             if (this.isMouseEnabled) {
                 EventDispatcher.get('sharedDispatcher').addMouseDelegate({delegate: this, priority:this.get('mouseDelegatePriority')});
             } else {
-            EventDispatcher.get('sharedDispatcher').removeMouseDelegate({delegate: this});
+                EventDispatcher.get('sharedDispatcher').removeMouseDelegate({delegate: this});
             }
         }
     }.observes('isMouseEnabled')

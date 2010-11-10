@@ -20,6 +20,7 @@ var kMenuStateTrackingTouch = 1;
  * @extends cocos.Layer
  */
 var Menu = Layer.extend(/** @scope cocos.Menu# */{
+	mouseDelegatePriority: (-Number.MAX_VALUE +1),
 	state: kMenuStateWaiting,
 	selectedItem: null,
 	opacuty: 255,
@@ -30,7 +31,7 @@ var Menu = Layer.extend(/** @scope cocos.Menu# */{
 
 		var items = opts['items'];
 
-		this.set('isTouchEnabled', true);
+		this.set('isMouseEnabled', true);
 		
         var s = Director.get('sharedDirector.winSize');
 
@@ -59,17 +60,15 @@ var Menu = Layer.extend(/** @scope cocos.Menu# */{
 		return @super;
     },
 
-    registerWithTouchDispatcher: function() {
-        TouchDispatcher.get('sharedDispatcher').addTargetedDelegate({delegate: this, priority: Number.MIN_VALUE+1, swallowsTouches: true});
-    },
+    itemForMouseEvent: function(event) {
+        var location = Director.get('sharedDirector').convertEventToCanvas(event);
 
-    itemForTouch: function(touch) {
         var children = this.get('children');
         for (var i = 0, len = children.length; i < len; i++) {
             var item = children[i];
 
             if (item.get('visible') && item.get('isEnabled')) {
-                var local = item.convertToNodeSpace(touch.location);
+                var local = item.convertToNodeSpace(location);
                 
                 var r = item.get('rect');
                 r.origin = ccp(0, 0);
@@ -84,15 +83,26 @@ var Menu = Layer.extend(/** @scope cocos.Menu# */{
         return null;
     },
 
-    touchBegan: function(opts) {
-        var touch = opts['touch'],
-            event = opts['event'];
+    mouseUp: function(event) {
+        if (this.selectedItem) {
+            this.selectedItem.set('isSelected', false);
+            this.selectedItem.activate();
+
+            this.set('state', kMenuStateWaiting);
+
+            return true;
+        }
+
+        return false;
+
+    },
+    mouseDown: function(event) {
 
         if (this.state != kMenuStateWaiting || !this.visible) {
             return false;
         }
 
-        var selectedItem = this.set('selectedItem', this.itemForTouch(touch));
+        var selectedItem = this.set('selectedItem', this.itemForMouseEvent(event));
         if (selectedItem) {
             selectedItem.set('isSelected', true);
             this.set('state', kMenuStateTrackingTouch);
@@ -102,33 +112,25 @@ var Menu = Layer.extend(/** @scope cocos.Menu# */{
 
         return false;
     },
-    touchMoved: function(opts) {
-        var touch = opts['touch'],
-            event = opts['event'];
+    mouseDragged: function(event) {
+        var currentItem = this.itemForMouseEvent(event);
 
-            var currentItem = this.itemForTouch(touch);
-
-            if (currentItem != this.selectedItem) {
-                if (this.selectedItem) {
-                    this.selectedItem.set('isSelected', false);
-                }
-                this.set('selectedItem', currentItem);
-                if (this.selectedItem) {
-                    this.selectedItem.set('isSelected', true);
-                }
+        if (currentItem != this.selectedItem) {
+            if (this.selectedItem) {
+                this.selectedItem.set('isSelected', false);
             }
-        
-    },
-    touchEnded: function(opts) {
-        var touch = opts['touch'],
-            event = opts['event'];
-
-        if (this.selectedItem) {
-            this.selectedItem.set('isSelected', false);
-            this.selectedItem.activate();
+            this.set('selectedItem', currentItem);
+            if (this.selectedItem) {
+                this.selectedItem.set('isSelected', true);
+            }
         }
 
-        this.set('state', kMenuStateWaiting);
+        if (currentItem && state == kCCMenuStateTrackingTouch) {
+            return true;
+        }
+
+        return false;
+        
     }
 
 });
