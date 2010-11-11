@@ -2,7 +2,6 @@ var sys = require('sys'),
     Layer = require('./Layer').Layer,
     Director = require('./Director').Director,
     MenuItem = require('./MenuItem').MenuItem,
-    TouchDispatcher = require('./TouchDispatcher').TouchDispatcher,
     geom = require('geometry'), ccp = geom.ccp;
 
 /** @private
@@ -125,7 +124,7 @@ var Menu = Layer.extend(/** @scope cocos.Menu# */{
             }
         }
 
-        if (currentItem && state == kCCMenuStateTrackingTouch) {
+        if (currentItem && state == kMenuStateTrackingTouch) {
             return true;
         }
 
