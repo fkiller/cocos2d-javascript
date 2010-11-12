@@ -87,6 +87,12 @@ var Scheduler = Thing.extend(/** @scope cocos.Scheduler# */{
         });
 	},
 
+    unscheduleAllSelectorsForTarget: function(target) {
+    },
+
+    pauseTarget: function(target) {
+    },
+
 	resumeTarget: function(target) {
 		// TODO
 	}

@@ -68,6 +68,18 @@ var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
         }
     },
 
+    removeAllActionsFromTarget: function(target) {
+        var targetID = target.get('id');
+
+        var element = this.targets[targetID];
+        if (!element) {
+            return;
+        }
+
+        // Delete everything in array but don't replace it incase something else has a reference
+        element.actions.splice(0, element.actions.length-1);
+    },
+
     tick: function(dt) {
 
         var self = this;
@@ -104,6 +116,9 @@ var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
         });
 
         delete self;
+    },
+
+    pauseTarget: function(target) {
     },
 
 	resumeTarget: function(target) {

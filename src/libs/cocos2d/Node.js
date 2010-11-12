@@ -133,6 +133,13 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
 
         sys.each(this.children, function(child) { child.onExit(); });
     },
+
+    cleanup: function() {
+        this.stopAllActions();
+        this.unscheduleAllSelectors();
+        sys.each(this.children, function(child) { child.cleanup(); });
+    },
+
     resumeSchedulerAndActions: function() {
         Scheduler.get('sharedScheduler').resumeTarget(this);
         ActionManager.get('sharedManager').resumeTarget(this);
@@ -140,6 +147,12 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
     pauseSchedulerAndActions: function() {
         Scheduler.get('sharedScheduler').pauseTarget(this);
         ActionManager.get('sharedManager').pauseTarget(this);
+    },
+    unscheduleAllSelectors: function() {
+        Scheduler.get('sharedScheduler').unscheduleAllSelectorsForTarget(this);
+    },
+    stopAllActions: function() {
+        ActionManager.get('sharedManager').removeAllActionsFromTarget(this);
     },
 
     visit: function(context) {
