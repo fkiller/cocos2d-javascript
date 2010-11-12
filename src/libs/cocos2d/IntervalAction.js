@@ -376,6 +376,55 @@ var Sequence = IntervalAction.extend(/** @scope cocos.Sequence# */{
     }
 });
 
+/** @member cocos
+ * @class
+ *
+ * Animates a sprite given the name of an Animation 
+ *
+ * @extends cocos.IntervalAction
+ */
+var Animate = IntervalAction.extend(/** @scope cocos.Animate# */{
+    animation: null,
+    restoreOriginalFrame: false,
+    origFrame: null,
+
+    /** @ignore */
+    init: function(opts) {
+        this.animation = opts['animation'];
+        opts['duration'] = this.animation.frames.length * this.animation.delay;
+
+        @super;
+    },
+
+    /** @ignore */
+    startWithTarget: function(target) {
+        @super;
+
+        if (this.restoreOriginalFrame) {
+            this.set('origFrame', this.target.get('displayedFrame'));
+        }
+    },
+
+    /** @ignore */
+    update: function(t) {
+        var frames = this.animation.get('frames'),
+            numberOfFrames = frames.length,
+            idx = Math.floor(t * numberOfFrames);
+
+        if (idx >= numberOfFrames) {
+            idx = numberOfFrames -1;
+        }
+
+        var sprite = this.target;
+        if (!sprite.isFrameDisplayed(frames[idx])) {
+            sprite.set('displayFrame', frames[idx]);
+        }
+    },
+
+    /** @ignore */
+    reverse: function() {
+    }
+});
 
 exports.IntervalAction = IntervalAction;
 exports.ScaleTo = ScaleTo;
@@ -383,3 +432,4 @@ exports.ScaleBy = ScaleBy;
 exports.RotateTo = RotateTo;
 exports.RotateBy = RotateBy;
 exports.Sequence = Sequence;
+exports.Animate = Animate;

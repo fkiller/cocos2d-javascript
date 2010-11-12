@@ -1,11 +1,14 @@
 var sys = require('sys'),
+	Texture2D = require('cocos2d/Texture2D').Texture2D,
     cocos = require('cocos2d'),
-    ccp = require('geometry').ccp;
+    geo = require('geometry'),
+    ccp = geo.ccp;
 
 var sceneIdx = -1;
 var transitions = [
     "Sprite1",
-    "SpriteBatchNode1"
+    //"SpriteBatchNode1",
+	"SpriteAnimationFlip"
 ];
 
 var kTagTileMap = 1,
@@ -204,14 +207,56 @@ var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# 
     }
 });
 
+/**
+ * @class
+ *
+ * Example Sprite Batch Node 1
+ */
+var SpriteAnimationFlip = SpriteDemo.extend(/** @scope SpriteAnimationFlip.prototype# */{
+    title: 'Sprite Animation',
+
+    init: function() {
+        @super;
+
+        var s = cocos.Director.get('sharedDirector.winSize');
+
+        var texture = Texture2D.create({file: __dirname + "/resources/animations/dragon_animation.png"});
+
+        var frame0 = cocos.SpriteFrame.create({texture: texture, rect: geo.rectMake(132*0, 132*0, 132, 132)}),
+            frame1 = cocos.SpriteFrame.create({texture: texture, rect: geo.rectMake(132*1, 132*0, 132, 132)}),
+            frame2 = cocos.SpriteFrame.create({texture: texture, rect: geo.rectMake(132*2, 132*0, 132, 132)}),
+            frame3 = cocos.SpriteFrame.create({texture: texture, rect: geo.rectMake(132*3, 132*0, 132, 132)}),
+            frame4 = cocos.SpriteFrame.create({texture: texture, rect: geo.rectMake(132*0, 132*1, 132, 132)}),
+            frame5 = cocos.SpriteFrame.create({texture: texture, rect: geo.rectMake(132*1, 132*1, 132, 132)});
 
 
+        var sprite = cocos.Sprite.create({frame: frame0});
+		sprite.set('position', ccp(s.width/2 - 80, s.height/2));
+        this.addChild(sprite);
+
+        var animFrames = [
+            frame0,
+            frame1,
+            frame2,
+            frame3,
+            frame4,
+            frame5
+        ];
 
 
+        var animation = cocos.Animation.create({frames: animFrames, delay:0.2}),
+            animate   = cocos.Animate.create({animation: animation, restoreOriginalFrame:false});
+            /*
+            seq       = cocos.Sequence.create({actions: [animate,
+                                                         cocos.FlipX.create({flipX: true}),
+                                                         animate.copy(),
+                                                         cocos.FlipX.create({flipX: false})]});
+            */
 
-
-
-
+        sprite.runAction(cocos.RepeatForever.create(animate));
+    }
+});
+		
 
 sys.ApplicationMain(cocos.AppDelegate.extend({
     applicationDidFinishLaunching: function () {

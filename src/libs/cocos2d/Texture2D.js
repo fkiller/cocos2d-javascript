@@ -6,6 +6,7 @@ var sys = require('sys'),
 var Texture2D = Thing.extend(/** @scope cocos.Texture2D# */{
 	imgElement: null,
 	size: null,
+    name: null,
 
 	init: function(opts) {
 		var file = opts['file'],
@@ -13,9 +14,11 @@ var Texture2D = Thing.extend(/** @scope cocos.Texture2D# */{
 			texture = opts['texture'];
 
 		if (file) {
+            this.name = file;
 			data = resource(file);
 		} else if (texture) {
-			data = texture.get('data');
+            this.name = texture.get('name');
+			data = texture.get('imgElement');
 		}
 
 		this.size = {width: 0, height: 0};
@@ -40,7 +43,7 @@ var Texture2D = Thing.extend(/** @scope cocos.Texture2D# */{
 
 	contentSize: function() {
 		return this.size;
-	}.property()
+    }.property()
 });
 
 exports.Texture2D = Texture2D;

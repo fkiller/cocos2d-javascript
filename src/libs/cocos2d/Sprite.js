@@ -2,7 +2,8 @@ var sys = require('sys'),
     Director = require('./Director').Director,
     TextureAtlas = require('./TextureAtlas').TextureAtlas,
     Node = require('./Node').Node,
-    ccp = require('geometry').ccp;
+    geo = require('geometry'),
+    ccp = geo.ccp;
 
 /** @member cocos
  * @class
@@ -21,11 +22,17 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
     init: function(opts) {
         @super;
 
-        var file = opts['file'],
+        var file         = opts['file'],
             textureAtlas = opts['textureAtlas'],
-            texture = opts['texture'],
-            spritesheet = opts['spritesheet'],
-            rect = opts['rect'];
+            texture      = opts['texture'],
+            frame        = opts['frame'],
+            spritesheet  = opts['spritesheet'],
+            rect         = opts['rect'];
+
+        if (frame) {
+            texture = frame.get('texture');
+            rect    = frame.get('rect');
+        }
 
         if (file || texture) {
             textureAtlas = TextureAtlas.create({file: file, texture: texture});
@@ -51,6 +58,10 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
         };
 
         this.set('textureAtlas', textureAtlas);
+
+        if (frame) {
+            this.set('displayFrame', frame);
+        }
     },
 
     _updateTextureQuad: function(obj, key, texture, oldTexture) {
@@ -68,7 +79,8 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
             return;
         }
 
-        this.quad.drawRect.size = {width: this.rect.size.width, height: this.rect.size.height};
+        this.quad.textureRect = sys.copy(this.rect);
+        this.quad.drawRect.size = sys.copy(this.rect.size);
     }.observes('scale', 'scaleX', 'scaleY', 'rect'),
 
     updateTransform: function(ctx) {
@@ -98,7 +110,17 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
 
     draw: function(ctx) {
         this.get('textureAtlas').drawQuad(ctx, this.quad);
-    }
+    },
+
+    isFrameDisplayed: function(frame) {
+        // TODO check texture name
+        return (geo.rectEqualToRect(frame.rect, this.rect));
+    },
+    displayFrame: function(key, frame) {
+        // TODO change texture
+
+        this.set('rect', frame.get('rect'));
+    }.property()
 });
 
 module.exports.Sprite = Sprite;
