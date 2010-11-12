@@ -36,6 +36,12 @@ var geometry = {
     pointEqualToPoint: function(point1, point2) {
         return (point1.x == point2.x && point1.y == point2.y);
     },
+    sizeEqualToSize: function(size1, size2) {
+        return (size1.width == size2.width && size1.height == size2.height);
+    },
+    rectEqualToRect: function(rect1, rect2) {
+        return (module.exports.sizeEqualToSize(rect1.size, rect2.size) && module.exports.pointEqualToPoint(rect1.origin, rect2.origin));
+    },
 
     pointApplyAffineTransform: function(p, trans) {
         var newPoint = ccp(0, 0);
