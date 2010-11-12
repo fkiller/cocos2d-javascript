@@ -53,7 +53,15 @@ var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
         var delegate = opts['delegate'],
             list = opts['list'];
 
-        var idx = list.indexOf(delegate);
+        var idx = -1,
+            i;
+        for (i = 0; i < list.length; i++) {
+            var l = list[i];
+            if (l.delegate == delegate) {
+                idx = i;
+                break;
+            }
+        }
         if (idx == -1) {
             return;
         }
@@ -139,10 +147,8 @@ var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
             return;
         }
 
-            console.log("MD: ", this.mouseDelegates);
         for (var i = 0; i < this.mouseDelegates.length; i++) {
             var entry = this.mouseDelegates[i];
-            console.log("ENTRY: ", entry);
             if (entry.delegate.mouseUp) {
                 var swallows = entry.delegate.mouseUp(evt);
                 if (swallows) {
