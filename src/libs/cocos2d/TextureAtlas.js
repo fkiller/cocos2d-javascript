@@ -23,14 +23,14 @@ var TextureAtlas = Thing.extend(/** @scope cocos.TextureAtlas */{
 			data = opts['data'],
 			texture = opts['texture'],
 			canvas = opts['canvas'];
-		
-		// Create texture with whatever we were given
-		if (!canvas) {
+
+        if (canvas) {
+            // If we've been given a canvas element then we'll use that for our image
+            this.imgElement = canvas;
+        } else {
 			var texture = this.set('texture', Texture2D.create({texture: texture, file: file, data: data}));
 			this.imgElement = texture.get('imgElement');
-		} else {
-			this.imgElement = canvas;
-		}
+        }
 
 		this.quads = [];
 	},

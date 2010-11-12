@@ -1,7 +1,7 @@
 var sys = require('sys'),
     path = require('path');
 
-var modules = 'Node Layer Scene Label Sprite Director Action IntervalAction Scheduler ActionManager TMXTiledMap TMXXMLParser SpriteSheet RenderTexture Menu MenuItem AppDelegate KeyboardDispatcher'.split(' ');
+var modules = 'Node Layer Scene Label Sprite Director Action IntervalAction Scheduler ActionManager TMXTiledMap TMXXMLParser BatchNode SpriteSheet RenderTexture Menu MenuItem AppDelegate KeyboardDispatcher'.split(' ');
 
 /** @namespace */
 var cocos = {};

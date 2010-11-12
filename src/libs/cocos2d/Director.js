@@ -120,6 +120,10 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
             throw "Director.runWithScene must be given an instance of Scene";
         }
 
+        if (this._runningScene) {
+            throw "You can't run an scene if another Scene is running. Use replaceScene or pushScene instead"
+        }
+
         this.pushScene(scene);
         this.startAnimation();
     },
@@ -131,6 +135,12 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
      * @param {cocos.Scene} scene The scene to replace with
      */
     replaceScene: function(scene) {
+        var index = this.sceneStack.length;
+
+        this._sendCleanupToScene = true;
+        this.sceneStack.pop();
+        this.sceneStack.push(scene);
+        this._nextScene = scene;
     },
 
     /**
@@ -219,6 +229,13 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
      */
     setNextScene: function() {
         // TODO transitions
+
+        if (this._runningScene) {
+            this._runningScene.onExit();
+            if (this._sendCleanupToScene) {
+                this._runningScene.cleanup();
+            }
+        }
 
         this._runningScene = this._nextScene;
 

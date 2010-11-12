@@ -14,6 +14,7 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
     visible: true,
     position: null,
     parent: null,
+    tag: null,
     contentSize: null,
     zOrder: 0,
     anchorPoint: null,
@@ -89,8 +90,8 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
             this.children.push(child);
         }
 
+        child.set('tag', tag);
         child.set('zOrder', z);
-
         child.set('parent', this);
 
         if (this.isRunning) {
@@ -98,6 +99,17 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
         }
 
         return this;
+    },
+    getChild: function(opts) {
+        var tag = opts['tag'];
+
+        for (var i = 0; i < this.children.length; i++) {
+            if (this.children[i].tag == tag) {
+                return this.children[i];
+            }
+        }
+
+        return null;
     },
 
     removeChild: function(opts) {

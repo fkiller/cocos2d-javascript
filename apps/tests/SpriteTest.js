@@ -5,8 +5,15 @@ var sys = require('sys'),
 var sceneIdx = -1;
 var transitions = [
     "Sprite1",
-    "SpriteBatchNode1",
+    "SpriteBatchNode1"
 ];
+
+var kTagTileMap = 1,
+    kTagSpriteBatchNode = 1,
+    kTagNode = 2,
+    kTagAnimation1 = 1,
+    kTagSpriteLeft = 2,
+    kTagSpriteRight = 3;
 
 function nextAction() {
     sceneIdx++;
@@ -31,17 +38,17 @@ var SpriteDemo = cocos.Layer.extend({
         label.set('position', ccp(s.width / 2, 50));
 
 
-		var subtitle = this.get('subtitle');
-		if (subtitle) {
-			var l = cocos.Label.create({string:subtitle, fontName: "Thonburi", fontSize: 16});
+        var subtitle = this.get('subtitle');
+        if (subtitle) {
+            var l = cocos.Label.create({string:subtitle, fontName: "Thonburi", fontSize: 16});
             this.addChild({child: l, z:1});
-			l.set('position', ccp(s.width/2, 80));
-		}
+            l.set('position', ccp(s.width/2, 80));
+        }
 
 
-		var item1 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/b1.png", selectedImage:__dirname + "/resources/b2.png", callback:sys.callback(this, 'backCallback')});
-		var item2 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/r1.png", selectedImage:__dirname + "/resources/r2.png", callback:sys.callback(this, 'restartCallback')});
-		var item3 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/f1.png", selectedImage:__dirname + "/resources/f2.png", callback:sys.callback(this, 'nextCallback')});
+        var item1 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/b1.png", selectedImage:__dirname + "/resources/b2.png", callback:sys.callback(this, 'backCallback')});
+        var item2 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/r1.png", selectedImage:__dirname + "/resources/r2.png", callback:sys.callback(this, 'restartCallback')});
+        var item3 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/f1.png", selectedImage:__dirname + "/resources/f2.png", callback:sys.callback(this, 'nextCallback')});
 
         var menu = cocos.Menu.create({items: [item1, item2, item3]});
 
@@ -50,36 +57,41 @@ var SpriteDemo = cocos.Layer.extend({
         item2.set('position', ccp(s.width /2,      s.height -30));
         item3.set('position', ccp(s.width /2 +100, s.height -30));
         this.addChild({child: menu, z:1});
-	},
+    },
 
-	restartCallback: function() {
-	},
+    restartCallback: function() {
+    },
 
-	backCallback: function() {
-	},
+    backCallback: function() {
+    },
 
-	nextCallback: function() {
+    nextCallback: function() {
         var director = cocos.Director.get('sharedDirector');
 
         var scene = cocos.Scene.create();
         scene.addChild({child: nextAction().create()});
 
         director.replaceScene(scene);
-	}
+    }
 });
 
-var Sprite1 = SpriteDemo.extend({
-	title: 'Sprite (tap screen)',
+/**
+ * @class
+ *
+ * Example Sprite 1
+ */
+var Sprite1 = SpriteDemo.extend(/** @scope Sprite1.prototype# */{
+    title: 'Sprite (tap screen)',
 
-	init: function() {
-		@super;
-		this.set('isMouseEnabled', true);
+    init: function() {
+        @super;
+        this.set('isMouseEnabled', true);
 
         var s = cocos.Director.get('sharedDirector.winSize');
         this.addNewSprite(ccp(s.width /2, s.height /2));
-	},
+    },
 
-	addNewSprite: function(point) {
+    addNewSprite: function(point) {
         var idx = Math.floor(Math.random() * 1400 / 100),
             x = (idx%5) * 85,
             y = (idx%3) * 121;
@@ -114,11 +126,11 @@ var Sprite1 = SpriteDemo.extend({
         seq = cocos.Sequence.create({actions:[action, actionBack]});
         sprite.runAction(cocos.RepeatForever.create(seq));
         
-	},
+    },
     mouseUp: function(event) {
 
         var location = cocos.Director.get('sharedDirector').convertEventToCanvas(event);
-		this.addNewSprite(location);
+        this.addNewSprite(location);
 
         return true;
     }
@@ -126,6 +138,71 @@ var Sprite1 = SpriteDemo.extend({
 
 
 
+/**
+ * @class
+ *
+ * Example Sprite Batch Node 1
+ */
+var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# */{
+    title: 'SpriteBatchNode (tap screen)',
+
+    init: function() {
+        @super;
+        this.set('isMouseEnabled', true);
+
+        var batch = cocos.BatchNode.create({file: __dirname + "/resources/grossini_dance_atlas.png", capcity: 50});
+        this.addChild({child: batch, z: 0, tag: kTagSpriteBatchNode});
+
+        var s = cocos.Director.get('sharedDirector.winSize');
+        this.addNewSprite(ccp(s.width /2, s.height /2));
+    },
+
+    addNewSprite: function(point) {
+        var batch = this.getChild({tag: kTagSpriteBatchNode});
+
+        var idx = Math.floor(Math.random() * 1400 / 100),
+            x = (idx%5) * 85,
+            y = (idx%3) * 121;
+
+        var sprite = cocos.Sprite.create({textureAtlas: batch.get('textureAtlas'),
+                                                  rect: {origin: ccp(x, y),
+                                                           size: {width: 85, height: 121}}})
+        batch.addChild({child:sprite});
+
+        sprite.set('position', ccp(point.x, point.y));
+
+        var action;
+        var rand = Math.random();
+
+        if (rand < 0.2) {
+            action = cocos.ScaleBy.create({duration:3, scale:2});
+        } else if (rand < 0.4) {
+            action = cocos.RotateBy.create({duration:3, angle:360});
+        } else if (rand < 0.6) {
+            action = cocos.ScaleBy.create({duration:3, scale:2});
+            //action = cocos.Blink.create({duration:3, scale:2});
+        } else if (rand < 0.8) {
+            action = cocos.RotateBy.create({duration:3, angle:360});
+            //action = cocos.TintBy.create({duration:3, scale:2});
+        } else {
+            action = cocos.ScaleBy.create({duration:3, scale:2});
+            //action = cocos.FadeOut.create({duration:3, scale:2});
+        }
+
+
+
+        var actionBack = action.reverse();
+        var seq = cocos.Sequence.create({actions:[action, actionBack]});
+
+        sprite.runAction(cocos.RepeatForever.create(seq));
+    },
+    mouseUp: function(event) {
+        var location = cocos.Director.get('sharedDirector').convertEventToCanvas(event);
+        this.addNewSprite(location);
+
+        return true;
+    }
+});
 
 
 

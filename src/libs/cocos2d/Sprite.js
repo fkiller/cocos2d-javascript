@@ -8,7 +8,7 @@ var sys = require('sys'),
  * @class
  */
 var Sprite = Node.extend(/** @scope cocos.Sprite# */{
-    texture: null,
+    textureAtlas: null,
     rect: null,
     dirty: true,
     recursiveDirty: true,
@@ -22,21 +22,22 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
         @super;
 
         var file = opts['file'],
+            textureAtlas = opts['textureAtlas'],
             texture = opts['texture'],
             spritesheet = opts['spritesheet'],
             rect = opts['rect'];
 
-        if (file) {
-            texture = TextureAtlas.create({file:file});
+        if (file || texture) {
+            textureAtlas = TextureAtlas.create({file: file, texture: texture});
         } else if (spritesheet) {
-            texture = spritesheet.get('textureAtlas');
+            textureAtlas = spritesheet.get('textureAtlas');
             this.set('useSpriteSheet', true);
-        } else if (!texture && !file) {
-            //throw "Sprite has no texture or file";
+        } else if (!textureAtlas) {
+            throw "Sprite has no texture";
         }
 
-        if (!rect && texture) {
-            rect = {origin: ccp(0,0), size:{width: texture.texture.size.width, height: texture.texture.size.height}};
+        if (!rect && textureAtlas) {
+            rect = {origin: ccp(0,0), size:{width: textureAtlas.texture.size.width, height: textureAtlas.texture.size.height}};
         }
 
         if (rect) {
@@ -49,7 +50,7 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
             textureRect: rect
         };
 
-        this.set('textureAtlas', texture);
+        this.set('textureAtlas', textureAtlas);
     },
 
     _updateTextureQuad: function(obj, key, texture, oldTexture) {
@@ -80,7 +81,6 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
             this.set('recursiveDirty', false);
             return;
         }
-
 
         // TextureAtlas has hard reference to this quad so we can just update it directly
         this.quad.drawRect.origin = {
