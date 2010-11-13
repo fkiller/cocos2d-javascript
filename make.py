@@ -2,15 +2,15 @@
 
 from optparse import OptionParser
 from cStringIO import StringIO
-import re, os, base64, mimetypes, json
+import re, os, base64, mimetypes, json, codecs
 
 TEXT_MIMETYPES = 'application/xml text/plain text/json application/json text/html'.split(' ')
 CODE_MIMETYPES = 'text/javascript application/javascript'.split(' ')
 
-IMAGE_RESOURCE_TEMPLATE  = '\nwindow.__resources__["%s"] = {meta: {mimetype: "%s"}, data: __imageResource("data:%s;base64,%s")};\n'
-BINARY_RESOURCE_TEMPLATE = '\nwindow.__resources__["%s"] = {meta: {mimetype: "%s"}, data: "%s"};\n'
-TEXT_RESOURCE_TEMPLATE   = '\nwindow.__resources__["%s"] = {meta: {mimetype: "%s"}, data: %s};\n'
-CODE_RESOURCE_TEMPLATE   = '''
+IMAGE_RESOURCE_TEMPLATE  = u'\nwindow.__resources__["%s"] = {meta: {mimetype: "%s"}, data: __imageResource("data:%s;base64,%s")};\n'
+BINARY_RESOURCE_TEMPLATE = u'\nwindow.__resources__["%s"] = {meta: {mimetype: "%s"}, data: "%s"};\n'
+TEXT_RESOURCE_TEMPLATE   = u'\nwindow.__resources__["%s"] = {meta: {mimetype: "%s"}, data: %s};\n'
+CODE_RESOURCE_TEMPLATE   = u'''
 window.__resources__['%s'] = {meta: {mimetype: "%s"}, data: function(exports, require, module, __filename, __dirname) {
 %s
 }};
@@ -22,8 +22,8 @@ mimetypes.add_type('application/xml', '.tsx')
 class Compiler:
     config = None
     output = 'cocos2d.js'
-    header_code = ''
-    footer_code = ''
+    header_code = u''
+    footer_code = u''
     valid_extensions = None
 
     def __init__(self, config_file=None):
@@ -31,7 +31,7 @@ class Compiler:
 
         module_js = os.path.join(os.path.dirname(__file__), 'module.js')
         self.footer_code = open(module_js).read()
-        self.header_code = '''
+        self.header_code = u'''
 if (!window.__resources__) { window.__resources__ = {}; }
 if (!__imageResource) { function __imageResource(data) { var img = new Image(); img.src = data; return img; } }
 '''
@@ -89,7 +89,7 @@ if (!__imageResource) { function __imageResource(data) { var img = new Image(); 
                 data = StringIO()
 
                 if is_code:
-                    file_code = open(path).read()
+                    file_code = codecs.open(path, encoding='utf-8').read()
                     file_code = self.parse_supers(file_code)
                     code += CODE_RESOURCE_TEMPLATE % (resource_name, mimetype, file_code)
                 elif is_text:
@@ -162,7 +162,7 @@ def main():
     output = options.output or compiler.output
     if output:
         print "Writing output to:", output
-        o = open(output, 'w')
+        o = codecs.open(output, 'w', encoding='utf-8')
         o.write(code)
         o.close()
     else:

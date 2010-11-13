@@ -30,7 +30,7 @@ class Cocos2D(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-Type', 'text/javascript')
                 self.end_headers()
-                self.wfile.write(code)
+                self.wfile.write(code.encode('utf-8'))
 
             else:
                 self.path = '/public' + os.path.normpath(self.path)
