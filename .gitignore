@@ -1,3 +1,4 @@
 *.swp
 *.pyc
 jsdocs/
+public/cocos2d.js
