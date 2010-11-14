@@ -19,7 +19,7 @@ Everything you write will be in JavaScript. The two Python scripts (make.py and
 server.py) are to build and serve your code during development. It would be
 very unwise to use the server.py script in production.
 
-The entry point for the code is in apps/index.js. 
+The entry point for the code is path defined as "main.js" inside the in "make.js" file.
 
 In the public/index.html you will see &lt;script src="cocos2d.js"&gt; tag to include the code.
 
@@ -52,7 +52,7 @@ until I get close to an alpha quality build.
 Documentation
 -------------
 
-Download JsDoc 2.3 from <http://code.google.com/p/jsdoc-toolkit/>.
+Download JsDoc 2.3 (or 2.4) from <http://code.google.com/p/jsdoc-toolkit/>.
 
 Copy that to /usr/local/jsdoc-toolkit or wherever you like and then run:
     

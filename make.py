@@ -47,7 +47,7 @@ if (!__imageResource) { function __imageResource(data) { var img = new Image(); 
         
     def make(self):
         code = self.header_code
-        for source, dest in self.config['folders'].items():
+        for source, dest in self.config['paths'].items():
             code += self.make_path(source, root_path=dest, include_header=False, include_footer=False)
         code += self.footer_code
         return code
@@ -62,48 +62,69 @@ if (!__imageResource) { function __imageResource(data) { var img = new Image(); 
 
         source = os.path.normpath(source)
 
-        for root, dirs, files in os.walk(source):
-            for f in files:
-                if f[0] == '.':
-                    continue
+        # If refrences to a single file we won't bother walking
+        if os.path.isfile(source):
+            f = source
+            if self.valid_extensions and os.path.splitext(f)[1][1:] not in self.valid_extensions:
+                print "Skipping:", f
+                return
 
-                if self.valid_extensions and os.path.splitext(f)[1][1:] not in self.valid_extensions:
-                    print "Skipping:", f
-                    continue
+            if strip_source: # Remove source path prefix
+                resource_name = '%s%s' % (root_path, f[len(source) +1:])
+            else:
+                resource_name = '%s%s' % (root_path, f)
 
-                path = os.path.join(root, f)
+            code += self.read_file(f, resource_name)
 
-                if strip_source: # Remove source path prefix
-                    resource_name = '%s%s' % (root_path, path[len(source) +1:])
-                else:
-                    resource_name = '%s%s' % (root_path, path)
+        else: # If it's a directory we'll include everything in it
+            for root, dirs, files in os.walk(source):
+                for f in files:
+                    if f[0] == '.':
+                        continue
 
-                print "Reading: '%s' --> '%s'" % (path, resource_name)
+                    path = os.path.join(root, f)
 
-                mimetype = mimetypes.guess_type(path)[0]
+                    if strip_source: # Remove source path prefix
+                        resource_name = '%s%s' % (root_path, path[len(source) +1:])
+                    else:
+                        resource_name = '%s%s' % (root_path, path)
 
-                is_code = (mimetype in CODE_MIMETYPES)
-                is_text = (mimetype in TEXT_MIMETYPES)
-                is_image = (mimetype.split('/')[0] == 'image')
+                    code += self.read_file(path, resource_name)
 
-                data = StringIO()
-
-                if is_code:
-                    file_code = codecs.open(path, encoding='utf-8').read()
-                    file_code = self.parse_supers(file_code)
-                    code += CODE_RESOURCE_TEMPLATE % (resource_name, mimetype, file_code)
-                elif is_text:
-                    code += TEXT_RESOURCE_TEMPLATE % (resource_name, mimetype, json.dumps(open(path).read()))
-                elif is_image:
-                    base64.encode(open(path), data)
-                    code += IMAGE_RESOURCE_TEMPLATE % (resource_name, mimetype, mimetype, data.getvalue().replace('\n', ''))
-                else: # Binaries
-                    base64.encode(open(path), data)
-                    code += BINARY_RESOURCE_TEMPLATE % (resource_name, mimetype, mimetype, data.getvalue().replace('\n', ''))
 
 
         if include_footer:
             code += self.footer_code
+
+        return code
+
+    def read_file(self, filename, resource_name):
+        if self.valid_extensions and os.path.splitext(filename)[1][1:] not in self.valid_extensions:
+            print "Skipping:", filename
+            return ''
+
+        print "Reading: '%s' --> '%s'" % (filename, resource_name)
+
+        mimetype = mimetypes.guess_type(filename)[0]
+
+        is_code = (mimetype in CODE_MIMETYPES)
+        is_text = (mimetype in TEXT_MIMETYPES)
+        is_image = (mimetype.split('/')[0] == 'image')
+
+        data = StringIO()
+
+        if is_code:
+            file_code = codecs.open(filename, encoding='utf-8').read()
+            file_code = self.parse_supers(file_code)
+            code = CODE_RESOURCE_TEMPLATE % (resource_name, mimetype, file_code)
+        elif is_text:
+            code = TEXT_RESOURCE_TEMPLATE % (resource_name, mimetype, json.dumps(open(filename).read()))
+        elif is_image:
+            base64.encode(open(filename), data)
+            code = IMAGE_RESOURCE_TEMPLATE % (resource_name, mimetype, mimetype, data.getvalue().replace('\n', ''))
+        else: # Binaries
+            base64.encode(open(filename), data)
+            code = BINARY_RESOURCE_TEMPLATE % (resource_name, mimetype, mimetype, data.getvalue().replace('\n', ''))
 
         return code
 

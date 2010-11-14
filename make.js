@@ -3,8 +3,9 @@
     "extensions": ["js", "gif", "jpeg", "jpg", "png", "tmx", "tsx"],
     "ignore":     null,
 
-    "folders": {
+    "paths": {
         "src" : "/",
-        "apps" : "/"
+        "apps/tests/": "/",
+        "apps/tests/SpriteTest.js": "/main.js"
     }
 }

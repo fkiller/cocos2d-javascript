@@ -4,7 +4,7 @@ function resource(path) {
 
 (function() {
     var process = {};
-    var modulePaths = ['/libs'];
+    var modulePaths = ['/', '/libs'];
 
     var path; // Will be loaded further down
 
@@ -12,15 +12,14 @@ function resource(path) {
         // If not a relative path then search the modulePaths for it
         var start = request.substring(0, 2);
         if (start !== "./" && start !== "..") {
-            return [request, modulePaths];
+            return modulePaths;
         }
 
         var parentIsIndex = path.basename(parent.filename).match(/^index\.js$/),
-            parentPath    = parentIsIndex ? parent.id : path.dirname(parent.id),
-            id            = path.join(parentPath, request);
+            parentPath    = parentIsIndex ? parent.id : path.dirname(parent.id);
 
         // Relative path so searching inside parent's directory
-        return [id, [path.dirname(parent.filename)]];
+        return [path.dirname(parent.filename)];
     }
 
     function findModulePath(id, dirs) {
@@ -43,18 +42,26 @@ function resource(path) {
     }
 
     function loadModule(request, parent) {
-        var resolvedModule = resolveModulePath(request, parent),
-            id             = resolvedModule[0],
-            paths          = resolvedModule[1],
-            filename       = findModulePath(request, paths);
+        parent = parent || process.mainModule;
 
-        var cachedModule = parent.moduleCache[filename];
-        if (cachedModule) {
-            return cachedModule.exports;
+        var paths    = resolveModulePath(request, parent),
+            filename = findModulePath(request, paths);
+
+        if (filename === false) {
+            throw "Unable to find module: " + request;
         }
 
-        var module = new Module(id, parent);
-        module.moduleCache[filename] = module;
+
+        if (parent) {
+            var cachedModule = parent.moduleCache[filename];
+            if (cachedModule) {
+                return cachedModule.exports;
+            }
+        }
+
+        //console.log('Loading module: ', filename);
+
+        var module = new Module(filename, parent);
         module._initialize(filename);
 
         return module.exports;
@@ -72,6 +79,7 @@ function resource(path) {
         } else {
             this.moduleCache = {};
         }
+        this.moduleCache[this.id] = this;
 
         this.filename = null;
         this.dirname = null;
@@ -101,8 +109,8 @@ function resource(path) {
     }
 
 
-    // Manually load the path module because we need to to load other modules
+    // Manually load the path module because we need it to load other modules
     path = (new Module('path'))._initialize('/libs/path.js').exports;
 
-    process.mainModule = (new Module('/'))._initialize('/index.js');
+    process.mainModule = loadModule('main');
 })();
