@@ -14,7 +14,7 @@ var sys = require('sys'),
  *
  * @extends cocos.FiniteTimeAction
  */
-var IntervalAction = act.FiniteTimeAction.extend(/** @scope cocos.IntervalAction# */{
+var ActionInterval = act.FiniteTimeAction.extend(/** @scope cocos.ActionInterval# */{
     /**
      * Number of seconds that have elapsed
      * @type Float
@@ -76,9 +76,9 @@ var IntervalAction = act.FiniteTimeAction.extend(/** @scope cocos.IntervalAction
  *
  * Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
  *
- * @extends cocos.IntervalAction
+ * @extends cocos.ActionInterval
  */
-var ScaleTo = IntervalAction.extend(/** @scope cocos.ScaleTo# */{
+var ScaleTo = ActionInterval.extend(/** @scope cocos.ScaleTo# */{
     /**
      * Current X Scale
      * @type Float
@@ -193,9 +193,9 @@ var ScaleBy = ScaleTo.extend(/** @scope cocos.ScaleBy# */{
  * Rotates a cocos.Node object to a certain angle by modifying its rotation
  * attribute. The direction will be decided by the shortest angle.
  *
- * @extends cocos.IntervalAction
+ * @extends cocos.ActionInterval
  */
-var RotateTo = IntervalAction.extend(/** @scope cocos.RotateTo# */{
+var RotateTo = ActionInterval.extend(/** @scope cocos.RotateTo# */{
     /**
      * Final angle
      * @type Float
@@ -292,9 +292,9 @@ var RotateBy = RotateTo.extend(/** @scope cocos.RotateBy# */{
  *
  * Runs actions sequentially, one after another
  *
- * @extends cocos.IntervalAction
+ * @extends cocos.ActionInterval
  */
-var Sequence = IntervalAction.extend(/** @scope cocos.Sequence# */{
+var Sequence = ActionInterval.extend(/** @scope cocos.Sequence# */{
     /**
      * Array of actions to run
      * @type cocos.Node[]
@@ -381,9 +381,9 @@ var Sequence = IntervalAction.extend(/** @scope cocos.Sequence# */{
  *
  * Animates a sprite given the name of an Animation 
  *
- * @extends cocos.IntervalAction
+ * @extends cocos.ActionInterval
  */
-var Animate = IntervalAction.extend(/** @scope cocos.Animate# */{
+var Animate = ActionInterval.extend(/** @scope cocos.Animate# */{
     animation: null,
     restoreOriginalFrame: false,
     origFrame: null,
@@ -426,7 +426,7 @@ var Animate = IntervalAction.extend(/** @scope cocos.Animate# */{
     }
 });
 
-exports.IntervalAction = IntervalAction;
+exports.ActionInterval = ActionInterval;
 exports.ScaleTo = ScaleTo;
 exports.ScaleBy = ScaleBy;
 exports.RotateTo = RotateTo;
