@@ -7,7 +7,7 @@ var sys = require('sys'),
 var sceneIdx = -1;
 var transitions = [
     "Sprite1",
-    //"SpriteBatchNode1",
+    "SpriteAnchorPoint",
 	"SpriteAnimationFlip"
 ];
 
@@ -210,7 +210,7 @@ var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# 
 /**
  * @class
  *
- * Example Sprite Batch Node 1
+ * Example Sprite Animation and flip
  */
 var SpriteAnimationFlip = SpriteDemo.extend(/** @scope SpriteAnimationFlip.prototype# */{
     title: 'Sprite Animation + Flip',
@@ -252,6 +252,51 @@ var SpriteAnimationFlip = SpriteDemo.extend(/** @scope SpriteAnimationFlip.proto
                                                          cocos.FlipX.create({flipX: false})]});
 
         sprite.runAction(cocos.RepeatForever.create(seq));
+    }
+});
+
+/**
+ * @class
+ *
+ * Example Sprite Anchor Point
+ */
+var SpriteAnchorPoint = SpriteDemo.extend(/** @scope SpriteAnchorPoint.prototype# */{
+    title: 'Sprite Anchor Point',
+
+    init: function() {
+        @super;
+
+        var s = cocos.Director.get('sharedDirector.winSize');
+
+		var rotate = cocos.RotateBy.create({duration: 10, angle: 360});
+		var action = cocos.RepeatForever.create(rotate);
+		for (var i=0; i<3; i++) {
+			var sprite = cocos.Sprite.create({file: __dirname + "/resources/grossini_dance_atlas.png", rect: geo.rectMake(85*i, 121*1, 85, 121)});
+			sprite.position = ccp(s.width/4*(i+1), s.height/2);
+			
+			var point = cocos.Sprite.create({file: __dirname + "/resources/r1.png"});
+			point.set('scale', 0.25);
+			point.set('position', sprite.get('position'));
+            this.addChild({child: point, z: 10});
+			
+			switch(i) {
+				case 0:
+					sprite.set('anchorPoint', ccp(0, 0));
+					break;
+				case 1:
+					sprite.set('anchorPoint', ccp(0.5, 0.5));
+					break;
+				case 2:
+					sprite.set('anchorPoint', ccp(1, 1));
+					break;
+			}
+			
+			point.set('position', sprite.get('position'));
+			
+			var copy = action.copy();
+            sprite.runAction(copy);
+            this.addChild({child: sprite, z: 1});
+        }
     }
 });
 		

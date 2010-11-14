@@ -109,6 +109,11 @@ var RepeatForever = Action.extend(/** @scope cocos.RepeatForever# */{
     /** @ignore */
     reverse: function() {
         return RepeatForever.create(this.other.reverse());
+    },
+
+    /** @ignore */
+    copy: function() {
+        return RepeatForever.create(this.other.copy());
     }
 });
 

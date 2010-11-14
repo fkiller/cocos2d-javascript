@@ -264,6 +264,8 @@ var RotateBy = RotateTo.extend(/** @scope cocos.RotateBy# */{
 
     /** @ignore */
     init: function(opts) {
+        @super;
+
         this.angle = opts['angle'];
     },
 
@@ -282,6 +284,11 @@ var RotateBy = RotateTo.extend(/** @scope cocos.RotateBy# */{
     /** @ignore */
     reverse: function() {
         return RotateBy.create({duration: this.duration, angle: -this.angle});
+    },
+
+    /** @ignore */
+    copy: function() {
+        return RotateBy.create({duration: this.duration, angle: this.angle});
     }
 });
 
