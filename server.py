@@ -6,15 +6,19 @@ import SimpleHTTPServer
 import urllib
 import threading
 from make import Compiler
-import os, sys, time, socket
+import os, sys, re, time, socket
 
-CODE_URL = '/cocos2d.js'
+CODE_URL = None
+CONFIG_FILE = 'make.js'
 
 class Cocos2D(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def __init__(self, *args):
+        global CODE_URL, CONFIG_FILE
+        self.compiler = Compiler(CONFIG_FILE)
+        if not CODE_URL:
+            CODE_URL = re.sub('^/?public', '', self.compiler.output)
         print "Serving as:", CODE_URL
-        self.compiler = Compiler('make.js')
         SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, *args)
 
 
@@ -37,10 +41,13 @@ class Cocos2D(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
 def main():
-    global CODE_URL
+    global CODE_URL, CONFIG_FILE
     parser = OptionParser()
+    parser.add_option("-c", "--config", dest="config",
+                      help="configuration file. Default is make.js", metavar="CONFIG")
+
     parser.add_option("-u", "--url", dest="url",
-                      help="the URL to serve the JS as. Default is '/cocos.js'", metavar="URL")
+                      help="the URL to serve the JS as. Default is output defined in the config file", metavar="URL")
 
     parser.add_option("-l", "--host", dest="host",
                       help="the host/ip to listen on. Default is 127.0.0.1", metavar="HOST")
@@ -56,7 +63,11 @@ def main():
     host = options.host or 'localhost'
     port = int(options.port) if options.port else 4000
 
-    CODE_URL = options.url or '/cocos2d.js'
+    if options.url:
+        CODE_URL = options.url
+    if options.config:
+        CONFIG_FILE = options.config
+
     httpd = SocketServer.TCPServer((host, port), Cocos2D)
     httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     httpd_thread = threading.Thread(target=httpd.serve_forever)
