@@ -4,7 +4,8 @@
     "ignore":     null,
 
     "paths": {
-        "src" : "/",
+        "src/system.js" : "/system.js",
+        "src/libs/path.js" : "/libs/path.js",
         "tests/commonjs/tests/" : "/",
         "tests/main.js": "/main.js"
     }
