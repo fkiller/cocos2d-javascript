@@ -26,6 +26,21 @@ function nextAction() {
     var c = eval('(' + r + ')');
     return c;
 }
+function backAction() {
+    sceneIdx--;
+    if (sceneIdx < 0) {
+        sceneIdx += transitions.length;
+    }
+
+    var r = transitions[sceneIdx];
+    var c = eval('(' + r + ')');
+    return c;
+}
+function restartAction() {
+    var r = transitions[sceneIdx];
+    var c = eval('(' + r + ')');
+    return c;
+}
 
 var SpriteDemo = cocos.Layer.extend({
     title: 'No title',
@@ -63,9 +78,21 @@ var SpriteDemo = cocos.Layer.extend({
     },
 
     restartCallback: function() {
+        var director = cocos.Director.get('sharedDirector');
+
+        var scene = cocos.Scene.create();
+        scene.addChild({child: restartAction().create()});
+
+        director.replaceScene(scene);
     },
 
     backCallback: function() {
+        var director = cocos.Director.get('sharedDirector');
+
+        var scene = cocos.Scene.create();
+        scene.addChild({child: backAction().create()});
+
+        director.replaceScene(scene);
     },
 
     nextCallback: function() {
