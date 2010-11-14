@@ -213,7 +213,7 @@ var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# 
  * Example Sprite Batch Node 1
  */
 var SpriteAnimationFlip = SpriteDemo.extend(/** @scope SpriteAnimationFlip.prototype# */{
-    title: 'Sprite Animation',
+    title: 'Sprite Animation + Flip',
 
     init: function() {
         @super;
@@ -245,15 +245,13 @@ var SpriteAnimationFlip = SpriteDemo.extend(/** @scope SpriteAnimationFlip.proto
 
 
         var animation = cocos.Animation.create({frames: animFrames, delay:0.2}),
-            animate   = cocos.Animate.create({animation: animation, restoreOriginalFrame:false});
-            /*
+            animate   = cocos.Animate.create({animation: animation, restoreOriginalFrame:false}),
             seq       = cocos.Sequence.create({actions: [animate,
                                                          cocos.FlipX.create({flipX: true}),
                                                          animate.copy(),
                                                          cocos.FlipX.create({flipX: false})]});
-            */
 
-        sprite.runAction(cocos.RepeatForever.create(animate));
+        sprite.runAction(cocos.RepeatForever.create(seq));
     }
 });
 		

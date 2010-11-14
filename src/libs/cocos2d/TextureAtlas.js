@@ -57,12 +57,38 @@ var TextureAtlas = Thing.extend(/** @scope cocos.TextureAtlas */{
 	},
 
 	drawQuad: function(ctx, quad) {
+        var sx = quad.textureRect.origin.x,
+            sy = quad.textureRect.origin.y,
+            sw = quad.textureRect.size.width, 
+            sh = quad.textureRect.size.height;
+
+        var dx = quad.drawRect.origin.x,
+            dy = quad.drawRect.origin.y,
+            dw = quad.drawRect.size.width, 
+            dh = quad.drawRect.size.height;
+
+        var scaleX = 1;
+        var scaleY = 1;
+            
+        if (dw < 0) {
+            dw *= -1
+            scaleX = -1;
+        }
+            
+        if (dh < 0) {
+            dh *= -1
+            scaleY = -1;
+        }
+
+        ctx.scale(scaleX, scaleY);
+
 		ctx.drawImage(this.get('imgElement'), 
-			quad.textureRect.origin.x, quad.textureRect.origin.y, // Draw slice from x,y
-			quad.textureRect.size.width, quad.textureRect.size.height, // Draw slice size
-			quad.drawRect.origin.x, quad.drawRect.origin.y, // Draw at 0, 0
-			quad.drawRect.size.width, quad.drawRect.size.height // Draw size
+			sx, sy, // Draw slice from x,y
+			sw, sh, // Draw slice size
+			dx, dy, // Draw at 0, 0
+			dw, dh  // Draw size
 		);
+        ctx.scale(1, 1);
 	}
 
 });

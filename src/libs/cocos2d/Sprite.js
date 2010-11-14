@@ -14,6 +14,8 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
     dirty: true,
     recursiveDirty: true,
     quad: null,
+    flipX: false,
+    flipY: false,
 
     /** 
      * @param {String} opts.file Path to image to use as sprite atlas
@@ -80,8 +82,17 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
         }
 
         this.quad.textureRect = sys.copy(this.rect);
+        this.quad.drawRect.origin = ccp(0, 0);
         this.quad.drawRect.size = sys.copy(this.rect.size);
-    }.observes('scale', 'scaleX', 'scaleY', 'rect'),
+        if (this.flipX) {
+            this.quad.drawRect.size.width *= -1;
+            this.quad.drawRect.origin.x = -this.rect.size.width;
+        }
+        if (this.flipY) {
+            this.quad.drawRect.size.height *= -1;
+            this.quad.drawRect.origin.y = -this.rect.size.height;
+        }
+    }.observes('scale', 'scaleX', 'scaleY', 'rect', 'flipX', 'flipY'),
 
     updateTransform: function(ctx) {
         if (!this.useSpriteSheet) {

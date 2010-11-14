@@ -391,6 +391,7 @@ var Animate = ActionInterval.extend(/** @scope cocos.Animate# */{
     /** @ignore */
     init: function(opts) {
         this.animation = opts['animation'];
+        this.restoreOriginalFrame = opts['restoreOriginalFrame'];
         opts['duration'] = this.animation.frames.length * this.animation.delay;
 
         @super;
@@ -422,8 +423,10 @@ var Animate = ActionInterval.extend(/** @scope cocos.Animate# */{
     },
 
     /** @ignore */
-    reverse: function() {
+    copy: function() {
+        return Animate.create({animation: this.animation, restoreOriginalFrame: this.restoreOriginalFrame});
     }
+
 });
 
 exports.ActionInterval = ActionInterval;

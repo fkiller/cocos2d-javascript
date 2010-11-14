@@ -35,6 +35,10 @@ var sys = {
      * @returns {Object} A copy of the original Object
      */
     copy: function(obj) {
+        if (obj === null) {
+            return null;
+        }
+
         var copy;
 
         if (obj instanceof Array) {
@@ -43,11 +47,15 @@ var sys = {
                 copy[i] = arguments.callee(obj[i]);
             }
         } else if (typeof(obj) == 'object') {
-            copy = {};
+            if (typeof(obj.copy) == 'function') {
+                copy = obj.copy();
+            } else {
+                copy = {};
 
-            var o, x;
-            for (x in obj) {
-                copy[x] = arguments.callee(obj[x]);
+                var o, x;
+                for (x in obj) {
+                    copy[x] = arguments.callee(obj[x]);
+                }
             }
         } else {
             // Primative type. Doesn't need copying
