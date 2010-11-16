@@ -97,7 +97,7 @@ function resource(path) {
         if (path) {
             this.dirname = path.dirname(filename);
         } else {
-            this.dirname = '/libs';
+            this.dirname = '';
         }
 
         require.paths = modulePaths;
@@ -110,7 +110,7 @@ function resource(path) {
 
 
     // Manually load the path module because we need it to load other modules
-    path = (new Module('path'))._initialize('/libs/path.js').exports;
+    path = (new Module('path'))._initialize('/path.js').exports;
 
     process.mainModule = loadModule('main');
 })();
