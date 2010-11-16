@@ -332,7 +332,7 @@ sys.ApplicationMain(cocos.AppDelegate.extend({
     applicationDidFinishLaunching: function () {
         var director = cocos.Director.get('sharedDirector');
 
-        director.attachInView(document.getElementById('hello-world'));
+        director.attachInView(document.getElementById('cocos2d-tests'));
 
         var scene = cocos.Scene.create();
         scene.addChild({child: nextAction().create()});

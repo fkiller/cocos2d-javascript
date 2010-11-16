@@ -112,5 +112,5 @@ function resource(path) {
     // Manually load the path module because we need it to load other modules
     path = (new Module('path'))._initialize('/path.js').exports;
 
-    process.mainModule = loadModule('main');
+    process.mainModule = loadModule(__main_module_name__);
 })();

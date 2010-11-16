@@ -1,11 +1,13 @@
 {
-    "output":     "public/cocos2d.js",
+    "output":     "public/tests.js",
     "extensions": ["js", "gif", "jpeg", "jpg", "png", "tmx", "tsx"],
     "ignore":     null,
+    "main_module": "cocos2d/SpriteTest",
 
     "paths": {
         "src" : "/",
-        "apps/tests/": "/",
-        "apps/tests/SpriteTest.js": "/main.js"
+        "tests/commonjs/tests/" : "/commonjs/",
+        "tests/cocos2d/" : "/cocos2d/",
+        "tests/commonjs.js": "/commonjs.js"
     }
 }

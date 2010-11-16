@@ -22,6 +22,7 @@ mimetypes.add_type('application/xml', '.tsx')
 class Compiler:
     config = None
     output = 'cocos2d.js'
+    main_module = 'main'
     header_code = u''
     footer_code = u''
     valid_extensions = None
@@ -34,13 +35,15 @@ class Compiler:
         self.header_code = u'''
 if (!window.__resources__) { window.__resources__ = {}; }
 if (!__imageResource) { function __imageResource(data) { var img = new Image(); img.src = data; return img; } }
-'''
+var __main_module_name__ = %s
+''' % json.dumps(self.main_module)
 
     def load_config(self, config_file):
         print "Loading config:", config_file
         f = open(config_file, 'r')
         config = json.loads(f.read())
         self.output = config['output']
+        self.main_module = config['main_module'] or 'main'
         self.valid_extensions = config['extensions']
 
         return config
