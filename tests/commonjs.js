@@ -29,11 +29,15 @@ var tests = [
     '/commonjs/modules/1.0/transitive'
 ];
 
-for (var i = 0; i < tests.length; i++) {
+var i = 0;
+function nextTest() {
     var test = tests[i];
-    //console.log('* Running Test: ', test);
     require.paths.push(test);
     require('program');
-    //console.log('Finished Test: ', test);
     require.paths.splice(require.paths.indexOf(test), 1);
-};
+    i++;
+    if (i < tests.length) {
+        setTimeout(nextTest, 250);
+    }
+}
+nextTest();
