@@ -57,7 +57,7 @@ TileMapTestDemo.scene = function(key, val) {
 sys.ApplicationMain(cocos.AppDelegate.extend({
     applicationDidFinishLaunching: function () {
         var director = cocos.Director.get('sharedDirector');
-        director.attachInView(document.getElementById('hello-world'));
+        director.attachInView(document.getElementById('cocos2d-tests'));
         director.runWithScene(TileMapTestDemo.get('scene'));
     }
 }));

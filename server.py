@@ -23,6 +23,7 @@ class Cocos2D(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 
     def do_GET(self):
+        self.path = self.path.split('?')[0] # Strip off params
         if self.path == '/':
             self.path = '/public/index.html'
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)

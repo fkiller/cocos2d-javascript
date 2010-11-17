@@ -4,8 +4,42 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <script src="tests.js" type="text/javascript"></script>
         <title>Cocos2D -- Tests</title>
+        <style type="text/css" media="screen">
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 10pt;
+            }
+            .log {
+                padding: 2px 8px;
+                border-bottom: 1px solid #999;
+            }
+            .log.pass {
+                background: #4d4;
+            }
+            .log.fail {
+                background: #d44;
+            }
+            .log.info {
+                background: #ccc;
+            }
+            #cocos2d-tests {
+                border: 1px solid #000;
+                width: 480px;
+                height: 320px;
+            }
+            .logs {
+                overflow: auto;
+                width: 800px !important;
+            }
+        </style>
     </head>
     <body>
-       <div id="cocos2d-tests" style="width: 480px; height: 320px;">Loading, please wait...</div>
+        <h1>Tests</h1>
+        <p>Select a test suite to run:</p>
+        <ul>
+            <li><a href="?test=commonjs">CommonJS</a></li>
+            <li><a href="?test=cocos2d/SpriteTest">Sprites</a></li>
+        </ul>
+       <div id="cocos2d-tests"></div>
     </body>
 </html>
