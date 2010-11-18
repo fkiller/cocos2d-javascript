@@ -78,13 +78,15 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
         //this.insertChild({child: child, z:z});
         var added = false;
 
-        sys.each(this.children, sys.callback(this, function(a, i) {
-            if (a.zOrder > z) {
+        
+        for (var i = 0, childLen = this.children.length; i < childLen; i++) {
+            var c = this.children[i];
+            if (c.zOrder > z) {
                 added = true;
                 this.children.splice(i, 0, child);
-                return;
+                break;
             }
-        }));
+        }
 
         if (!added) {
             this.children.push(child);
@@ -114,6 +116,36 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
 
     removeChild: function(opts) {
         // TODO
+    },
+
+    reorderChild: function(opts) {
+        var child = opts['child'],
+            z     = opts['z'];
+
+        var pos = this.children.indexOf(child);
+        if (pos == -1) {
+            throw "Node isn't a child of this node";
+        }
+
+        child.set('zOrder', z);
+
+        // Remove child
+        this.children.splice(pos, 1);
+
+        // Add child back at correct location
+        var added = false;
+        for (var i = 0, childLen = this.children.length; i < childLen; i++) {
+            var c = this.children[i];
+            if (c.zOrder > z) {
+                added = true;
+                this.children.splice(i, 0, child);
+                break;
+            }
+        }
+
+        if (!added) {
+            this.children.push(child);
+        }
     },
 
     draw: function(context) {

@@ -8,7 +8,8 @@ var sceneIdx = -1;
 var transitions = [
     "Sprite1",
     "SpriteAnchorPoint",
-    "SpriteAnimationFlip"
+    "SpriteAnimationFlip",
+    "SpriteZOrder"
 ];
 
 var kTagTileMap = 1,
@@ -17,6 +18,15 @@ var kTagTileMap = 1,
     kTagAnimation1 = 1,
     kTagSpriteLeft = 2,
     kTagSpriteRight = 3;
+
+var kTagSprite1 = 1,
+    kTagSprite2 = 2,
+    kTagSprite3 = 3,
+    kTagSprite4 = 4,
+    kTagSprite5 = 5,
+    kTagSprite6 = 6,
+    kTagSprite7 = 7,
+    kTagSprite8 = 8;
 
 function nextAction() {
     sceneIdx++;
@@ -324,6 +334,58 @@ var SpriteAnchorPoint = SpriteDemo.extend(/** @scope SpriteAnchorPoint.prototype
             sprite.runAction(copy);
             this.addChild({child: sprite, z: 1});
         }
+    }
+});
+        
+
+/**
+ * @class
+ *
+ * Example Sprite Z ORder
+ */
+var SpriteZOrder = SpriteDemo.extend(/** @scope SpriteZOrder.prototype# */{
+    title: 'Sprite Z Order',
+    dir: 1,
+
+    init: function() {
+        @super;
+
+        var s = cocos.Director.get('sharedDirector.winSize');
+
+        var step = s.width / 11;
+        for (var i=0; i<5; i++) {
+            var sprite = cocos.Sprite.create({file: __dirname + "/resources/grossini_dance_atlas.png", rect: geo.rectMake(85*0, 121*1, 85, 121)});
+            sprite.set('position', ccp((i+1)*step, s.height/2));
+            this.addChild({child: sprite, z: i});
+        }
+        
+        for (var i=5; i<10; i++) {
+            var sprite = cocos.Sprite.create({file: __dirname + "/resources/grossini_dance_atlas.png", rect: geo.rectMake(85*1, 121*0, 85, 121)});
+            sprite.set('position', ccp((i+1)*step, s.height/2));
+            this.addChild({child: sprite, z: 14-i});
+        }
+        
+        var sprite = cocos.Sprite.create({file: __dirname + "/resources/grossini_dance_atlas-red.png", rect: geo.rectMake(85*3, 121*0, 85, 121)});
+        this.addChild({child: sprite, z: -1, tag: kTagSprite1});
+
+        sprite.set('position', ccp(s.width/2, s.height/2 + 20));
+        sprite.set('scaleX', 6);
+        
+        cocos.Scheduler.get('sharedScheduler')
+          .scheduleTimer(cocos.Timer.create({callback: sys.callback(this, 'reorderSprite'), interval: 1}));
+    },
+    reorderSprite: function(dt) {
+        var sprite = this.getChild({tag: kTagSprite1});
+        var z = sprite.get('zOrder');
+    
+        if (z < -1)
+            this.dir = 1;
+        if (z > 10)
+            this.dir = -1;
+        
+        z += this.dir * 3;
+    
+        this.reorderChild({child: sprite, z: z});
     }
 });
         
