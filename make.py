@@ -2,7 +2,11 @@
 
 from optparse import OptionParser
 from cStringIO import StringIO
-import re, os, base64, mimetypes, json, codecs
+import re, os, base64, mimetypes, codecs
+try:
+    import json
+except:
+    import simplejson as json
 
 TEXT_MIMETYPES = 'application/xml text/plain text/json application/json text/html'.split(' ')
 CODE_MIMETYPES = 'text/javascript application/javascript'.split(' ')
