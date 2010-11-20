@@ -1,4 +1,5 @@
 var sys = require('sys'),
+    console = require('system').console,
     geo = require('geometry'),
     ccp = geo.ccp,
     Node = require('./Node').Node,

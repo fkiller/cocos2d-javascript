@@ -1,4 +1,5 @@
 var sys = require('sys'),
+    console = require('system').console,
     Thing = require('thing').Thing,
     Timer = require('./Scheduler').Timer,
     Scheduler = require('./Scheduler').Scheduler;

@@ -1,4 +1,5 @@
 var sys = require('sys'),
+    console = require('system').console,
     Director = require('./Director').Director,
     Node = require('./Node').Node,
     ccp = require('geometry').ccp;

@@ -105,7 +105,6 @@ var sys = {
 
     extend: function(target, ext) {
         if (arguments.length < 2) {
-            console.log(arguments);
             throw "You must provide at least a target and 1 object to extend from"
         }
 
