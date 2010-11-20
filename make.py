@@ -38,7 +38,7 @@ class Compiler:
         self.footer_code = open(module_js).read()
         self.header_code = u'''
 if (!window.__resources__) { window.__resources__ = {}; }
-if (!__imageResource) { function __imageResource(data) { var img = new Image(); img.src = data; return img; } }
+if (!window.__imageResource) { window.__imageResource = function(data) { var img = new Image(); img.src = data; return img; }; }
 var __main_module_name__ = %s
 ''' % json.dumps(self.main_module)
 

@@ -168,7 +168,6 @@ var Sprite1 = SpriteDemo.extend(/** @scope Sprite1.prototype# */{
         
     },
     mouseUp: function(event) {
-
         var location = cocos.Director.get('sharedDirector').convertEventToCanvas(event);
         this.addNewSprite(location);
 

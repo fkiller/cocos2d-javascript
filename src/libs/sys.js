@@ -288,7 +288,6 @@ var sys = {
      */
     isArray: function(ar) {
       return ar instanceof Array
-          || Array.isArray(ar)
           || (ar && ar !== Object.prototype && sys.isArray(ar.__proto__));
     },
 

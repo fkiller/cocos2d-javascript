@@ -1,6 +1,7 @@
 var sys = require('sys'),
     Thing = require('thing').Thing,
-    ccp = require('geometry').ccp,
+    geo = require('geometry'),
+    ccp = geo.ccp,
     Scheduler = require('./Scheduler').Scheduler,
     EventDispatcher = require('./EventDispatcher').EventDispatcher,
     Scene = require('./Scene').Scene;
@@ -60,15 +61,15 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
         // Mouse events
         var eventDispatcher = EventDispatcher.get('sharedDispatcher');
         function mouseDown(evt) {
-            evt.locationInWindow = ccp(evt.offsetX, evt.offsetY);
+            evt.locationInWindow = ccp(evt.clientX, evt.clientY);
 
             function mouseDragged(evt) {
-                evt.locationInWindow = ccp(evt.offsetX, evt.offsetY);
+                evt.locationInWindow = ccp(evt.clientX, evt.clientY);
 
                 eventDispatcher.mouseDragged(evt);
             };
             function mouseUp(evt) {
-                evt.locationInWindow = ccp(evt.offsetX, evt.offsetY);
+                evt.locationInWindow = ccp(evt.clientX, evt.clientY);
 
                 document.body.removeEventListener('mousemove', mouseDragged, false);
                 document.body.removeEventListener('mouseup',   mouseUp,   false);
@@ -83,7 +84,7 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
             eventDispatcher.mouseDown(evt);
         }
         function mouseMoved(evt) {
-            evt.locationInWindow = ccp(evt.offsetX, evt.offsetY);
+            evt.locationInWindow = ccp(evt.clientX, evt.clientY);
 
             eventDispatcher.mouseMoved(evt);
         }
@@ -254,7 +255,16 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
     }.property(),
 
     convertEventToCanvas: function(evt) {
-        return evt.locationInWindow;
+        var x = this.canvas.offsetLeft,
+            y = this.canvas.offsetTop;
+
+        var o = this.canvas;
+        while (o = o.offsetParent) {
+            x += o.offsetLeft;
+            y += o.offsetTop;
+        }
+
+        return geo.ccpSub(evt.locationInWindow, ccp(x, y));
     }
 
 });
