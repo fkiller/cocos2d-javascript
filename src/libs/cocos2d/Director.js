@@ -255,13 +255,13 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
     }.property(),
 
     convertEventToCanvas: function(evt) {
-        var x = this.canvas.offsetLeft,
-            y = this.canvas.offsetTop;
+        var x = this.canvas.offsetLeft - document.documentElement.scrollLeft,
+            y = this.canvas.offsetTop - document.documentElement.scrollTop;
 
         var o = this.canvas;
         while (o = o.offsetParent) {
-            x += o.offsetLeft;
-            y += o.offsetTop;
+            x += o.offsetLeft - o.scrollLeft;
+            y += o.offsetTop - o.scrollTop;
         }
 
         return geo.ccpSub(evt.locationInWindow, ccp(x, y));
