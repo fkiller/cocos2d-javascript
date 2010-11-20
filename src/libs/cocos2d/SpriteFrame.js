@@ -1,4 +1,6 @@
 var sys = require('sys'),
+    geo = require('geometry'),
+    ccp = geo.ccp,
     Thing = require('thing').Thing;
 
 /** @member cocos
