@@ -7,6 +7,7 @@ var sys = require('sys'),
 var sceneIdx = -1;
 var transitions = [
     "Sprite1",
+    "SpriteBatchNode1",
     "SpriteAnchorPoint",
     "SpriteAnimationFlip",
     "SpriteZOrder"
@@ -136,7 +137,6 @@ var Sprite1 = SpriteDemo.extend(/** @scope Sprite1.prototype# */{
             x = (idx%5) * 85,
             y = (idx%3) * 121;
 
-        //CCSprite *sprite = [CCSprite spriteWithFile:@"grossini_dance_atlas.png" rect:CGRectMake(x,y,85,121)];
         var sprite = cocos.Sprite.create({file: __dirname + "/resources/grossini_dance_atlas.png", rect:{origin:ccp(x, y), size:{width: 85, height: 121}}})
         this.addChild({child:sprite, z:0});
         sprite.set('position', ccp(point.x, point.y));
@@ -177,11 +177,10 @@ var Sprite1 = SpriteDemo.extend(/** @scope Sprite1.prototype# */{
 });
 
 
-
 /**
  * @class
  *
- * Example Sprite Batch Node 1
+ * Example SpriteBatchNode 1
  */
 var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# */{
     title: 'SpriteBatchNode (tap screen)',
@@ -190,7 +189,7 @@ var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# 
         @super;
         this.set('isMouseEnabled', true);
 
-        var batch = cocos.BatchNode.create({file: __dirname + "/resources/grossini_dance_atlas.png", capcity: 50});
+        var batch = cocos.SpriteBatchNode.create({file: __dirname + "/resources/grossini_dance_atlas.png", size: geo.sizeMake(480, 320)});
         this.addChild({child: batch, z: 0, tag: kTagSpriteBatchNode});
 
         var s = cocos.Director.get('sharedDirector.winSize');
@@ -204,14 +203,12 @@ var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# 
             x = (idx%5) * 85,
             y = (idx%3) * 121;
 
-        var sprite = cocos.Sprite.create({textureAtlas: batch.get('textureAtlas'),
-                                                  rect: {origin: ccp(x, y),
-                                                           size: {width: 85, height: 121}}})
+        var sprite = cocos.Sprite.create({textureAtlas: batch.get('textureAtlas'), rect:geo.rectMake(x, y, 85, 121)})
         batch.addChild({child:sprite});
 
         sprite.set('position', ccp(point.x, point.y));
 
-        var action;
+        var action, actionBack, seq;
         var rand = Math.random();
 
         if (rand < 0.2) {
@@ -229,20 +226,19 @@ var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# 
             //action = cocos.FadeOut.create({duration:3, scale:2});
         }
 
-
-
-        var actionBack = action.reverse();
-        var seq = cocos.Sequence.create({actions:[action, actionBack]});
-
+        actionBack = action.reverse();
+        seq = cocos.Sequence.create({actions:[action, actionBack]});
         sprite.runAction(cocos.RepeatForever.create(seq));
     },
     mouseUp: function(event) {
+
         var location = cocos.Director.get('sharedDirector').convertEventToCanvas(event);
         this.addNewSprite(location);
 
         return true;
     }
 });
+
 
 /**
  * @class

@@ -1,5 +1,6 @@
 var Node = require('./Node').Node,
     Director = require('./Director').Director,
+    ccp    = require('geometry').ccp,
     EventDispatcher = require('./EventDispatcher').EventDispatcher;
 
 /** @member cocos

@@ -1,4 +1,6 @@
 var sys = require('sys'),
+    geo = require('geometry'),
+    ccp = geo.ccp,
     Node = require('./Node').Node,
     TMXOrientationOrtho = require('./TMXOrientation').TMXOrientationOrtho,
     TMXOrientationHex   = require('./TMXOrientation').TMXOrientationHex,
@@ -21,6 +23,8 @@ var TMXTiledMap = Node.extend(/** @scope cocos.TMXTiledMap# */{
 
     init: function(opts) {
         @super;
+
+        this.set('anchorPoint', ccp(0, 0));
 
         var mapInfo = TMXMapInfo.create(opts['file']);
 

@@ -289,7 +289,7 @@ var sys = {
     isArray: function(ar) {
       return ar instanceof Array
           || Array.isArray(ar)
-          || (ar && ar !== Object.prototype && isArray(ar.__proto__));
+          || (ar && ar !== Object.prototype && sys.isArray(ar.__proto__));
     },
 
 

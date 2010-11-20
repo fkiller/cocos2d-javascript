@@ -128,8 +128,6 @@ var TMXMapInfo = Thing.extend(/** @scope cocos.TMXMapInfo# */{
                 layer.set('tiles', base64.decodeAsArray(data.firstChild.nodeValue, 4));
             }
 
-            console.log('Number of tiles in map:', layer.tiles.length);
-
             this.layers.push(layer);
             delete layer;
 

@@ -1,4 +1,5 @@
 var sys = require('sys'),
+    geo = require('geometry'),
     Thing = require('thing').Thing;
 
 /** @member cocos
@@ -102,6 +103,9 @@ var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
             return;
         }
 
+        this._previousMouseMovePosition = geo.ccp(evt.clientX, evt.clientY);
+        this._previousMouseDragPosition = geo.ccp(evt.clientX, evt.clientY);
+
         for (var i = 0; i < this.mouseDelegates.length; i++) {
             var entry = this.mouseDelegates[i];
             if (entry.delegate.mouseDown) {
@@ -110,12 +114,21 @@ var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
                     break;
                 }
             }
-        };
+        }
     },
     mouseMoved: function(evt) {
         if (!this.dispatchEvents) {
             return;
         }
+
+        if (this._previousMouseMovePosition) {
+            evt.deltaX = evt.clientX - this._previousMouseMovePosition.x;
+            evt.deltaY = evt.clientY - this._previousMouseMovePosition.y;
+        } else {
+            evt.deltaX = 0;
+            evt.deltaY = 0;
+        }
+        this._previousMouseMovePosition = geo.ccp(evt.clientX, evt.clientY);
 
         for (var i = 0; i < this.mouseDelegates.length; i++) {
             var entry = this.mouseDelegates[i];
@@ -125,12 +138,21 @@ var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
                     break;
                 }
             }
-        };
+        }
     },
     mouseDragged: function(evt) {
         if (!this.dispatchEvents) {
             return;
         }
+
+        if (this._previousMouseDragPosition) {
+            evt.deltaX = evt.clientX - this._previousMouseDragPosition.x;
+            evt.deltaY = evt.clientY - this._previousMouseDragPosition.y;
+        } else {
+            evt.deltaX = 0;
+            evt.deltaY = 0;
+        }
+        this._previousMouseDragPosition = geo.ccp(evt.clientX, evt.clientY);
 
         for (var i = 0; i < this.mouseDelegates.length; i++) {
             var entry = this.mouseDelegates[i];

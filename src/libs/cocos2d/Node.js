@@ -316,7 +316,11 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
 
     resignFirstResponder: function() {
         return true;
-    }
+    },
+
+    _dirtyTransform: function() {
+        this.set('isTransformDirty', true);
+    }.observes('scaleX', 'scaleY', 'rotation', 'position', 'anchorPoint', 'contentSize', 'isRelativeAnchorPoint')
 });
 
 module.exports.Node = Node;

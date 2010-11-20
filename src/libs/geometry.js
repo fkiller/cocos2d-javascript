@@ -12,8 +12,12 @@ var geometry = {
         return module.exports.pointMake(x, y);
     },
 
+    ccpAdd: function(p1, p2) {
+        return geometry.ccp(p1.x + p2.x, p1.y + p2.y);
+    },
+
     PointZero: function() {
-        return ccp(0,0);
+        return geometry.ccp(0,0);
     },
 
     rectMake: function(x, y, w, h) {
@@ -44,7 +48,7 @@ var geometry = {
     },
 
     pointApplyAffineTransform: function(p, trans) {
-        var newPoint = ccp(0, 0);
+        var newPoint = geometry.ccp(0, 0);
         
         newPoint.x = p.x * trans[0][0] + p.y * trans[1][0] + trans[2][0];
         newPoint.y = p.x * trans[0][1] + p.y * trans[1][1] + trans[2][1];

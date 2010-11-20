@@ -42,7 +42,7 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
             textureAtlas = spritesheet.get('textureAtlas');
             this.set('useSpriteSheet', true);
         } else if (!textureAtlas) {
-            throw "Sprite has no texture";
+            //throw "Sprite has no texture";
         }
 
         if (!rect && textureAtlas) {

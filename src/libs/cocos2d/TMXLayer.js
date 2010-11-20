@@ -1,18 +1,19 @@
 var sys = require('sys'),
-    SpriteSheet = require('./SpriteSheet').SpriteSheet;
-    Sprite = require('./Sprite').Sprite;
+    SpriteBatchNode = require('./BatchNode').SpriteBatchNode,
+    Sprite = require('./Sprite').Sprite,
     TMXOrientationOrtho = require('./TMXOrientation').TMXOrientationOrtho,
     TMXOrientationHex   = require('./TMXOrientation').TMXOrientationHex,
     TMXOrientationIso   = require('./TMXOrientation').TMXOrientationIso,
-    ccp    = require('geometry').ccp,
+    geo    = require('geometry'),
+    ccp    = geo.ccp,
     Node = require('./Node').Node;
 
 /** @member cocos
  * @class
  *
- * @extends cocos.SpriteSheet
+ * @extends cocos.SpriteBatchNode
  */
-var TMXLayer = SpriteSheet.extend(/** @scope cocos.TMXLayer# */{
+var TMXLayer = SpriteBatchNode.extend(/** @scope cocos.TMXLayer# */{
     layerSize: null,
     layerName: '',
     tiles: null,
@@ -36,7 +37,7 @@ var TMXLayer = SpriteSheet.extend(/** @scope cocos.TMXLayer# */{
 
         @super({file: tex});
 
-		this.set('anchorPoint', ccp(0,0));
+		this.set('anchorPoint', ccp(0, 0));
 
         this.layerName = layerInfo.get('name');
         this.layerSize = layerInfo.get('layerSize');
@@ -53,7 +54,7 @@ var TMXLayer = SpriteSheet.extend(/** @scope cocos.TMXLayer# */{
         var offset = this.calculateLayerOffset(layerInfo.get('offset'));
         this.set('position', offset);
 
-        this.set('contentSize', {width: this.layerSize.width * this.mapTileSize.width, height: this.layerSize.height * this.mapTileSize.height});
+        this.set('contentSize', geo.sizeMake(this.layerSize.width * this.mapTileSize.width, this.layerSize.height * this.mapTileSize.height));
     },
 
     calculateLayerOffset: function(pos) {
@@ -93,8 +94,6 @@ var TMXLayer = SpriteSheet.extend(/** @scope cocos.TMXLayer# */{
                 }
             }
         }
-        
-        console.log('tiles setup', this);
     },
     appendTile: function(opts) {
         var gid = opts['gid'],
@@ -104,12 +103,12 @@ var TMXLayer = SpriteSheet.extend(/** @scope cocos.TMXLayer# */{
             
         
         var rect = this.tileset.rectForGID(gid);
-        var tile = Sprite.create({rect: rect});
+        var tile = Sprite.create({rect: rect, textureAtlas: this.textureAtlas});
         tile.set('position', this.positionAt(pos));
         tile.set('anchorPoint', ccp(0, 0));
         tile.set('opacity', this.get('opacity'));
 
-        this.addChild(tile);
+        this.addChild({child: tile});
     },
     positionAt: function(pos) {
         var ret = ccp(0, 0);
@@ -129,8 +128,9 @@ var TMXLayer = SpriteSheet.extend(/** @scope cocos.TMXLayer# */{
         return ret;
     },
     positionForOrthoAt: function(pos) {
+        var overlap = this.mapTileSize.height - this.tileset.tileSize.height;
         var x = Math.floor(pos.x * this.mapTileSize.width + 0.49);
-        var y = Math.floor(pos.y * this.mapTileSize.height + 0.49);
+        var y = Math.floor(pos.y * this.mapTileSize.height + 0.49) + overlap;
         return ccp(x,y);
         
     }

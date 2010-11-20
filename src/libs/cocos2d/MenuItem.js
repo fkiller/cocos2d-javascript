@@ -1,5 +1,6 @@
 var sys = require('sys'),
     Node = require('./Node').Node,
+    Sprite = require('./Sprite').Sprite,
     rectMake = require('geometry').rectMake,
     ccp = require('geometry').ccp;
 

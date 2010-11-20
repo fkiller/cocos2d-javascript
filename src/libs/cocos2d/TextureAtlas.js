@@ -90,7 +90,6 @@ var TextureAtlas = Thing.extend(/** @scope cocos.TextureAtlas */{
 		);
         ctx.scale(1, 1);
 	}
-
 });
 
 exports.TextureAtlas = TextureAtlas

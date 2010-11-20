@@ -108,15 +108,21 @@ Thing = sys.extend(Thing, /** @scope Thing */ {
 		return this.set(key, this.get(key) -1);
 	},
 
-    addObserver: function(key, callback) {
+    addObserver: function(keys, callback) {
+        keys = sys.isArray(keys) ? keys : [keys];
+
         if (!this._observers) {
             this._observers = {};
         }
-        if (!this._observers[key]) {
-            this._observers[key] = [];
-        }
 
-        this._observers[key].push(callback);
+        for (var i=0, len = keys.length; i < len; i++) {
+            var key = keys[i];
+            if (!this._observers[key]) {
+                this._observers[key] = [];
+            }
+
+            this._observers[key].push(callback);
+        }
     }
 });
 

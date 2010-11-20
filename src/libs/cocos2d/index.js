@@ -3,7 +3,7 @@ var sys = require('sys'),
 
 var modules = ('Node Layer Scene Label Sprite SpriteFrame Director Action ' +
                'ActionInterval Animation Scheduler ActionManager TMXTiledMap ' +
-               'TMXXMLParser BatchNode SpriteSheet RenderTexture Menu ' +
+               'TMXXMLParser BatchNode RenderTexture Menu ' +
                'MenuItem AppDelegate KeyboardDispatcher ActionInstant').split(' ');
 
 /** @namespace */

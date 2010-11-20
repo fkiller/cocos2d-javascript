@@ -213,6 +213,8 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
         var context = this.get('context');
         context.fillStyle = 'rgb(0, 0, 0)';
         context.fillRect(0, 0, this.winSize.width, this.winSize.height);
+        //this.canvas.width = this.canvas.width
+
 
         if (this._nextScene) {
             this.setNextScene();
