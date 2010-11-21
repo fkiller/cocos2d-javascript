@@ -8,7 +8,9 @@ var Node = require('./Node').Node,
  */
 var Layer = Node.extend(/** @scope cocos.Layer# */{
     isMouseEnabled: false,
+    isKeyboardEnabled: false,
     mouseDelegatePriority: 0,
+    keyboardDelegatePriority: 0,
 
     init: function() {
         @super;
@@ -24,6 +26,9 @@ var Layer = Node.extend(/** @scope cocos.Layer# */{
         if (this.isMouseEnabled) {
             EventDispatcher.get('sharedDispatcher').addMouseDelegate({delegate: this, priority:this.get('mouseDelegatePriority')});
         }
+        if (this.isKeyboardEnabled) {
+            EventDispatcher.get('sharedDispatcher').addKeyboardDelegate({delegate: this, priority:this.get('keyboardDelegatePriority')});
+        }
 
         @super;
     },
@@ -31,6 +36,9 @@ var Layer = Node.extend(/** @scope cocos.Layer# */{
     onExit: function() {
         if (this.isMouseEnabled) {
             EventDispatcher.get('sharedDispatcher').removeMouseDelegate({delegate: this});
+        }
+        if (this.isKeyboardEnabled) {
+            EventDispatcher.get('sharedDispatcher').removeKeyboardDelegate({delegate: this});
         }
 
         @super;
@@ -44,7 +52,17 @@ var Layer = Node.extend(/** @scope cocos.Layer# */{
                 EventDispatcher.get('sharedDispatcher').removeMouseDelegate({delegate: this});
             }
         }
-    }.observes('isMouseEnabled')
+    }.observes('isMouseEnabled'),
+
+    _updateIsKeyboardEnabled: function() {
+        if (this.isRunning) {
+            if (this.isKeyboardEnabled) {
+                EventDispatcher.get('sharedDispatcher').addKeyboardDelegate({delegate: this, priority:this.get('keyboardDelegatePriority')});
+            } else {
+                EventDispatcher.get('sharedDispatcher').removeKeyboardDelegate({delegate: this});
+            }
+        }
+    }.observes('isKeyboardEnabled')
 });
 
 module.exports.Layer = Layer;

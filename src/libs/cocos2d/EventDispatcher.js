@@ -13,12 +13,15 @@ var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
     dispatchEvents: true,
     keyboardDelegates: null,
     mouseDelegates: null,
+    _keysDown: null,
     
     init: function() {
         @super;
 
         this.keyboardDelegates = [];
         this.mouseDelegates = [];
+
+        this._keysDown = {};
     },
 
     addDelegate: function(opts) {
@@ -82,18 +85,40 @@ var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
 
         // TODO flags
 
-        this.addDelegate({delegate: delegate, priority: priority, flags: flags, list:this.mouseDelegates});
+        this.addDelegate({delegate: delegate, priority: priority, flags: flags, list: this.mouseDelegates});
     },
 
     removeMouseDelegate: function(opts) {
         var delegate = opts['delegate'];
 
-        this.removeDelegate({delegate: delegate, list:this.mouseDelegates});
+        this.removeDelegate({delegate: delegate, list: this.mouseDelegates});
     },
 
     removeAllMouseDelegate: function() {
-        this.removeAllDelegates({list:this.mouseDelegates});
+        this.removeAllDelegates({list: this.mouseDelegates});
     },
+
+    addKeyboardDelegate: function(opts) {
+        var delegate = opts['delegate'],
+            priority = opts['priority'];
+
+        var flags = 0;
+
+        // TODO flags
+
+        this.addDelegate({delegate: delegate, priority: priority, flags: flags, list: this.keyboardDelegates});
+    },
+
+    removeKeyboardDelegate: function(opts) {
+        var delegate = opts['delegate'];
+
+        this.removeDelegate({delegate: delegate, list: this.keyboardDelegates});
+    },
+
+    removeAllKeyboardDelegate: function() {
+        this.removeAllDelegates({list: this.keyboardDelegates});
+    },
+
 
 
     // Mouse Events
@@ -173,6 +198,47 @@ var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
             var entry = this.mouseDelegates[i];
             if (entry.delegate.mouseUp) {
                 var swallows = entry.delegate.mouseUp(evt);
+                if (swallows) {
+                    break;
+                }
+            }
+        }
+    },
+
+    // Keyboard events
+    keyDown: function(evt) {
+        var kc = evt.keyCode;
+        if (!this.dispatchEvents || this._keysDown[kc]) {
+            return;
+        }
+
+        this._keysDown[kc] = true;
+
+        for (var i = 0; i < this.keyboardDelegates.length; i++) {
+            var entry = this.keyboardDelegates[i];
+            if (entry.delegate.keyDown) {
+                var swallows = entry.delegate.keyDown(evt);
+                if (swallows) {
+                    break;
+                }
+            }
+        }
+    },
+
+    keyUp: function(evt) {
+        if (!this.dispatchEvents) {
+            return;
+        }
+
+        var kc = evt.keyCode;
+        if (this._keysDown[kc]) {
+            delete this._keysDown[kc];
+        }
+
+        for (var i = 0; i < this.keyboardDelegates.length; i++) {
+            var entry = this.keyboardDelegates[i];
+            if (entry.delegate.keyUp) {
+                var swallows = entry.delegate.keyUp(evt);
                 if (swallows) {
                     break;
                 }

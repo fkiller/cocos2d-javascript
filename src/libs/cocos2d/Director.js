@@ -30,6 +30,8 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
     _nextScene:null,
 
     init: function() {
+        @super;
+
         this.set('sceneStack', []);
     },
 
@@ -91,20 +93,22 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
         canvas.addEventListener('mousedown', mouseDown, false);
         canvas.addEventListener('mousemove', mouseMoved, false);
 
-        /*
         // Keyboard events
-        var keyboardDispatcher = KeyboardDispatcher.get('sharedDispatcher');
         function keyDown(evt) {
-            keyboardDispatcher.keyDown({event: evt})
+            this._keysDown = this._keysDown || {};
+            eventDispatcher.keyDown(evt)
         }
         function keyUp(evt) {
-            keyboardDispatcher.keyUp({event: evt})
+            eventDispatcher.keyUp(evt)
         }
+        /*
         function keyPress(evt) {
-            keyboardDispatcher.keyPress({event: evt})
+            eventDispatcher.keyPress(evt)
         }
+        */
         document.documentElement.addEventListener('keydown', keyDown, false);
         document.documentElement.addEventListener('keyup', keyUp, false);
+        /*
         document.documentElement.addEventListener('keypress', keyPress, false);
         */
     },
