@@ -385,15 +385,12 @@ var SpriteZOrder = SpriteDemo.extend(/** @scope SpriteZOrder.prototype# */{
 });
         
 
-sys.ApplicationMain(cocos.AppDelegate.extend({
-    applicationDidFinishLaunching: function () {
-        var director = cocos.Director.get('sharedDirector');
+// Initialise test
+var director = cocos.Director.get('sharedDirector');
 
-        director.attachInView(document.getElementById('cocos2d-tests'));
+director.attachInView(document.getElementById('cocos2d-tests'));
 
-        var scene = cocos.Scene.create();
-        scene.addChild({child: nextAction().create()});
+var scene = cocos.Scene.create();
+scene.addChild({child: nextAction().create()});
 
-        director.runWithScene(scene);
-    }
-}));
+director.runWithScene(scene);

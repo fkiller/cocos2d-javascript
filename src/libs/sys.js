@@ -187,13 +187,13 @@ var sys = {
         }
     },
 
-    ready: function() {
+    domReady: function() {
         if (this._isReady) {
-            return
+            return;
         }
 
         if (!document.body) {
-            setTimeout(function() { sys.ready(); }, 13);
+            setTimeout(function() { sys.domReady(); }, 13);
         }
 
         window.__isReady = true;
@@ -225,7 +225,7 @@ var sys = {
         // Catch cases where $(document).ready() is called after the
         // browser event has already occurred.
         if ( document.readyState === "complete" ) {
-            return sys.ready();
+            return sys.domReady();
         }
 
         // Mozilla, Opera and webkit nightlies currently support this event
@@ -234,7 +234,7 @@ var sys = {
             //document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
             
             // A fallback to window.onload, that will always work
-            window.addEventListener( "load", sys.ready, false );
+            window.addEventListener( "load", sys.domReady, false );
 
         // If IE event model is used
         } else if ( document.attachEvent ) {
@@ -243,7 +243,7 @@ var sys = {
             //document.attachEvent("onreadystatechange", DOMContentLoaded);
             
             // A fallback to window.onload, that will always work
-            window.attachEvent( "onload", ready );
+            window.attachEvent( "onload", sys.domReady );
 
             // If IE and not a frame
             /*
@@ -263,15 +263,14 @@ var sys = {
 
 
 
-    ApplicationMain: function(appDelegate) {
-        var delegate = appDelegate.create();
+    ready: function(func) {
         if (window.__isReady) {
-            delegate.applicationDidFinishLaunching()
+            func()
         } else {
             if (!window.__readyList) {
                 window.__readyList = [];
             }
-            window.__readyList.push(function() { delegate.applicationDidFinishLaunching(); });
+            window.__readyList.push(func);
         }
 
         sys.bindReady();
