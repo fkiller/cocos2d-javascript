@@ -87,16 +87,17 @@ var Menu = Layer.extend(/** @scope cocos.Menu# */{
             this.selectedItem.set('isSelected', false);
             this.selectedItem.activate();
 
-            this.set('state', kMenuStateWaiting);
-
             return true;
+        }
+
+        if (this.state != kMenuStateWaiting) {
+            this.set('state', kMenuStateWaiting);
         }
 
         return false;
 
     },
     mouseDown: function(event) {
-
         if (this.state != kMenuStateWaiting || !this.visible) {
             return false;
         }
@@ -124,7 +125,7 @@ var Menu = Layer.extend(/** @scope cocos.Menu# */{
             }
         }
 
-        if (currentItem && state == kMenuStateTrackingTouch) {
+        if (currentItem && this.state == kMenuStateTrackingTouch) {
             return true;
         }
 
