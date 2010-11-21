@@ -8,10 +8,10 @@ exports.stdio = {
     }
 };
 
-exports.console = {
-    log: function() {
-        if (window.console) {
-            window.console.log.apply(window.console, arguments);
-        }
+if (window.console) {
+    exports.console = window.console
+} else {
+    exports.console = {
+        log: function(){}
     }
 }
