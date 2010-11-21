@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     console = require('system').console,
     Thing = require('thing').Thing;
 

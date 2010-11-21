@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     console = require('system').console,
     Thing = require('thing').Thing,
     Timer = require('./Scheduler').Timer,
@@ -28,7 +28,7 @@ var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
         this.targets = [];
 
         Scheduler.get('sharedScheduler')
-          .scheduleTimer(Timer.create({ callback: sys.callback(this, 'tick') }));
+          .scheduleTimer(Timer.create({ callback: util.callback(this, 'tick') }));
     },
 
     addAction: function(opts) {
@@ -84,12 +84,12 @@ var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
     tick: function(dt) {
 
         var self = this;
-        sys.each(this.targets, function(currentTarget, i) {
+        util.each(this.targets, function(currentTarget, i) {
             if (!currentTarget) return;
             self.currentTarget = currentTarget;
 
             if (!currentTarget.paused) {
-                sys.each(currentTarget.actions, function(currentAction, j) {
+                util.each(currentTarget.actions, function(currentAction, j) {
                     if (!currentAction) return;
 
                     currentTarget.currentAction = currentAction;
@@ -127,7 +127,7 @@ var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
 	}
 });
 
-sys.extend(ActionManager, /** @scope cocos.ActionManager */{
+util.extend(ActionManager, /** @scope cocos.ActionManager */{
     /** @field
      * A shared singleton instance of cocos.ActionManager
      * @type cocos.ActionManager

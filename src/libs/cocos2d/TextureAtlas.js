@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
 	Texture2D = require('./Texture2D').Texture2D,
     Thing = require('thing').Thing;
 
@@ -49,7 +49,7 @@ var TextureAtlas = Thing.extend(/** @scope cocos.TextureAtlas */{
 
 
 	drawQuads: function(ctx) {
-		sys.each(this.quads, sys.callback(this, function(quad) {
+		util.each(this.quads, util.callback(this, function(quad) {
 			if (!quad) return;
 
 			this.drawQuad(ctx, quad);

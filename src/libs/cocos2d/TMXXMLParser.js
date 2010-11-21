@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     path = require('path'),
     ccp = require('geometry').ccp,
     base64 = require('base64'),
@@ -178,7 +178,7 @@ var TMXTilesetInfo = Thing.extend(/** @scope cocos.TMXTilesetInfo# */{
 
     rectForGID: function(gid) {
         var rect = {size:{}, origin:ccp(0,0)};
-        rect.size = sys.copy(this.tileSize);
+        rect.size = util.copy(this.tileSize);
         
         gid = gid - this.firstGID;
         

@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     act = require('./Action'),
     ccp = require('geometry').ccp;
 
@@ -324,10 +324,10 @@ var Sequence = ActionInterval.extend(/** @scope cocos.Sequence# */{
     init: function(opts) {
         @super;
 
-        this.actions = sys.copy(opts['actions']);
+        this.actions = util.copy(opts['actions']);
         this.actionSequence = {};
         
-        sys.each(this.actions, sys.callback(this, function(action) {
+        util.each(this.actions, util.callback(this, function(action) {
             this.duration += action.duration;
         }));
     },
@@ -342,7 +342,7 @@ var Sequence = ActionInterval.extend(/** @scope cocos.Sequence# */{
 
     /** @ignore */
     stop: function() {
-        sys.each(this.actions, function(action) {
+        util.each(this.actions, function(action) {
             action.stop();
         });
 

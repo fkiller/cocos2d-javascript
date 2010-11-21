@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     Thing = require('thing').Thing,
     geo = require('geometry'),
     ccp = geo.ccp,
@@ -171,7 +171,7 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
      */
     startAnimation: function() {
         animationInterval = 1.0/30;
-        this._animationTimer = setInterval(sys.callback(this, 'mainLoop'), animationInterval * 1000);
+        this._animationTimer = setInterval(util.callback(this, 'mainLoop'), animationInterval * 1000);
     },
 
     /**
@@ -272,7 +272,7 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
 /**
  * Class methods
  */
-sys.extend(Director, /** @scope cocos.Director */{
+util.extend(Director, /** @scope cocos.Director */{
     /** @field
      * A shared singleton instance of cocos.Director
      * @type cocos.Director

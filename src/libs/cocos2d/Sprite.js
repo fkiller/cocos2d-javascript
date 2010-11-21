@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     Director = require('./Director').Director,
     TextureAtlas = require('./TextureAtlas').TextureAtlas,
     Node = require('./Node').Node,
@@ -81,9 +81,9 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
             return;
         }
 
-        this.quad.textureRect = sys.copy(this.rect);
+        this.quad.textureRect = util.copy(this.rect);
         this.quad.drawRect.origin = ccp(0, 0);
-        this.quad.drawRect.size = sys.copy(this.rect.size);
+        this.quad.drawRect.size = util.copy(this.rect.size);
         if (this.flipX) {
             this.quad.drawRect.size.width *= -1;
             this.quad.drawRect.origin.x = -this.rect.size.width;

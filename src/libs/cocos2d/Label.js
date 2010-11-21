@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     console = require('system').console,
     Director = require('./Director').Director,
     Node = require('./Node').Node,
@@ -21,7 +21,7 @@ var Label = Node.extend(/** @scope cocos.Label# */{
     init: function(args) {
         @super;
 
-        sys.each('fontSize fontName fontColor string'.w(), sys.callback(this, function(name) {
+        util.each('fontSize fontName fontColor string'.w(), util.callback(this, function(name) {
             if (args[name]) {
                 this.set(name, args[name]);
             }

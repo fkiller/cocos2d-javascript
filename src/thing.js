@@ -1,9 +1,9 @@
-var sys = require('sys');
+var util = require('util');
 
 /** @class */
 var Thing = function() { this._init.apply(this, arguments); };
 
-Thing = sys.extend(Thing, /** @scope Thing */ {
+Thing = util.extend(Thing, /** @scope Thing */ {
     isThing: true,
     _observers: null,
     superclass: null,
@@ -39,12 +39,12 @@ Thing = sys.extend(Thing, /** @scope Thing */ {
 
 
         // Add given properties to the prototype
-        newObj.prototype = sys.beget(this.prototype)
+        newObj.prototype = util.beget(this.prototype)
         args.push(newObj.prototype);
         for (i = 0; i<arguments.length; i++) {
             args.push(arguments[i])
         }
-        sys.extend.apply(null, args);
+        util.extend.apply(null, args);
 
         newObj.superclass = this;
         // Create new instance
@@ -109,7 +109,7 @@ Thing = sys.extend(Thing, /** @scope Thing */ {
 	},
 
     addObserver: function(keys, callback) {
-        keys = sys.isArray(keys) ? keys : [keys];
+        keys = util.isArray(keys) ? keys : [keys];
 
         if (!this._observers) {
             this._observers = {};

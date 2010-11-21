@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     Node = require('./Node').Node,
     Sprite = require('./Sprite').Sprite,
     rectMake = require('geometry').rectMake,

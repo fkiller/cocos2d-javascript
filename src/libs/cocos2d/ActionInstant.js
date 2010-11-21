@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     act = require('./Action'),
     ccp = require('geometry').ccp;
 

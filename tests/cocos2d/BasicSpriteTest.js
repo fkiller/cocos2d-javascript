@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     cocos = require('cocos2d'),
     ccp = require('geometry').ccp;
 
@@ -71,7 +71,7 @@ SpriteTestDemo.scene = function(key, val) {
     return scene;
 }.property();
 
-sys.ApplicationMain(cocos.AppDelegate.extend({
+util.ApplicationMain(cocos.AppDelegate.extend({
     applicationDidFinishLaunching: function () {
         var director = cocos.Director.get('sharedDirector');
         director.attachInView(document.getElementById('hello-world'));

@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     Thing = require('thing').Thing;
 
 /** @member cocos

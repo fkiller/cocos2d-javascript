@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     geo = require('geometry'),
     ccp = geo.ccp,
     Thing = require('thing').Thing;
@@ -29,7 +29,7 @@ var SpriteFrame = Thing.extend(/** @scope cocos.SpriteFrame# */{
         this.rect         = opts['rect'];
         this.rotated      = !!opts['rotate'];
         this.offset       = opts['offset'] || ccp(0, 0);
-        this.originalSize = opts['originalSize'] || sys.copy(this.rect.size);
+        this.originalSize = opts['originalSize'] || util.copy(this.rect.size);
     },
 
     toString: function() {

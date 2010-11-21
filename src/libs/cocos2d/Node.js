@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     Thing = require('thing').Thing,
     Scheduler = require('./Scheduler').Scheduler,
     ActionManager = require('./ActionManager').ActionManager,
@@ -166,7 +166,7 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
     }.property(),
 
     onEnter: function() {
-        sys.each(this.children, function(child) { child.onEnter(); });
+        util.each(this.children, function(child) { child.onEnter(); });
 
         this.resumeSchedulerAndActions();
         this.set('isRunning', true);
@@ -175,13 +175,13 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
         this.pauseSchedulerAndActions();
         this.set('isRunning', false);
 
-        sys.each(this.children, function(child) { child.onExit(); });
+        util.each(this.children, function(child) { child.onExit(); });
     },
 
     cleanup: function() {
         this.stopAllActions();
         this.unscheduleAllSelectors();
-        sys.each(this.children, function(child) { child.cleanup(); });
+        util.each(this.children, function(child) { child.cleanup(); });
     },
 
     resumeSchedulerAndActions: function() {
@@ -209,7 +209,7 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
         this.transform(context);
 
         // Draw background nodes
-        sys.each(this.children, function(child, i) {
+        util.each(this.children, function(child, i) {
             if (child.zOrder < 0) {
                 child.visit(context);
             }
@@ -218,7 +218,7 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
         this.draw(context);
 
         // Draw foreground nodes
-        sys.each(this.children, function(child, i) {
+        util.each(this.children, function(child, i) {
             if (child.zOrder >= 0) {
                 child.visit(context);
             }

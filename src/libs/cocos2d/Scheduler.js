@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     Thing = require('thing').Thing;
 
 
@@ -67,7 +67,7 @@ var Scheduler = Thing.extend(/** @scope cocos.Scheduler# */{
             dt *= this.timeScale;
         }
 
-        sys.each(this.methodsToRemove, sys.callback(this, function(timer) {
+        util.each(this.methodsToRemove, util.callback(this, function(timer) {
             var i = this.scheduledMethods.indexOf(timer);
             if (i == -1) {
                 return;
@@ -77,12 +77,12 @@ var Scheduler = Thing.extend(/** @scope cocos.Scheduler# */{
         }));
         this.methodsToRemove = [];
 
-        sys.each(this.methodsToAdd, sys.callback(this, function(timer) {
+        util.each(this.methodsToAdd, util.callback(this, function(timer) {
             this.scheduledMethods.push(timer);
         }));
         this.methodsToAdd = [];
 
-        sys.each(this.scheduledMethods, function(obj) {
+        util.each(this.scheduledMethods, function(obj) {
             obj.fire(dt);
         });
 	},
@@ -98,7 +98,7 @@ var Scheduler = Thing.extend(/** @scope cocos.Scheduler# */{
 	}
 });
 
-sys.extend(Scheduler, /** @scope cocos.Scheduler */{
+util.extend(Scheduler, /** @scope cocos.Scheduler */{
     /** @field */
     sharedScheduler: function(key) {
         if (!this._instance) {

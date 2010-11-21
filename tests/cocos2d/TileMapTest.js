@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     Texture2D = require('cocos2d/Texture2D').Texture2D,
     cocos = require('cocos2d'),
     geo = require('geometry'),
@@ -60,9 +60,9 @@ var TileDemo = cocos.Layer.extend({
         }
 
 
-        var item1 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/b1.png", selectedImage:__dirname + "/resources/b2.png", callback:sys.callback(this, 'backCallback')});
-        var item2 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/r1.png", selectedImage:__dirname + "/resources/r2.png", callback:sys.callback(this, 'restartCallback')});
-        var item3 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/f1.png", selectedImage:__dirname + "/resources/f2.png", callback:sys.callback(this, 'nextCallback')});
+        var item1 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/b1.png", selectedImage:__dirname + "/resources/b2.png", callback:util.callback(this, 'backCallback')});
+        var item2 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/r1.png", selectedImage:__dirname + "/resources/r2.png", callback:util.callback(this, 'restartCallback')});
+        var item3 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/f1.png", selectedImage:__dirname + "/resources/f2.png", callback:util.callback(this, 'nextCallback')});
 
         var menu = cocos.Menu.create({items: [item1, item2, item3]});
 

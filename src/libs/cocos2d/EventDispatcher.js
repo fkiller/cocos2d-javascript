@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     geo = require('geometry'),
     Thing = require('thing').Thing;
 
@@ -185,7 +185,7 @@ var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
 /**
  * Class methods
  */
-sys.extend(EventDispatcher, /** @scope cocos.EventDispatcher */{
+util.extend(EventDispatcher, /** @scope cocos.EventDispatcher */{
     /** @field */
     sharedDispatcher: function(key) {
         if (!this._instance) {

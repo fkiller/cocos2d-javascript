@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     Thing = require('thing').Thing,
     StandardTouchHandler = require('./TouchHandler').StandardTouchHandler,
     TargetedTouchHandler = require('./TouchHandler').TargetedTouchHandler;
@@ -74,7 +74,7 @@ var TouchDispatcher = Thing.extend(/** @scope cocos.TouchDispatcher# */{
             array = opts['array'];
 
         var i = 0;
-        sys.each(array, function(h) {
+        util.each(array, function(h) {
             if (h.get('priority') < handler.get('priority')) {
                 i++;
             }
@@ -94,8 +94,8 @@ var TouchDispatcher = Thing.extend(/** @scope cocos.TouchDispatcher# */{
 
         // Targeted touch handlers
         if (this.targetedHandlers.length > 0 && touches.length > 0) {
-            sys.each(touches, sys.callback(this, function(touch) {
-                sys.each(this.targetedHandlers, function(handler) {
+            util.each(touches, util.callback(this, function(touch) {
+                util.each(this.targetedHandlers, function(handler) {
                     var claimed = false,
                         args = {touch: touch, event:event},
                         claimedTouches = handler.get('claimedTouches'),
@@ -152,7 +152,7 @@ var TouchDispatcher = Thing.extend(/** @scope cocos.TouchDispatcher# */{
 
         // Standard touch handlers
         if (this.standardHandlers.length > 0 && touches.length > 0) {
-            sys.each(this.standardHandlers, function(handler) {
+            util.each(this.standardHandlers, function(handler) {
 
                 if (handler.get('enabledMethods') & touchType) {
                     var delegate = handler.get('delegate');
@@ -186,7 +186,7 @@ var TouchDispatcher = Thing.extend(/** @scope cocos.TouchDispatcher# */{
         if (this.toAdd) {
             this.toAdd = false;
 
-            sys.each(this.handlersToAdd, sys.callback(this, function(handler) {
+            util.each(this.handlersToAdd, util.callback(this, function(handler) {
                 // TODO Targeted handlers
                 this.forceAddHandler({handler: handler, array:this.standardHandlers});
             }));
@@ -242,7 +242,7 @@ var TouchDispatcher = Thing.extend(/** @scope cocos.TouchDispatcher# */{
 /**
  * Class methods
  */
-sys.extend(TouchDispatcher, /** @scope cocos.TouchDispatcher */{
+util.extend(TouchDispatcher, /** @scope cocos.TouchDispatcher */{
     /** @field */
     sharedDispatcher: function(key) {
         if (!this._instance) {

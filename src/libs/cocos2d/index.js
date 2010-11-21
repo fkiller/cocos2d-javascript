@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     path = require('path');
 
 var modules = ('Node Layer Scene Label Sprite SpriteFrame Director Action ' +
@@ -9,8 +9,8 @@ var modules = ('Node Layer Scene Label Sprite SpriteFrame Director Action ' +
 /** @namespace */
 var cocos = {};
 
-sys.each(modules, function(mod, i) {
-    sys.extend(cocos, require('./' + mod));
+util.each(modules, function(mod, i) {
+    util.extend(cocos, require('./' + mod));
 });
 
 module.exports = cocos;

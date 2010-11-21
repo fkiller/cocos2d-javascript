@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     Node = require('./Node').Node,
     geo = require('geometry'),
     Sprite = require('./Sprite').Sprite,

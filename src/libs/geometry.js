@@ -1,4 +1,4 @@
-var sys = require('sys');
+var util = require('util');
 
 /** @namespace */
 var geometry = {
@@ -61,7 +61,7 @@ var geometry = {
     },
     affineTransformDeterminant: function(trans) {
         var det = 1,
-            t = sys.copy(trans);
+            t = util.copy(trans);
 
         var k, i, j, q, tkk;
         for (k = 0; k < 3; k++) {
@@ -98,7 +98,7 @@ var geometry = {
     affineTransformInvert: function(trans) {
         var newTrans = module.exports.affineTransformIdentity();
 
-        var t = sys.copy(trans);
+        var t = util.copy(trans);
 
         var k, i, j, q, tkk;
         for (k = 0; k < 3; k++) {
@@ -177,7 +177,7 @@ var geometry = {
     affineTransformTranslate: function(trans, x, y) {
         // tx = 6, ty = 7
 
-        var newTrans = sys.copy(trans);
+        var newTrans = util.copy(trans);
         newTrans[2][0] += x;
         newTrans[2][1] += y;
 

@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     geo = require('geometry'),
     ccp = geo.ccp,
     TextureAtlas = require('./TextureAtlas').TextureAtlas,
@@ -49,7 +49,7 @@ var BatchNode = Node.extend(/** @scope cocos.BatchNode# */{
         // TODO handle texture resize
 
         // Watch for changes in child
-        child.addObserver('isTransformDirty visible'.w(), sys.callback(this, function() {
+        child.addObserver('isTransformDirty visible'.w(), util.callback(this, function() {
             this.set('dirty', true);
         }));
         this.set('dirty', true);

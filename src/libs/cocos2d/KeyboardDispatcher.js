@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     Thing = require('thing').Thing;
 
 var KeyboardDispatcher = Thing.extend({
@@ -72,7 +72,7 @@ var KeyboardDispatcher = Thing.extend({
 /**
  * Class methods
  */
-sys.extend(KeyboardDispatcher, {
+util.extend(KeyboardDispatcher, {
     sharedDispatcher: function(key) {
         if (!this._instance) {
             this._instance = this.create();

@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     Layer = require('./Layer').Layer,
     Director = require('./Director').Director,
     MenuItem = require('./MenuItem').MenuItem,
@@ -43,7 +43,7 @@ var Menu = Layer.extend(/** @scope cocos.Menu# */{
 
 		if (items) {
 			var z = 0;
-			sys.each(items, sys.callback(this, function(item) {
+			util.each(items, util.callback(this, function(item) {
 				this.addChild({child: item, z:z++});
 			}));
 		}

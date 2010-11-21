@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     SpriteBatchNode = require('./BatchNode').SpriteBatchNode,
     Sprite = require('./Sprite').Sprite,
     TMXOrientationOrtho = require('./TMXOrientation').TMXOrientationOrtho,
@@ -45,7 +45,7 @@ var TMXLayer = SpriteBatchNode.extend(/** @scope cocos.TMXLayer# */{
         this.minGID = layerInfo.get('minGID');
         this.maxGID = layerInfo.get('maxGID');
         this.opacity = layerInfo.get('opacity');
-        this.properties = sys.copy(layerInfo.properties);
+        this.properties = util.copy(layerInfo.properties);
 
         this.tileset = tilesetInfo;
         this.mapTileSize = mapInfo.get('tileSize');

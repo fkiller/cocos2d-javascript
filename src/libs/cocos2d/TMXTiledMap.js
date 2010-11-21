@@ -1,4 +1,4 @@
-var sys = require('sys'),
+var util = require('util'),
     console = require('system').console,
     geo = require('geometry'),
     ccp = geo.ccp,
@@ -38,7 +38,7 @@ var TMXTiledMap = Node.extend(/** @scope cocos.TMXTiledMap# */{
 
         // Add layers to map
         var idx = 0;
-        sys.each(mapInfo.layers, sys.callback(this, function(layerInfo) {
+        util.each(mapInfo.layers, util.callback(this, function(layerInfo) {
             if (layerInfo.get('visible')) {
                 var child = this.parseLayer({layerInfo: layerInfo, mapInfo: mapInfo});
                 this.addChild({child:child, z:idx, tag:idx});

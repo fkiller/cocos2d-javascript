@@ -1,5 +1,5 @@
 /** @namespace */
-var sys = {
+var util = {
     /**
      * Merge two or more objects and return the result.
      *
@@ -193,7 +193,7 @@ var sys = {
         }
 
         if (!document.body) {
-            setTimeout(function() { sys.domReady(); }, 13);
+            setTimeout(function() { util.domReady(); }, 13);
         }
 
         window.__isReady = true;
@@ -225,7 +225,7 @@ var sys = {
         // Catch cases where $(document).ready() is called after the
         // browser event has already occurred.
         if ( document.readyState === "complete" ) {
-            return sys.domReady();
+            return util.domReady();
         }
 
         // Mozilla, Opera and webkit nightlies currently support this event
@@ -234,7 +234,7 @@ var sys = {
             //document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
             
             // A fallback to window.onload, that will always work
-            window.addEventListener( "load", sys.domReady, false );
+            window.addEventListener( "load", util.domReady, false );
 
         // If IE event model is used
         } else if ( document.attachEvent ) {
@@ -243,7 +243,7 @@ var sys = {
             //document.attachEvent("onreadystatechange", DOMContentLoaded);
             
             // A fallback to window.onload, that will always work
-            window.attachEvent( "onload", sys.domReady );
+            window.attachEvent( "onload", util.domReady );
 
             // If IE and not a frame
             /*
@@ -273,7 +273,7 @@ var sys = {
             window.__readyList.push(func);
         }
 
-        sys.bindReady();
+        util.bindReady();
     },
 
 
@@ -286,7 +286,7 @@ var sys = {
      */
     isArray: function(ar) {
       return ar instanceof Array
-          || (ar && ar !== Object.prototype && sys.isArray(ar.__proto__));
+          || (ar && ar !== Object.prototype && util.isArray(ar.__proto__));
     },
 
 
@@ -327,7 +327,7 @@ var sys = {
 
 }
 
-sys.extend(Function.prototype, {
+util.extend(Function.prototype, {
     _observing: null,
 
     observes: function() {
@@ -360,7 +360,7 @@ sys.extend(Function.prototype, {
     }
 });
 
-sys.extend(String.prototype, /** @scope String.prototype */ {
+util.extend(String.prototype, /** @scope String.prototype */ {
     /**
      * Create an array of words from a string
      *
@@ -374,4 +374,4 @@ sys.extend(String.prototype, /** @scope String.prototype */ {
 
 
 
-module.exports = sys;
+module.exports = util;
