@@ -23,7 +23,7 @@ var gzip = {
         for (i = 0, len = dec.length/bytes; i < len; i++){
             ar[i] = 0;
             for (j = bytes-1; j >= 0; --j){
-                ar[i] += dec.charCodeAt((i *bytes) +j) << j;
+                ar[i] += dec.charCodeAt((i *bytes) +j) << (j *8);
             }
         }
         return ar;
@@ -37,7 +37,7 @@ var gzip = {
         for (i = 0, len = dec.length/bytes; i < len; i++){
             ar[i] = 0;
             for (j = bytes-1; j >= 0; --j){
-                ar[i] += dec.charCodeAt((i *bytes) +j) << j;
+                ar[i] += dec.charCodeAt((i *bytes) +j) << (j *8);
             }
         }
         return ar;
