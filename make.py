@@ -34,7 +34,7 @@ class Compiler:
     def __init__(self, config_file=None):
         self.config = self.load_config(config_file)
 
-        module_js = os.path.join(os.path.dirname(__file__), 'module.js')
+        module_js = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'module.js')
         self.footer_code = open(module_js).read()
         self.header_code = u'''
 if (!window.__resources__) { window.__resources__ = {}; }
