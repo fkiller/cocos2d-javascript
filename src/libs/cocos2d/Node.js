@@ -165,6 +165,13 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
         return this.scaleX;
     }.property(),
 
+    scheduleUpdate: function(opts) {
+        var opts = opts || {},
+            priority = opts['priority'] || 0;
+
+        Scheduler.get('sharedScheduler').scheduleUpdate({foo: 'bar', target: this, priority: priority, paused: !this.get('isRunning')});
+    },
+
     onEnter: function() {
         util.each(this.children, function(child) { child.onEnter(); });
 

@@ -1,6 +1,23 @@
 var util = require('util'),
     Thing = require('thing').Thing;
 
+/** @ignore */
+function HashUpdateEntry() {
+    this.timers = [];
+    this.timerIndex = 0;
+    this.currentTimer = null;
+    this.currentTimerSalvaged = false;
+    this.paused = false;
+}
+
+/** @ignore */
+function HashMethodEntry() {
+    this.timers = [];
+    this.timerIndex = 0;
+    this.currentTimer = null;
+    this.currentTimerSalvaged = false;
+    this.paused = false;
+}
 
 /** @member cocos
  * @class
@@ -18,7 +35,7 @@ var Timer = Thing.extend(/** @scope cocos.Timer# */{
         this.set('interval', opts['interval'] || 0);
     },
 
-    fire: function(dt) {
+    update: function(dt) {
         if (this.elapsed == -1) {
             this.elapsed = 0;
         } else {
@@ -37,29 +54,79 @@ var Timer = Thing.extend(/** @scope cocos.Timer# */{
  * @class
  */
 var Scheduler = Thing.extend(/** @scope cocos.Scheduler# */{
-    scheduledMethods: null,
-    methodsToAdd: null,
-    methodsToRemove: null,
+    updates0: null,
+    updatesNeg: null,
+    updatesPos: null,
+    hashForUpdates: null, // <-- TODO
+    hashForMethods: null,
     timeScale: 1.0,
 
     init: function() {
-        this.scheduledMethods = [];
-        this.methodsToAdd     = [];
-        this.methodsToRemove  = [];
+        this.updates0 = [];
+        this.updatesNeg = [];
+        this.updatesPos = [];
+        this.hashForUpdates = {};
+        this.hashForMethods = {};
     },
 
-    scheduleTimer: function(timer) {
-        var i;
-        if (i = this.methodsToRemove.indexOf(timer) > -1) {
-            this.methodsToRemove.splice(i, 1); // Remove timer
-            return;
+    schedule: function(opts) {
+        var target   = opts['target'],
+            method   = opts['method'],
+            interval = opts['interval'],
+            paused   = opts['paused'] || false;
+
+        var element = this.hashForMethods[target.get('id')];
+
+        if (!element) {
+            element = new HashMethodEntry;
+            this.hashForMethods[target.get('id')] = element;
+            element.target = target;
+            element.paused = paused;
+        } else if (element.paused != paused) {
+            throw "cocos.Scheduler. Trying to schedule a method with a pause value different than the target";
         }
 
-        if (this.scheduledMethods.indexOf(timer) > -1 || this.methodsToAdd.indexOf(timer) > -1) {
-            throw "Scheduler.scheduleTimer: timer already scheduled";
+        var timer = Timer.create({callback: util.callback(target, method), interval: interval});
+        element.timers.push(timer);
+    },
+
+    scheduleUpdate: function(opts) {
+        var target   = opts['target'],
+            priority = opts['priority'],
+            paused   = opts['paused'];
+
+        var entry = {target: target, priority: priority, paused: paused};
+        var added = false;
+
+        if (priority == 0) {
+            this.updates0.push(entry);
+        } else if (priority < 0) {
+            for (var i = 0, len = this.updatesNeg.length; i < len; i++) {
+                if (priority < this.updatesNeg[i].priority) {
+                    this.updatesNeg.splice(i, 0, entry);
+                    added = true;
+                    break;
+                }
+            }
+
+            if (!added) {
+                this.updatesNeg.push(entry);
+            }
+        } else /* priority > 0 */{
+            for (var i = 0, len = this.updatesPos.length; i < len; i++) {
+                if (priority < this.updatesPos[i].priority) {
+                    this.updatesPos.splice(i, 0, entry);
+                    added = true;
+                    break;
+                }
+            }
+
+            if (!added) {
+                this.updatesPos.push(entry);
+            }
         }
 
-        this.methodsToAdd.push(timer);
+        this.hashForUpdates[target.get('id')] = entry;
     },
 
     tick: function(dt) {
@@ -67,34 +134,57 @@ var Scheduler = Thing.extend(/** @scope cocos.Scheduler# */{
             dt *= this.timeScale;
         }
 
-        util.each(this.methodsToRemove, util.callback(this, function(timer) {
-            var i = this.scheduledMethods.indexOf(timer);
-            if (i == -1) {
-                return;
+        var entry;
+        for (var i = 0, len = this.updatesNeg.length; i < len; i++) {
+            entry = this.updatesNeg[i];
+            if (!entry.paused) entry.target.update(dt);
+        }
+
+        for (var i = 0, len = this.updates0.length; i < len; i++) {
+            entry = this.updates0[i];
+            if (!entry.paused) entry.target.update(dt);
+        }
+
+        for (var i = 0, len = this.updatesPos.length; i < len; i++) {
+            entry = this.updatesPos[i];
+            if (!entry.paused) entry.target.update(dt);
+        }
+
+        for (var x in this.hashForMethods) {
+            var entry = this.hashForMethods[x];
+            for (var i = 0, len = entry.timers.length; i < len; i++) {
+                var timer = entry.timers[i];
+                timer.update(dt);
             }
+        }
 
-            this.scheduledMethods.splice(i, 1);
-        }));
-        this.methodsToRemove = [];
-
-        util.each(this.methodsToAdd, util.callback(this, function(timer) {
-            this.scheduledMethods.push(timer);
-        }));
-        this.methodsToAdd = [];
-
-        util.each(this.scheduledMethods, function(obj) {
-            obj.fire(dt);
-        });
 	},
 
     unscheduleAllSelectorsForTarget: function(target) {
     },
 
     pauseTarget: function(target) {
+        var element = this.hashForMethods[target.get('id')];
+        if (element) {
+            element.pause = true;
+        }
+
+        var elementUpdate = this.hashForUpdates[target.get('id')];
+        if (elementUpdate) {
+            elementUpdate.paused = true;
+        }
     },
 
 	resumeTarget: function(target) {
-		// TODO
+        var element = this.hashForMethods[target.get('id')];
+        if (element) {
+            element.pause = false;
+        }
+
+        var elementUpdate = this.hashForUpdates[target.get('id')];
+        if (elementUpdate) {
+            elementUpdate.paused = false;
+        }
 	}
 });
 

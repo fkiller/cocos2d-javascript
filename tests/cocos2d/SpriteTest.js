@@ -366,8 +366,7 @@ var SpriteZOrder = SpriteDemo.extend(/** @scope SpriteZOrder.prototype# */{
         sprite.set('position', ccp(s.width/2, s.height/2 + 20));
         sprite.set('scaleX', 6);
         
-        cocos.Scheduler.get('sharedScheduler')
-          .scheduleTimer(cocos.Timer.create({callback: util.callback(this, 'reorderSprite'), interval: 1}));
+		cocos.Scheduler.get('sharedScheduler').schedule({target: this, method: this.reorderSprite, interval: 1});
     },
     reorderSprite: function(dt) {
         var sprite = this.getChild({tag: kTagSprite1});

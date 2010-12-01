@@ -25,10 +25,8 @@ var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
     init: function() {
         @super;
 
+        Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
         this.targets = [];
-
-        Scheduler.get('sharedScheduler')
-          .scheduleTimer(Timer.create({ callback: util.callback(this, 'tick') }));
     },
 
     addAction: function(opts) {
@@ -81,7 +79,7 @@ var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
         element.actions.splice(0, element.actions.length-1);
     },
 
-    tick: function(dt) {
+    update: function(dt) {
 
         var self = this;
         util.each(this.targets, function(currentTarget, i) {
