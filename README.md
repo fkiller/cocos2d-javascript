@@ -3,14 +3,29 @@ Check the LICENSE file licensing details.
 This is in the very early stages of development and should be considered
 experimental.
 
-Getting it running
-------------------
+Contact Me
+----------
+
+My name is Ryan Williams.
+
+* You can find me on Twitter: @Raticide and @cocos2djs
+* Email me at: <cocos2d@ryanwilliams.org>
+* My website is: <http://ryanwilliams.org/>
+
+Example Code
+------------
+
+If you want a very basic example and a good starting point then you should checkout
+<https://github.com/RyanWilliams/cocos2d-helloworld>
+
+Getting things running
+----------------------
 
 To get things up and running simply run the server.py Python script:
 
     $ ./server.py
 
-And visit <http://localhost:4000/>
+And visit <http://localhost:4000/>. You will see a selection of tests you can run.
 
 Developing
 ----------
