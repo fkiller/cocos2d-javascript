@@ -20,6 +20,10 @@ var geometry = {
         return geometry.ccp(p1.x - p2.x, p1.y - p2.y);
     },
 
+    ccpMul: function(p1, p2) {
+        return geometry.ccp(p1.x * p2.x, p1.y * p2.y);
+    },
+
     PointZero: function() {
         return geometry.ccp(0,0);
     },
