@@ -117,7 +117,8 @@ exports.BArray = function (arr) {
     this.set('length', this.array.length);
 };
 
-exports.BArray.prototype = util.extend(exports.BObject.prototype, {
+exports.BArray.prototype = new exports.BObject();
+exports.BArray.prototype = util.extend(exports.BArray.prototype, {
     getAt: function (i) {
         return this.array[i];
     },
