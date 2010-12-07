@@ -55,7 +55,7 @@ function resource(path) {
         if (parent) {
             var cachedModule = parent.moduleCache[filename];
             if (cachedModule) {
-                return cachedModule.exports;
+                return cachedModule;
             }
         }
 
@@ -64,7 +64,7 @@ function resource(path) {
         var module = new Module(filename, parent);
         module._initialize(filename);
 
-        return module.exports;
+        return module;
     }
 
     function Module(id, parent) {
@@ -88,7 +88,7 @@ function resource(path) {
     Module.prototype._initialize = function(filename) {
         var module = this;
         function require(request) {
-            return loadModule(request, module);
+            return loadModule(request, module).exports;
         }
 
         this.filename = filename;
@@ -111,8 +111,22 @@ function resource(path) {
     // Manually load the path module because we need it to load other modules
     path = (new Module('path'))._initialize('/path.js').exports;
 
-    var util = loadModule('util');
+
+    // Populate globals
+    var globals = loadModule('global').exports;
+    for (var x in globals) {
+        window[x] = globals[x];
+    }
+
+    var util = loadModule('util').exports;
     util.ready(function() {
         process.mainModule = loadModule(__main_module_name__);
     });
+
+    // Add a global require. Useful in the debug console.
+    window.require = function require(request) {
+        return loadModule(request).exports;
+    }
+    window.require.paths = modulePaths;
+    window.require.main = process.mainModule;
 })();
