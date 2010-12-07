@@ -1,7 +1,4 @@
 function Listeners(obj, eventName) {
-    if(eventName == undefined) {
-        throw "Undefined event name";
-    }
     if (!obj.js_listeners_) obj.js_listeners_ = {};
     if (!eventName) {
         return obj.js_listeners_;
