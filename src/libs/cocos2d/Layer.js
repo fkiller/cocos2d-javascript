@@ -1,4 +1,6 @@
 var Node = require('./Node').Node,
+    util = require('util'),
+    event = require('event'),
     Director = require('./Director').Director,
     ccp    = require('geometry').ccp,
     EventDispatcher = require('./EventDispatcher').EventDispatcher;
@@ -15,11 +17,32 @@ var Layer = Node.extend(/** @scope cocos.Layer# */{
     init: function() {
         @super;
 
-        var s = Director.get('sharedDirector.winSize');
+        var s = Director.get('sharedDirector').get('winSize');
 
         this.set('isRelativeAnchorPoint', false);
         this.anchorPoint = ccp(0.5, 0.5);
         this.set('contentSize', s);
+
+        event.addListener(this, 'ismouseenabled_changed', util.callback(this, function() {
+            if (this.isRunning) {
+                if (this.isMouseEnabled) {
+                    EventDispatcher.get('sharedDispatcher').addMouseDelegate({delegate: this, priority:this.get('mouseDelegatePriority')});
+                } else {
+                    EventDispatcher.get('sharedDispatcher').removeMouseDelegate({delegate: this});
+                }
+            }
+        }));
+
+
+        event.addListener(this, 'iskeyboardenabled_changed', util.callback(this, function() {
+            if (this.isRunning) {
+                if (this.isKeyboardEnabled) {
+                    EventDispatcher.get('sharedDispatcher').addKeyboardDelegate({delegate: this, priority:this.get('keyboardDelegatePriority')});
+                } else {
+                    EventDispatcher.get('sharedDispatcher').removeKeyboardDelegate({delegate: this});
+                }
+            }
+        }));
     },
 
     onEnter: function() {
@@ -42,27 +65,7 @@ var Layer = Node.extend(/** @scope cocos.Layer# */{
         }
 
         @super;
-    },
-
-    _updateIsMouseEnabled: function() {
-        if (this.isRunning) {
-            if (this.isMouseEnabled) {
-                EventDispatcher.get('sharedDispatcher').addMouseDelegate({delegate: this, priority:this.get('mouseDelegatePriority')});
-            } else {
-                EventDispatcher.get('sharedDispatcher').removeMouseDelegate({delegate: this});
-            }
-        }
-    }.observes('isMouseEnabled'),
-
-    _updateIsKeyboardEnabled: function() {
-        if (this.isRunning) {
-            if (this.isKeyboardEnabled) {
-                EventDispatcher.get('sharedDispatcher').addKeyboardDelegate({delegate: this, priority:this.get('keyboardDelegatePriority')});
-            } else {
-                EventDispatcher.get('sharedDispatcher').removeKeyboardDelegate({delegate: this});
-            }
-        }
-    }.observes('isKeyboardEnabled')
+    }
 });
 
 module.exports.Layer = Layer;

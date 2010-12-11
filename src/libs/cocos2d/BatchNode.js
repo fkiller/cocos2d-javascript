@@ -1,4 +1,5 @@
 var util = require('util'),
+    event = require('event'),
     geo = require('geometry'),
     ccp = geo.ccp,
     TextureAtlas = require('./TextureAtlas').TextureAtlas,
@@ -28,9 +29,11 @@ var BatchNode = Node.extend(/** @scope cocos.BatchNode# */{
 		@super;
 
         var size = opts['size'] || geo.sizeMake(1, 1);
+
+        event.addListener(this, 'contentsize_changed', util.callback(this, this._resizeCanvas));
         
 		this._dirtyRects = [];
-        this.contentRect = geo.rectMake(0, 0, size.width, size.height);
+        this.set('contentRect', geo.rectMake(0, 0, size.width, size.height));
         this.renderTexture = RenderTexture.create(size);
         this.renderTexture.sprite.set('isRelativeAnchorPoint', false);
         this.addChild({child: this.renderTexture});
@@ -49,22 +52,24 @@ var BatchNode = Node.extend(/** @scope cocos.BatchNode# */{
         // TODO handle texture resize
 
         // Watch for changes in child
-        child.addObserver('isTransformDirty visible'.w(), util.callback(this, function() {
-            this.set('dirty', true);
-        }));
+        event.addListener(child, 'istransformdirty_changed', util.callback(this, function() { this.set('dirty', true); }));
+        event.addListener(child, 'visible_changed', util.callback(this, function() { this.set('dirty', true); }));
+
         this.set('dirty', true);
 
         return ret;
     },
 
-    _resizeCanvas: function(obj, key, val, oldVal) {
-        if (geo.sizeEqualToSize(val, oldVal)) {
+    _resizeCanvas: function(oldSize) {
+        var size = this.get('contentSize');
+
+        if (geo.sizeEqualToSize(size, oldSize)) {
             return; // No change
         }
 
-        this.renderTexture.set('contentSize', val);
+        this.renderTexture.set('contentSize', size);
         this.set('dirty', true);
-    }.observes('contentSize'),
+    },
 
     update: function() {
 
@@ -126,12 +131,12 @@ var SpriteBatchNode = BatchNode.extend(/** @scope cocos.SpriteBatchNode# */{
             textureAtlas = TextureAtlas.create({file: file, texture: texture});
         }
 
-        this.textureAtlas = textureAtlas;
+        this.set('textureAtlas', textureAtlas);
     },
 
-	texture: function() {
-		return this.textureAtlas.texture;
-	}.property()
+    get_texture: function() {
+		return this.textureAtlas ? this.textureAtlas.texture : null;
+	}
 
 });
 

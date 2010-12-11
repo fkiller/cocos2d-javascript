@@ -41,7 +41,7 @@ var ActionInterval = act.FiniteTimeAction.extend(/** @scope cocos.ActionInterval
     },
 
     /** @ignore */
-    isDone: function() {
+    get_isDone: function() {
         return (this.elapsed >= this.duration);
     },
 

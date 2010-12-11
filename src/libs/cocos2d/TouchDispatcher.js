@@ -1,5 +1,4 @@
 var util = require('util'),
-    Thing = require('thing').Thing,
     StandardTouchHandler = require('./TouchHandler').StandardTouchHandler,
     TargetedTouchHandler = require('./TouchHandler').TargetedTouchHandler;
     
@@ -19,7 +18,7 @@ var kTouchMethodBeganBit     = 1 << 0,
 /** @member cocos
  * @class
  */
-var TouchDispatcher = Thing.extend(/** @scope cocos.TouchDispatcher# */{
+var TouchDispatcher = BObject.extend(/** @scope cocos.TouchDispatcher# */{
     targetedHandlers: null,
     standardHandlers: null,
     locked: false,
@@ -244,13 +243,13 @@ var TouchDispatcher = Thing.extend(/** @scope cocos.TouchDispatcher# */{
  */
 util.extend(TouchDispatcher, /** @scope cocos.TouchDispatcher */{
     /** @field */
-    sharedDispatcher: function(key) {
+    get_sharedDispatcher: function(key) {
         if (!this._instance) {
             this._instance = this.create();
         }
 
         return this._instance;
-    }.property()
+    }
 });
 
 

@@ -60,7 +60,7 @@ var SpriteDemo = cocos.Layer.extend({
     init: function() {
         @super;
 
-        var s = cocos.Director.get('sharedDirector.winSize');
+        var s = cocos.Director.get('sharedDirector').get('winSize');
 
         var label = cocos.Label.create({string: this.get('title'), fontName: 'Arial', fontSize: 26});
         this.addChild({child: label, z:1});
@@ -122,13 +122,14 @@ var SpriteDemo = cocos.Layer.extend({
  * Example Sprite 1
  */
 var Sprite1 = SpriteDemo.extend(/** @scope Sprite1.prototype# */{
-    title: 'Sprite (tap screen)',
+    title: 'Sprite',
+    subtitle: 'Click screen',
 
     init: function() {
         @super;
         this.set('isMouseEnabled', true);
 
-        var s = cocos.Director.get('sharedDirector.winSize');
+        var s = cocos.Director.get('sharedDirector').get('winSize');
         this.addNewSprite(ccp(s.width /2, s.height /2));
     },
 
@@ -182,7 +183,8 @@ var Sprite1 = SpriteDemo.extend(/** @scope Sprite1.prototype# */{
  * Example SpriteBatchNode 1
  */
 var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# */{
-    title: 'SpriteBatchNode (tap screen)',
+    title: 'SpriteBatchNode',
+    subtitle: 'Click screen',
 
     init: function() {
         @super;
@@ -191,7 +193,7 @@ var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# 
         var batch = cocos.SpriteBatchNode.create({file: __dirname + "/resources/grossini_dance_atlas.png", size: geo.sizeMake(480, 320)});
         this.addChild({child: batch, z: 0, tag: kTagSpriteBatchNode});
 
-        var s = cocos.Director.get('sharedDirector.winSize');
+        var s = cocos.Director.get('sharedDirector').get('winSize');
         this.addNewSprite(ccp(s.width /2, s.height /2));
     },
 
@@ -250,7 +252,7 @@ var SpriteAnimationFlip = SpriteDemo.extend(/** @scope SpriteAnimationFlip.proto
     init: function() {
         @super;
 
-        var s = cocos.Director.get('sharedDirector.winSize');
+        var s = cocos.Director.get('sharedDirector').get('winSize');
 
         var texture = Texture2D.create({file: __dirname + "/resources/animations/dragon_animation.png"});
 
@@ -298,7 +300,7 @@ var SpriteAnchorPoint = SpriteDemo.extend(/** @scope SpriteAnchorPoint.prototype
     init: function() {
         @super;
 
-        var s = cocos.Director.get('sharedDirector.winSize');
+        var s = cocos.Director.get('sharedDirector').get('winSize');
 
         var rotate = cocos.RotateBy.create({duration: 10, angle: 360});
         var action = cocos.RepeatForever.create(rotate);
@@ -345,7 +347,7 @@ var SpriteZOrder = SpriteDemo.extend(/** @scope SpriteZOrder.prototype# */{
     init: function() {
         @super;
 
-        var s = cocos.Director.get('sharedDirector.winSize');
+        var s = cocos.Director.get('sharedDirector').get('winSize');
 
         var step = s.width / 11;
         for (var i=0; i<5; i++) {

@@ -1,5 +1,4 @@
-var util = require('util'),
-    Thing = require('thing').Thing;
+var util = require('util');
 
 /** @member cocos
  * @class
@@ -12,7 +11,7 @@ var util = require('util'),
  *  sprite.runAction(Animate.create({animation: animation}));
  * 
  */
-var Animation = Thing.extend(/** @scope cocos.Animation# */{
+var Animation = BObject.extend(/** @scope cocos.Animation# */{
     name: null,
     delay: 0.0,
     frames: null,

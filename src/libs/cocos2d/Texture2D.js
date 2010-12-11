@@ -1,9 +1,8 @@
-var util = require('util'),
-    Thing = require('thing').Thing;
+var util = require('util');
 
 /** @member cocos
  * @class */
-var Texture2D = Thing.extend(/** @scope cocos.Texture2D# */{
+var Texture2D = BObject.extend(/** @scope cocos.Texture2D# */{
 	imgElement: null,
 	size: null,
     name: null,
@@ -23,7 +22,7 @@ var Texture2D = Thing.extend(/** @scope cocos.Texture2D# */{
 
 		this.size = {width: 0, height: 0};
 
-		this.imgElement = data;
+		this.set('imgElement', data);
 		this.set('size', {width:this.imgElement.width, height: this.imgElement.height});
 	},
 
@@ -37,13 +36,13 @@ var Texture2D = Thing.extend(/** @scope cocos.Texture2D# */{
 		);
 	},
 
-	data: function() {
-		return this.imgElement.src;
-	}.property(),
+    get_data: function() {
+        return this.imgElement ? this.imgElement.src : null;
+	},
 
-	contentSize: function() {
+    get_contentSize: function() {
 		return this.size;
-    }.property()
+    }
 });
 
 exports.Texture2D = Texture2D;

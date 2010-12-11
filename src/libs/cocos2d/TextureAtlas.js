@@ -1,6 +1,5 @@
 var util = require('util'),
-	Texture2D = require('./Texture2D').Texture2D,
-    Thing = require('thing').Thing;
+	Texture2D = require('./Texture2D').Texture2D;
 
 
 /* QUAD STRUCTURE
@@ -13,7 +12,7 @@ var util = require('util'),
 /** @member cocos
  * @class
  */
-var TextureAtlas = Thing.extend(/** @scope cocos.TextureAtlas */{
+var TextureAtlas = BObject.extend(/** @scope cocos.TextureAtlas */{
 	quads: null,
 	imgElement: null,
 	texture: null,
@@ -28,7 +27,8 @@ var TextureAtlas = Thing.extend(/** @scope cocos.TextureAtlas */{
             // If we've been given a canvas element then we'll use that for our image
             this.imgElement = canvas;
         } else {
-			var texture = this.set('texture', Texture2D.create({texture: texture, file: file, data: data}));
+            var texture = Texture2D.create({texture: texture, file: file, data: data});
+			this.set('texture', texture);
 			this.imgElement = texture.get('imgElement');
         }
 
@@ -82,7 +82,8 @@ var TextureAtlas = Thing.extend(/** @scope cocos.TextureAtlas */{
 
         ctx.scale(scaleX, scaleY);
 
-		ctx.drawImage(this.get('imgElement'), 
+        var img = this.get('imgElement');
+		ctx.drawImage(img, 
 			sx, sy, // Draw slice from x,y
 			sw, sh, // Draw slice size
 			dx, dy, // Draw at 0, 0

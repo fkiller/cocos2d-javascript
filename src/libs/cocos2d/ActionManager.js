@@ -1,6 +1,5 @@
 var util = require('util'),
     console = require('system').console,
-    Thing = require('thing').Thing,
     Timer = require('./Scheduler').Timer,
     Scheduler = require('./Scheduler').Scheduler;
 
@@ -17,7 +16,7 @@ var util = require('util'),
  * 
  *
  */
-var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
+var ActionManager = BObject.extend(/** @scope cocos.ActionManager# */{
     targets: null,
     currentTarget: null,
     currentTargetSalvaged: null,
@@ -30,7 +29,6 @@ var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
     },
 
     addAction: function(opts) {
-        console.log('Adding action with opts: ', opts);
 
         var targetID = opts['target'].get('id');
         var element = this.targets[targetID];
@@ -49,11 +47,10 @@ var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
     },
 
     removeAction: function(action) {
-        var targetID = action.originalTarget.id,
+        var targetID = action.originalTarget.get('id'),
             element = this.targets[targetID],
             actionIndex = element.actions.indexOf(action);
 
-        console.log('Removing action:', element);
         if (element && actionIndex > -1) {
 
             if (this.currentTarget == element) {
@@ -80,9 +77,9 @@ var ActionManager = Thing.extend(/** @scope cocos.ActionManager# */{
     },
 
     update: function(dt) {
-
         var self = this;
         util.each(this.targets, function(currentTarget, i) {
+
             if (!currentTarget) return;
             self.currentTarget = currentTarget;
 
@@ -130,13 +127,13 @@ util.extend(ActionManager, /** @scope cocos.ActionManager */{
      * A shared singleton instance of cocos.ActionManager
      * @type cocos.ActionManager
      */
-    sharedManager: function(key) {
+    get_sharedManager: function(key) {
         if (!this._instance) {
             this._instance = this.create();
         }
 
         return this._instance;
-    }.property()
+    }
 });
 
 exports.ActionManager = ActionManager;

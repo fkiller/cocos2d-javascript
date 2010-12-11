@@ -5,13 +5,12 @@ var util = require('util'),
     gzip   = require('gzip'),
     TMXOrientationOrtho = require('./TMXOrientation').TMXOrientationOrtho,
     TMXOrientationHex = require('./TMXOrientation').TMXOrientationHex,
-    TMXOrientationIso = require('./TMXOrientation').TMXOrientationIso,
-    Thing = require('thing').Thing;
+    TMXOrientationIso = require('./TMXOrientation').TMXOrientationIso;
 
 /** @member cocos
  * @class
  */
-var TMXMapInfo = Thing.extend(/** @scope cocos.TMXMapInfo# */{
+var TMXMapInfo = BObject.extend(/** @scope cocos.TMXMapInfo# */{
     filename: '',
     orientation: 0,
     mapSize: null,
@@ -141,7 +140,7 @@ var TMXMapInfo = Thing.extend(/** @scope cocos.TMXMapInfo# */{
 /** @member cocos
  * @class
  */
-var TMXLayerInfo = Thing.extend(/** @scope cocos.TMXLayerInfo# */{
+var TMXLayerInfo = BObject.extend(/** @scope cocos.TMXLayerInfo# */{
     name: '',
     layerSize: null,
     tiles: null,
@@ -163,14 +162,13 @@ var TMXLayerInfo = Thing.extend(/** @scope cocos.TMXLayerInfo# */{
 /** @member cocos
  * @class
  */
-var TMXTilesetInfo = Thing.extend(/** @scope cocos.TMXTilesetInfo# */{
+var TMXTilesetInfo = BObject.extend(/** @scope cocos.TMXTilesetInfo# */{
     name: '',
     firstGID: 0,
     tileSize: null,
     spacing: 0,
     margin: 0,
     sourceImage: null,
-    imageSize: null,
 
     init: function() {
         @super;
@@ -181,8 +179,10 @@ var TMXTilesetInfo = Thing.extend(/** @scope cocos.TMXTilesetInfo# */{
         rect.size = util.copy(this.tileSize);
         
         gid = gid - this.firstGID;
+
+        var imgSize = this.get('imageSize');
         
-        var max_x = Math.floor((this.imageSize.width - this.margin*2 + this.spacing) / (this.tileSize.width + this.spacing));
+        var max_x = Math.floor((imgSize.width - this.margin*2 + this.spacing) / (this.tileSize.width + this.spacing));
         
         rect.origin.x = (gid % max_x) * (this.tileSize.width + this.spacing) + this.margin;
         rect.origin.y = Math.floor(gid / max_x) * (this.tileSize.height + this.spacing) + this.margin;

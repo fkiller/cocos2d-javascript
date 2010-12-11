@@ -25,6 +25,8 @@ var Label = Node.extend(/** @scope cocos.Label# */{
             if (args[name]) {
                 this.set(name, args[name]);
             }
+
+            this._updateLabelContentSize();
         }));
     },
 
@@ -32,9 +34,9 @@ var Label = Node.extend(/** @scope cocos.Label# */{
      * The font to use
      * @type String
      */
-    font: function(key) {
+    get_font: function(key) {
         return this.get('fontSize') + 'px ' + this.get('fontName');
-    }.property(),
+    },
 
     draw: function(context) {
         context.fillStyle = this.get('fontColor');
@@ -51,7 +53,7 @@ var Label = Node.extend(/** @scope cocos.Label# */{
      * @private
      */
     _updateLabelContentSize: function() {
-        var ctx = Director.get('sharedDirector.context');
+        var ctx = Director.get('sharedDirector').get('context');
         var size = {width: 0, height: this.get('fontSize')};
 
         var prevFont = ctx.font;
@@ -67,9 +69,7 @@ var Label = Node.extend(/** @scope cocos.Label# */{
         ctx.font = prevFont;
 
         this.set('contentSize', size);
-
-        console.log(size.width, size.height);
-    }.observes('string', 'fontName', 'fontSize')
+    }
 });
 
 module.exports.Label = Label;

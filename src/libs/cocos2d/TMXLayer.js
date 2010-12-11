@@ -76,7 +76,7 @@ var TMXLayer = SpriteBatchNode.extend(/** @scope cocos.TMXLayer# */{
     },
 
     setupTiles: function() {
-        this.tileset.set('imageSize', this.get('texture.contentSize'));
+        this.tileset.bindTo('imageSize', this.get('texture'), 'contentSize');
 
 
         for (var y=0; y < this.layerSize.height; y++) {
@@ -101,14 +101,13 @@ var TMXLayer = SpriteBatchNode.extend(/** @scope cocos.TMXLayer# */{
 
         var z = pos.x + pos.y * this.layerSize.width;
             
-        
         var rect = this.tileset.rectForGID(gid);
         var tile = Sprite.create({rect: rect, textureAtlas: this.textureAtlas});
         tile.set('position', this.positionAt(pos));
         tile.set('anchorPoint', ccp(0, 0));
         tile.set('opacity', this.get('opacity'));
-
-        this.addChild({child: tile});
+        
+        this.addChild({child: tile, z: 0});
     },
     positionAt: function(pos) {
         var ret = ccp(0, 0);

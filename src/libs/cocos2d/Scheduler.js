@@ -1,5 +1,4 @@
-var util = require('util'),
-    Thing = require('thing').Thing;
+var util = require('util');
 
 /** @ignore */
 function HashUpdateEntry() {
@@ -22,7 +21,7 @@ function HashMethodEntry() {
 /** @member cocos
  * @class
  */
-var Timer = Thing.extend(/** @scope cocos.Timer# */{
+var Timer = BObject.extend(/** @scope cocos.Timer# */{
     callback: null,
     interval: 0,
     elapsed: -1,
@@ -53,11 +52,11 @@ var Timer = Thing.extend(/** @scope cocos.Timer# */{
 /** @member cocos
  * @class
  */
-var Scheduler = Thing.extend(/** @scope cocos.Scheduler# */{
+var Scheduler = BObject.extend(/** @scope cocos.Scheduler# */{
     updates0: null,
     updatesNeg: null,
     updatesPos: null,
-    hashForUpdates: null, // <-- TODO
+    hashForUpdates: null,
     hashForMethods: null,
     timeScale: 1.0,
 
@@ -166,7 +165,7 @@ var Scheduler = Thing.extend(/** @scope cocos.Scheduler# */{
     pauseTarget: function(target) {
         var element = this.hashForMethods[target.get('id')];
         if (element) {
-            element.pause = true;
+            element.paused = true;
         }
 
         var elementUpdate = this.hashForUpdates[target.get('id')];
@@ -178,10 +177,11 @@ var Scheduler = Thing.extend(/** @scope cocos.Scheduler# */{
 	resumeTarget: function(target) {
         var element = this.hashForMethods[target.get('id')];
         if (element) {
-            element.pause = false;
+            element.paused = false;
         }
 
         var elementUpdate = this.hashForUpdates[target.get('id')];
+        //console.log('foo', target.get('id'), elementUpdate);
         if (elementUpdate) {
             elementUpdate.paused = false;
         }
@@ -190,13 +190,13 @@ var Scheduler = Thing.extend(/** @scope cocos.Scheduler# */{
 
 util.extend(Scheduler, /** @scope cocos.Scheduler */{
     /** @field */
-    sharedScheduler: function(key) {
+    get_sharedScheduler: function(key) {
         if (!this._instance) {
             this._instance = this.create();
         }
 
         return this._instance;
-    }.property()
+    }
 });
 
 exports.Timer = Timer;

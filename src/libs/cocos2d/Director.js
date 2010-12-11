@@ -1,5 +1,4 @@
 var util = require('util'),
-    Thing = require('thing').Thing,
     geo = require('geometry'),
     ccp = geo.ccp,
     Scheduler = require('./Scheduler').Scheduler,
@@ -15,7 +14,7 @@ var util = require('util'),
  * This class is a singleton so don't instantiate it yourself, instead use
  * cocos.Director.get('sharedDirector') to return the instance.
  */
-var Director = Thing.extend(/** @scope cocos.Director# */{
+var Director = BObject.extend(/** @scope cocos.Director# */{
     canvas: null,
     context: null,
     sceneStack: null,
@@ -47,11 +46,13 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
             view.removeChild(view.firstChild);
         }
 
-        var canvas = this.set('canvas', document.createElement('canvas'));
+        var canvas = document.createElement('canvas');
+        this.set('canvas', canvas);
         canvas.setAttribute('width', view.clientWidth);
         canvas.setAttribute('height', view.clientHeight);
 
-        var context = this.set('context', canvas.getContext('2d'));
+        var context = canvas.getContext('2d');
+        this.set('context', context);
 
         view.appendChild(canvas);
 
@@ -226,8 +227,6 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
         }
 
         this._runningScene.visit(context);
-
-        this.displayFPS();
     },
 
     /**
@@ -255,8 +254,8 @@ var Director = Thing.extend(/** @scope cocos.Director# */{
      * Whether or not to display the FPS on the bottom-left corner
      * @type Boolean
      */
-    displayFPS: function() {
-    }.property(),
+    get_displayFPS: function() {
+    },
 
     convertEventToCanvas: function(evt) {
         var x = this.canvas.offsetLeft - document.documentElement.scrollLeft,
@@ -281,13 +280,13 @@ util.extend(Director, /** @scope cocos.Director */{
      * A shared singleton instance of cocos.Director
      * @type cocos.Director
      */
-    sharedDirector: function(key) {
+    get_sharedDirector: function(key) {
         if (!this._instance) {
             this._instance = this.create();
         }
 
         return this._instance;
-    }.property()
+    }
 });
 
 exports.Director = Director;

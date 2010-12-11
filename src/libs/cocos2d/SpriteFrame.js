@@ -1,7 +1,6 @@
 var util = require('util'),
     geo = require('geometry'),
-    ccp = geo.ccp,
-    Thing = require('thing').Thing;
+    ccp = geo.ccp;
 
 /** @member cocos
  * @class
@@ -15,7 +14,7 @@ var util = require('util'),
  *  var frame = SpriteFrame.create({texture:texture rect:rect offset:offset});
  *  sprite.set('displayFrame', frame);
  */
-var SpriteFrame = Thing.extend(/** @scope cocos.SpriteFrame# */{
+var SpriteFrame = BObject.extend(/** @scope cocos.SpriteFrame# */{
     rect: null,
     rotated: false,
     offset: null,

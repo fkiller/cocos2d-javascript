@@ -58,8 +58,6 @@ var TMXTiledMap = Node.extend(/** @scope cocos.TMXTiledMap# */{
         var tileset = this.tilesetForLayer(opts);
         var layer = TMXLayer.create({tilesetInfo: tileset, layerInfo: opts['layerInfo'], mapInfo: opts['mapInfo']});
 
-        console.log('Created TMXLayer:', layer);
-
         layer.setupTiles();
 
         return layer;

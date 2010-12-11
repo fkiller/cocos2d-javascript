@@ -327,39 +327,6 @@ var util = {
 
 }
 
-util.extend(Function.prototype, {
-    _observing: null,
-
-    observes: function() {
-        /*
-        var target, key;
-        if (typeof(arguments[0]) == 'object') {
-            target = arguments[0],
-            key = arguments[1];
-        } else {
-            target = null,
-            key = arguments[0];
-        }
-        */
-
-        if (!this._observing) {
-            this._observing = [];
-        }
-        
-        var i;
-        for (i = 0; i<arguments.length; i++) {
-            this._observing.push(arguments[i]);
-        }
-
-        return this;
-    },
-    property: function() {
-        this._isProperty = true;
-
-        return this;
-    }
-});
-
 util.extend(String.prototype, /** @scope String.prototype */ {
     /**
      * Create an array of words from a string

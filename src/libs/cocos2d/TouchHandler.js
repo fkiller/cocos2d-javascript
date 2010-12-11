@@ -1,5 +1,4 @@
-var util = require('util'),
-    Thing = require('thing').Thing;
+var util = require('util');
 
 var kTouchMethodBeganBit     = 1 << 0,
     kTouchMethodMovedBit     = 1 << 1,
@@ -10,7 +9,7 @@ var kTouchMethodBeganBit     = 1 << 0,
 /** @member cocos
  * @class
  */
-var TouchHandler = Thing.extend(/** @scope cocos.TouchHandler# */{
+var TouchHandler = BObject.extend(/** @scope cocos.TouchHandler# */{
     delegate: null,
     priority: 0,
     enabledMethods: 0,

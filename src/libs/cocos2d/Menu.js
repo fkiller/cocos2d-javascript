@@ -32,7 +32,7 @@ var Menu = Layer.extend(/** @scope cocos.Menu# */{
 
 		this.set('isMouseEnabled', true);
 		
-        var s = Director.get('sharedDirector.winSize');
+        var s = Director.get('sharedDirector').get('winSize');
 
 		this.set('isRelativeAnchorPoint', false);
 		this.anchorPoint = ccp(0.5, 0.5);

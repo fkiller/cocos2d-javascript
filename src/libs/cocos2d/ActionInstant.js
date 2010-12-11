@@ -14,7 +14,7 @@ var ActionInstant = act.FiniteTimeAction.extend(/** @scope cocos.ActionInstant# 
         @super;
         this.duration = 0;
     },
-    isDone: function() {
+    get_isDone: function() {
         return true;
     },
     step: function(dt) {

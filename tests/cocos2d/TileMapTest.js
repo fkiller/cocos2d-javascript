@@ -45,7 +45,7 @@ var TileDemo = cocos.Layer.extend({
 
         this.set('isMouseEnabled', true);
 
-        var s = cocos.Director.get('sharedDirector.winSize');
+        var s = cocos.Director.get('sharedDirector').get('winSize');
 
         var label = cocos.Label.create({string: this.get('title'), fontName: 'Arial', fontSize: 26});
         this.addChild({child: label, z:1});
@@ -119,7 +119,7 @@ var TMXOrthoTest2 = TileDemo.extend({
         var map = cocos.TMXTiledMap.create({file: __dirname + "/resources/TileMaps/orthogonal-test1.tmx"});
         this.addChild({child: map, z: 0, tag: kTagTileMap});
 
-        var s = cocos.Director.get('sharedDirector.winSize');
+        var s = cocos.Director.get('sharedDirector').get('winSize');
 
         // Adjust anchor and position to bottom left so it renders like cocos2d-iphone
         map.set('anchorPoint', ccp(0, 1));

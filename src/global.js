@@ -18,12 +18,12 @@ function getBindings(obj) {
 }
 function addAccessor(obj, key, target, targetKey, noNotify) {
     getAccessors(obj)[key] = {
-        key: key,
+        key: targetKey,
         target: target
     };
 
     if (!noNotify) {
-        event.trigger(obj, key.toLowerCase() + '_changed');
+        obj.triggerChanged(key);
     }
 }
 
@@ -31,28 +31,41 @@ function addAccessor(obj, key, target, targetKey, noNotify) {
  * All exports from this file are automatically available everywhere
  */
 
+var objectID = 0;
+
 /** @class
  *
  * A bindable object. Allows observing and binding to its properties.
  */
 exports.BObject = function () {};
 exports.BObject.prototype = util.extend(exports.BObject.prototype, {
+    init: function () {},
     get: function (key) {
         var accessor = getAccessors(this)[key];
         if (accessor) {
             return accessor.target.get(accessor.key);
         } else {
+            // Call getting function
+            if (this['get_' + key]) {
+                return this['get_' + key]();
+            }
+
             return this[key];
         }
     },
     set: function (key, value) {
-        var accessor = getAccessors(this)[key];
+        var accessor = getAccessors(this)[key],
+            oldVal = this.get(key);
         if (accessor) {
             accessor.target.set(accessor.key, value);
         } else {
-            this[key] = value;
+            if (this['set_' + key]) {
+                this['set_' + key](value);
+            } else {
+                this[key] = value;
+            }
         }
-        this.notify(key);
+        this.triggerChanged(key, oldVal);
     },
     setValues: function (kvp) {
         for (var x in kvp) {
@@ -63,22 +76,25 @@ exports.BObject.prototype = util.extend(exports.BObject.prototype, {
     },
     changed: function (key) {
     },
-    notify: function (key) {
+    notify: function (key, oldVal) {
         var accessor = getAccessors(this)[key];
         if (accessor) {
-            accessor.target.notify(accessor.key);
-        } else {
-            event.trigger(this, key.toLowerCase() + '_changed');
+            accessor.target.notify(accessor.key, oldVal);
         }
+    },
+    triggerChanged: function(key, oldVal) {
+        event.trigger(this, key.toLowerCase() + '_changed', oldVal);
     },
     bindTo: function (key, target, targetKey, noNotify) {
         targetKey = targetKey || key;
         var self = this;
         this.unbind(key);
 
+        var oldVal = this.get(key);
+
         // When bound property changes, trigger a 'changed' event on this one too
         getBindings(this)[key] = event.addListener(target, targetKey.toLowerCase() + '_changed', function () {
-            self.notify(key);
+            self.triggerChanged(key, oldVal);
         });
 
         addAccessor(this, key, target, targetKey, noNotify);
@@ -105,8 +121,60 @@ exports.BObject.prototype = util.extend(exports.BObject.prototype, {
                 this.unbind(k);
             }
         }
+    },
+
+    get_id: function() {
+        if (!this._id) {
+            this._id = ++objectID;
+        }
+
+        return this._id;
     }
 });
+
+
+/**
+ * Creates a new instance of this object
+ *
+ * @returns {BObject} An instance of this object
+ */
+exports.BObject.create = function() {
+    var ret = new this();
+    ret.init.apply(ret, arguments);
+    return ret;
+};
+
+exports.BObject.extend = function() {
+    var newObj = function() {},
+        args = [],
+        i;
+
+    // Copy 'class' methods
+    for (x in this) {
+        // Don't copy built-ins
+        if (!this.hasOwnProperty(x)) {
+            continue;
+        }
+
+        newObj[x] = this[x];
+    }
+
+
+    // Add given properties to the prototype
+    newObj.prototype = util.beget(this.prototype)
+    args.push(newObj.prototype);
+    for (i = 0; i<arguments.length; i++) {
+        args.push(arguments[i])
+    }
+    util.extend.apply(null, args);
+
+    newObj.superclass = this;
+    // Create new instance
+    return newObj;
+};
+
+exports.BObject.get = exports.BObject.prototype.get;
+exports.BObject.set = exports.BObject.prototype.set;
 
 /** @class
  *

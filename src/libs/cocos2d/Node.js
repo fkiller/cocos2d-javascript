@@ -1,5 +1,5 @@
 var util = require('util'),
-    Thing = require('thing').Thing,
+    event = require('event'),
     Scheduler = require('./Scheduler').Scheduler,
     ActionManager = require('./ActionManager').ActionManager,
     geom = require('geometry'), ccp = geom.ccp;
@@ -9,7 +9,7 @@ var util = require('util'),
  *
  * The base class all visual elements extend from
  */
-var Node = Thing.extend(/** @scope cocos.Node# */{
+var Node = BObject.extend(/** @scope cocos.Node# */{
     isCocosNode: true,
     visible: true,
     position: null,
@@ -40,11 +40,17 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
      * Initializes the object
      */
     init: function() {
-        this.contentSize = {width: 0, height: 0};
+        this.set('contentSize', {width: 0, height: 0});
         this.anchorPoint = ccp(0.5, 0.5);
         this.anchorPointInPixels = ccp(0, 0);
         this.position = ccp(0,0);
         this.children = [];
+
+        util.each(['scaleX', 'scaleY', 'rotation', 'position', 'anchorPoint', 'contentSize', 'isRelativeAnchorPoint'], util.callback(this, function(key) {
+            event.addListener(this, key.toLowerCase() + '_changed', util.callback(this, this._dirtyTransform));
+        }));
+        event.addListener(this, 'anchorpoint_changed', util.callback(this, this._updateAnchorPointInPixels));
+        event.addListener(this, 'contentsize_changed', util.callback(this, this._updateAnchorPointInPixels));
     },
 
     /** @private
@@ -52,8 +58,10 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
      * anchorPointInPixels property
      */
     _updateAnchorPointInPixels: function() {
-        this.anchorPointInPixels = ccp(this.contentSize.width * this.anchorPoint.x, this.contentSize.height * this.anchorPoint.y);
-    }.observes('anchorPoint', 'contentSize'),
+        var ap = this.get('anchorPoint'),
+            cs = this.get('contentSize');
+        this.set('anchorPointInPixels', ccp(cs.width * ap.x, cs.height * ap.y));
+    },
 
     /**
      * Add a child Node
@@ -152,24 +160,23 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
         // All draw code goes here
     },
 
-    scale: function(key, val) {
-        if (val != undefined) {
-            this.set('scaleX', val);
-            this.set('scaleY', val);
-        }
-
+    get_scale: function() {
         if (this.scaleX != this.scaleY) {
             throw "scaleX and scaleY aren't identical"
         }
 
         return this.scaleX;
-    }.property(),
+    },
+    set_scale: function(val) {
+        this.set('scaleX', val);
+        this.set('scaleY', val);
+    },
 
     scheduleUpdate: function(opts) {
         var opts = opts || {},
             priority = opts['priority'] || 0;
 
-        Scheduler.get('sharedScheduler').scheduleUpdate({foo: 'bar', target: this, priority: priority, paused: !this.get('isRunning')});
+        Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: priority, paused: !this.get('isRunning')});
     },
 
     onEnter: function() {
@@ -283,7 +290,7 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
                 this.transformMatrix = geom.affineTransformTranslate(this.transformMatrix, -this.anchorPointInPixels.x, -this.anchorPointInPixels.y);
             }
             
-            this.isTransformDirty = false;
+            this.set('isTransformDirty', false);
                 
         }
 
@@ -313,21 +320,21 @@ var Node = Thing.extend(/** @scope cocos.Node# */{
         return geom.pointApplyAffineTransform(worldPoint, this.worldToNodeTransform());
     },
 
-    acceptsFirstResponder: function() {
+    get_acceptsFirstResponder: function() {
         return false;
-    }.property(),
+    },
 
-    becomeFirstResponder: function() {
+    get_becomeFirstResponder: function() {
         return true;
     },
 
-    resignFirstResponder: function() {
+    get_resignFirstResponder: function() {
         return true;
     },
 
     _dirtyTransform: function() {
         this.set('isTransformDirty', true);
-    }.observes('scaleX', 'scaleY', 'rotation', 'position', 'anchorPoint', 'contentSize', 'isRelativeAnchorPoint')
+    }
 });
 
 module.exports.Node = Node;

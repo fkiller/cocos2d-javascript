@@ -29,14 +29,14 @@ var MenuItem = Node.extend(/** @scope cocos.MenuItem# */{
 		}
 	},
 
-	rect: function() {
+	get_rect: function() {
 		return rectMake(
 			this.position.x - this.contentSize.width  * this.anchorPoint.x,
 			this.position.y - this.contentSize.height * this.anchorPoint.y,
 			this.contentSize.width,
 			this.contentSize.height
 		)
-	}.property()
+	}
 });
 
 /** @member cocos

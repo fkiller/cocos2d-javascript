@@ -1,6 +1,5 @@
 var util = require('util'),
-    geo = require('geometry'),
-    Thing = require('thing').Thing;
+    geo = require('geometry');
 
 /** @member cocos
  * @class
@@ -9,7 +8,7 @@ var util = require('util'),
  * 	    - Mouse events
  * 	    - Keyboard events
  */
-var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
+var EventDispatcher = BObject.extend(/** @scope cocos.EventDispatcher# */ {
     dispatchEvents: true,
     keyboardDelegates: null,
     mouseDelegates: null,
@@ -253,12 +252,12 @@ var EventDispatcher = Thing.extend(/** @scope cocos.EventDispatcher# */ {
  */
 util.extend(EventDispatcher, /** @scope cocos.EventDispatcher */{
     /** @field */
-    sharedDispatcher: function(key) {
+    get_sharedDispatcher: function(key) {
         if (!this._instance) {
             this._instance = this.create();
         }
 
         return this._instance;
-    }.property()
+    }
 });
 exports.EventDispatcher = EventDispatcher;

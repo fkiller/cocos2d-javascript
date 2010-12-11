@@ -1,13 +1,12 @@
 var util = require('util'),
-    console = require('system').console,
-    Thing = require('thing').Thing;
+    console = require('system').console;
 
 /** @member cocos
  * @class
  *
  * Base class for Actions
  */
-var Action = Thing.extend(/** @scope cocos.Action# */{
+var Action = BObject.extend(/** @scope cocos.Action# */{
     target: null,
     originalTarget: null,
 
@@ -52,9 +51,9 @@ var Action = Thing.extend(/** @scope cocos.Action# */{
      * 
      * @returns {Boolean} True if action has finished
      */
-    isDone: function(key) {
+    get_isDone: function(key) {
         return true;
-    }.property(),
+    },
 
 
     /**
@@ -92,7 +91,7 @@ var RepeatForever = Action.extend(/** @scope cocos.RepeatForever# */{
     },
 
     /** @ignore */
-    step :function(dt) {
+    step: function(dt) {
         this.other.step(dt);
         if (this.other.get('isDone')) {
             var diff = dt - this.other.get('duration') - this.other.get('elapsed');
@@ -103,7 +102,7 @@ var RepeatForever = Action.extend(/** @scope cocos.RepeatForever# */{
     },
 
     /** @ignore */
-    isDone: function() {
+    get_isDone: function() {
         return false;
     },
 

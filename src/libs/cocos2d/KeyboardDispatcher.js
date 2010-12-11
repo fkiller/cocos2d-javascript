@@ -1,7 +1,6 @@
-var util = require('util'),
-    Thing = require('thing').Thing;
+var util = require('util');
 
-var KeyboardDispatcher = Thing.extend({
+var KeyboardDispatcher = BObject.extend({
     firstResponder: null,
     downKeys: null,
 
@@ -73,13 +72,13 @@ var KeyboardDispatcher = Thing.extend({
  * Class methods
  */
 util.extend(KeyboardDispatcher, {
-    sharedDispatcher: function(key) {
+    get_sharedDispatcher: function(key) {
         if (!this._instance) {
             this._instance = this.create();
         }
 
         return this._instance;
-    }.property()
+    }
 });
 
 exports.KeyboardDispatcher = KeyboardDispatcher;

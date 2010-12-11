@@ -1,4 +1,5 @@
 var util = require('util'),
+    event = require('event'),
     Director = require('./Director').Director,
     TextureAtlas = require('./TextureAtlas').TextureAtlas,
     Node = require('./Node').Node,
@@ -35,6 +36,11 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
             texture = frame.get('texture');
             rect    = frame.get('rect');
         }
+
+        util.each(['scale', 'scaleX', 'scaleY', 'rect', 'flipX', 'flipY'], util.callback(this, function(key) {
+            event.addListener(this, key.toLowerCase() + '_changed', util.callback(this, this._updateQuad));
+        }));
+        event.addListener(this, 'textureatlas_changed', util.callback(this, this._updateTextureQuad));
 
         if (file || texture) {
             textureAtlas = TextureAtlas.create({file: file, texture: texture});
@@ -74,7 +80,7 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
         if (texture) {
             texture.insertQuad({quad: this.get('quad')});
         }
-    }.observes('textureAtlas'),
+    },
 
     _updateQuad: function() {
         if (!this.quad) {
@@ -92,7 +98,7 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
             this.quad.drawRect.size.height *= -1;
             this.quad.drawRect.origin.y = -this.rect.size.height;
         }
-    }.observes('scale', 'scaleX', 'scaleY', 'rect', 'flipX', 'flipY'),
+    },
 
     updateTransform: function(ctx) {
         if (!this.useSpriteSheet) {
@@ -127,11 +133,11 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
         // TODO check texture name
         return (geo.rectEqualToRect(frame.rect, this.rect));
     },
-    displayFrame: function(key, frame) {
+    set_displayFrame: function(frame) {
         // TODO change texture
 
         this.set('rect', frame.get('rect'));
-    }.property()
+    }
 });
 
 module.exports.Sprite = Sprite;
