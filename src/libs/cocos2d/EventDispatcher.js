@@ -1,14 +1,15 @@
 var util = require('util'),
     geo = require('geometry');
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.EventDispatcher
+ * @extends BObject
  *  
- *  This is object is responsible for dispatching the events:
- * 	    - Mouse events
- * 	    - Keyboard events
+ * This singleton is responsible for dispatching Mouse and Keyboard events.
+ *
+ * @singleton
  */
-var EventDispatcher = BObject.extend(/** @scope cocos.EventDispatcher# */ {
+var EventDispatcher = BObject.extend({
     dispatchEvents: true,
     keyboardDelegates: null,
     mouseDelegates: null,
@@ -250,8 +251,11 @@ var EventDispatcher = BObject.extend(/** @scope cocos.EventDispatcher# */ {
 /**
  * Class methods
  */
-util.extend(EventDispatcher, /** @scope cocos.EventDispatcher */{
-    /** @field */
+util.extend(EventDispatcher, {
+    /**
+     * @property EventDispatcher.sharedDispatcher A shared singleton instance of cocos.EventDispatcher
+     * @type cocos.EventDispatcher
+     */
     get_sharedDispatcher: function(key) {
         if (!this._instance) {
             this._instance = this.create();

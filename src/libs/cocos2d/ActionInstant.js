@@ -2,14 +2,13 @@ var util = require('util'),
     act = require('./Action'),
     ccp = require('geometry').ccp;
 
-/** @member cocos
- * @class
- *
- * Instant actions are immediate actions. They don't have a duration like the cocos.ActionInterval actions.
- *
+/**
+ * @class cocos.ActionInstant Base class for actions that triggers instantly. They have no duration.
  * @extends cocos.FiniteTimeAction
+ *
+ * @constructor
  */
-var ActionInstant = act.FiniteTimeAction.extend(/** @scope cocos.ActionInstant# */{
+var ActionInstant = act.FiniteTimeAction.extend({
     init: function(opts) {
         @super;
         this.duration = 0;
@@ -28,14 +27,15 @@ var ActionInstant = act.FiniteTimeAction.extend(/** @scope cocos.ActionInstant# 
     }
 });
 
-/** @member cocos
- * @class
- *
- * Flips the sprite horizontally
- *
+/**
+ * @class cocos.FlipX Flips a sprite horizontally
  * @extends cocos.ActionInstant
+ *
+ * @constructor
+ * @namedparams
+ * @param {Boolean} flipX Should the sprite be flipped
  */
-var FlipX = ActionInstant.extend(/** @scope cocos.FlipX# */{
+var FlipX = ActionInstant.extend({
     flipX: false,
 
     init: function(opts) {
@@ -55,14 +55,15 @@ var FlipX = ActionInstant.extend(/** @scope cocos.FlipX# */{
     }
 });
 
-/** @member cocos
- * @class
- *
- * Flips the sprite vertically
- *
+/**
+ * @class cocos.FlipY Flips a sprite horizontally
  * @extends cocos.ActionInstant
+ *
+ * @constructor
+ * @namedparams
+ * @param {Boolean} flipY Should the sprite be flipped
  */
-var FlipY = ActionInstant.extend(/** @scope cocos.FlipY# */{
+var FlipY = ActionInstant.extend({
     flipY: false,
 
     init: function(opts) {

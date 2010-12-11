@@ -8,12 +8,17 @@ var util = require('util'),
     ccp    = geo.ccp,
     Node = require('./Node').Node;
 
-/** @member cocos
- * @class
- *
+/** 
+ * @class cocos.TMXLayer A tile map layer loaded from a TMX file. This will probably automatically be made by cocos.TMXTiledMap
  * @extends cocos.SpriteBatchNode
+ *
+ * @constructor
+ * @namedparams
+ * @param {cocos.TMXTilesetInfo} tilesetInfo
+ * @param {cocos.TMXLayerInfo} layerInfo
+ * @param {cocos.TMXMapInfo} mapInfo
  */
-var TMXLayer = SpriteBatchNode.extend(/** @scope cocos.TMXLayer# */{
+var TMXLayer = SpriteBatchNode.extend({
     layerSize: null,
     layerName: '',
     tiles: null,

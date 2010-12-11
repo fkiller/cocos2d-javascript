@@ -1,8 +1,6 @@
-/*global exports,require */
-/*jslint white: true, undef: true, nomen: true, bitwise: true, regexp: true, newcap: true */
-
 var util = require('util'),
     event = require('event');
+
 
 function getAccessors(obj) {
     if (!obj.js_accessors_) {
@@ -27,15 +25,12 @@ function addAccessor(obj, key, target, targetKey, noNotify) {
     }
 }
 
-/**
- * All exports from this file are automatically available everywhere
- */
-
 var objectID = 0;
 
-/** @class
+/**
+ * @class BObject A bindable object. Allows observing and binding to its properties.
  *
- * A bindable object. Allows observing and binding to its properties.
+ * @constructor
  */
 exports.BObject = function () {};
 exports.BObject.prototype = util.extend(exports.BObject.prototype, {
@@ -134,8 +129,8 @@ exports.BObject.prototype = util.extend(exports.BObject.prototype, {
 
 
 /**
+ * @static
  * Creates a new instance of this object
- *
  * @returns {BObject} An instance of this object
  */
 exports.BObject.create = function() {
@@ -144,6 +139,11 @@ exports.BObject.create = function() {
     return ret;
 };
 
+/**
+ * Create an new class by extending this one
+ * @returns {Class} A new class
+ * @static
+ */
 exports.BObject.extend = function() {
     var newObj = function() {},
         args = [],
@@ -176,9 +176,12 @@ exports.BObject.extend = function() {
 exports.BObject.get = exports.BObject.prototype.get;
 exports.BObject.set = exports.BObject.prototype.set;
 
-/** @class
+/**
+ * @class BArray A bindable array. Allows observing for changes made to its contents
+ * @extends BObject
  *
- * A bindable array. Allows observing for changes made to its contents
+ * @constructor
+ * @param {Array} arr A normal JS array to use for data
  */
 exports.BArray = function (arr) {
     this.array = arr || [];
@@ -187,15 +190,31 @@ exports.BArray = function (arr) {
 
 exports.BArray.prototype = new exports.BObject();
 exports.BArray.prototype = util.extend(exports.BArray.prototype, {
+    /**
+     * Get an item
+     * @param {Integer} i Index to get item from
+     */
     getAt: function (i) {
         return this.array[i];
     },
+
+    /**
+     * Set an item -- Overwrites any existing item at index
+     * @param {Integer} i Index to set item to
+     * @param {*} value Value to assign to index
+     */
     setAt: function (i, value) {
         var oldVal = this.array[i];
         this.array[i] = value;
 
         event.trigger(this, 'set_at', i, oldVal);
     },
+
+    /**
+     * Insert a new item into the array without overwriting anything
+     * @param {Integer} i Index to insert item at
+     * @param {*} value Value to insert
+     */
     insertAt: function (i, value) {
         this.array.splice(i, 0, value);
         this.set('length', this.array.length);

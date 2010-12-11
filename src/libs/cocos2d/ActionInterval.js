@@ -2,8 +2,8 @@ var util = require('util'),
     act = require('./Action'),
     ccp = require('geometry').ccp;
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.ActionInterval
  *
  * Base class actions that do have a finite time duration. 
  *
@@ -13,20 +13,19 @@ var util = require('util'),
  * - An action with a duration of 35.5 seconds Infinite time actions are valid
  *
  * @extends cocos.FiniteTimeAction
+ *
+ * @constructor
+ * @param {Float} duration Number of seconds to run action for
  */
-var ActionInterval = act.FiniteTimeAction.extend(/** @scope cocos.ActionInterval# */{
+var ActionInterval = act.FiniteTimeAction.extend({
     /**
      * Number of seconds that have elapsed
      * @type Float
      */
     elapsed: 0.0,
 
-    /** @private
-     * @ignore
-     */
     _firstTick: true,
 
-    /** @ignore */
     init: function(opts) {
         @super;
 
@@ -40,12 +39,10 @@ var ActionInterval = act.FiniteTimeAction.extend(/** @scope cocos.ActionInterval
         this._firstTick = true;
     },
 
-    /** @ignore */
     get_isDone: function() {
         return (this.elapsed >= this.duration);
     },
 
-    /** @ignore */
     step: function(dt) {
         if (this._firstTick) {
             this._firstTick = false;
@@ -57,7 +54,6 @@ var ActionInterval = act.FiniteTimeAction.extend(/** @scope cocos.ActionInterval
         this.update(Math.min(1, this.elapsed/this.duration));
     },
 
-    /** @ignore */
     startWithTarget: function(target) {
         @super;
 
@@ -65,20 +61,25 @@ var ActionInterval = act.FiniteTimeAction.extend(/** @scope cocos.ActionInterval
         this._firstTick = true;
     },
 
-    /** @ignore */
     reverse: function() {
         throw "Reverse Action not implemented"
     }
 });
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.ScaleTo
  *
  * Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
  *
  * @extends cocos.ActionInterval
+ *
+ * @constructor
+ * @param {Float} duration Number of seconds to run action for
+ * @param {Float} scale (Optional) Size to scale Node to
+ * @param {Float} scaleX (Optional) Size to scale width of Node to
+ * @param {Float} scaleY (Optional) Size to scale height of Node to
  */
-var ScaleTo = ActionInterval.extend(/** @scope cocos.ScaleTo# */{
+var ScaleTo = ActionInterval.extend({
     /**
      * Current X Scale
      * @type Float
@@ -164,15 +165,20 @@ var ScaleTo = ActionInterval.extend(/** @scope cocos.ScaleTo# */{
     }
 });
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.ScaleBy
  *
  * Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
  *
  * @extends cocos.ScaleTo
+ *
+ * @constructor
+ * @param {Float} duration Number of seconds to run action for
+ * @param {Float} scale (Optional) Size to scale Node by
+ * @param {Float} scaleX (Optional) Size to scale width of Node by
+ * @param {Float} scaleY (Optional) Size to scale height of Node by
  */
-var ScaleBy = ScaleTo.extend(/** @scope cocos.ScaleBy# */{
-    /** @ignore */
+var ScaleBy = ScaleTo.extend({
     startWithTarget: function(target) {
         @super;
 
@@ -180,22 +186,25 @@ var ScaleBy = ScaleTo.extend(/** @scope cocos.ScaleBy# */{
         this.deltaY = this.startScaleY * this.endScaleY - this.startScaleY;
     },
 
-    /** @ignore */
     reverse: function() {
         return ScaleBy.create({duration: this.duration, scaleX:1/this.endScaleX, scaleY:1/this.endScaleY});
     }
 });
 
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.RotateTo
  *
  * Rotates a cocos.Node object to a certain angle by modifying its rotation
  * attribute. The direction will be decided by the shortest angle.
  *
  * @extends cocos.ActionInterval
+ *
+ * @constructor
+ * @param {Float} duration Number of seconds to run action for
+ * @param {Float} angle Angle in degrees to rotate to
  */
-var RotateTo = ActionInterval.extend(/** @scope cocos.RotateTo# */{
+var RotateTo = ActionInterval.extend({
     /**
      * Final angle
      * @type Float
@@ -214,14 +223,12 @@ var RotateTo = ActionInterval.extend(/** @scope cocos.RotateTo# */{
      */
     diffAngle: 0,
 
-    /** @ignore */
     init: function(opts) {
         @super;
 
         this.dstAngle = opts['angle'];
     },
 
-    /** @ignore */
     startWithTarget: function(target) {
         @super;
 
@@ -247,46 +254,45 @@ var RotateTo = ActionInterval.extend(/** @scope cocos.RotateTo# */{
     }
 });
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.RotateBy
  *
  * Rotates a cocos.Node object to a certain angle by modifying its rotation
  * attribute. The direction will be decided by the shortest angle.
  *
  * @extends cocos.RotateTo
+ *
+ * @constructor
+ * @param {Float} duration Number of seconds to run action for
+ * @param {Float} angle Angle in degrees to rotate by
  */
-var RotateBy = RotateTo.extend(/** @scope cocos.RotateBy# */{
+var RotateBy = RotateTo.extend({
     /**
      * Number of degrees to rotate by
      * @type Float
      */
     angle: 0,
 
-    /** @ignore */
     init: function(opts) {
         @super;
 
         this.angle = opts['angle'];
     },
 
-    /** @ignore */
     startWithTarget: function(target) {
         @super;
 
         this.startAngle = this.target.get('rotation');
     },
 
-    /** @ignore */
     update: function(t) {
         this.target.set('rotation', this.startAngle + this.angle *t);
     },
 
-    /** @ignore */
     reverse: function() {
         return RotateBy.create({duration: this.duration, angle: -this.angle});
     },
 
-    /** @ignore */
     copy: function() {
         return RotateBy.create({duration: this.duration, angle: this.angle});
     }
@@ -294,14 +300,18 @@ var RotateBy = RotateTo.extend(/** @scope cocos.RotateBy# */{
 
 
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.Sequence
  *
- * Runs actions sequentially, one after another
+ * Runs a number of actions sequentially, one after another
  *
  * @extends cocos.ActionInterval
+ *
+ * @constructor
+ * @param {Float} duration Number of seconds to run action for
+ * @param {Array:cocos.Action} Array of actions to run in sequence
  */
-var Sequence = ActionInterval.extend(/** @scope cocos.Sequence# */{
+var Sequence = ActionInterval.extend({
     /**
      * Array of actions to run
      * @type cocos.Node[]
@@ -320,7 +330,6 @@ var Sequence = ActionInterval.extend(/** @scope cocos.Sequence# */{
      */
     currentActionEndDuration: 0,
 
-    /** @ignore */
     init: function(opts) {
         @super;
 
@@ -332,7 +341,6 @@ var Sequence = ActionInterval.extend(/** @scope cocos.Sequence# */{
         }));
     },
 
-    /** @ignore */
     startWithTarget: function(target) {
         @super;
         this.currentActionIndex = 0;
@@ -340,7 +348,6 @@ var Sequence = ActionInterval.extend(/** @scope cocos.Sequence# */{
         this.actions[0].startWithTarget(this.target);
     },
 
-    /** @ignore */
     stop: function() {
         util.each(this.actions, function(action) {
             action.stop();
@@ -349,7 +356,6 @@ var Sequence = ActionInterval.extend(/** @scope cocos.Sequence# */{
         @super;
     },
 
-    /** @ignore */
     step: function(dt) {
         if (this._firstTick) {
             this._firstTick = false;
@@ -362,7 +368,6 @@ var Sequence = ActionInterval.extend(/** @scope cocos.Sequence# */{
         this.update(Math.min(1, this.elapsed/this.duration));
     },
 
-    /** @ignore */
     update: function(dt) {
         // Action finished onto the next one
         if (this.elapsed > this.currentActionEndDuration) {
@@ -383,19 +388,23 @@ var Sequence = ActionInterval.extend(/** @scope cocos.Sequence# */{
     }
 });
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.Animate
  *
  * Animates a sprite given the name of an Animation 
  *
  * @extends cocos.ActionInterval
+ *
+ * @constructor
+ * @param {Float} duration Number of seconds to run action for
+ * @param {cocos.Animation} animation Animation to run
+ * @param {Boolean} restoreOriginalFrame (Optional) Return to first frame when finished
  */
-var Animate = ActionInterval.extend(/** @scope cocos.Animate# */{
+var Animate = ActionInterval.extend({
     animation: null,
     restoreOriginalFrame: false,
     origFrame: null,
 
-    /** @ignore */
     init: function(opts) {
         this.animation = opts['animation'];
         this.restoreOriginalFrame = opts['restoreOriginalFrame'];
@@ -404,7 +413,6 @@ var Animate = ActionInterval.extend(/** @scope cocos.Animate# */{
         @super;
     },
 
-    /** @ignore */
     startWithTarget: function(target) {
         @super;
 
@@ -413,7 +421,6 @@ var Animate = ActionInterval.extend(/** @scope cocos.Animate# */{
         }
     },
 
-    /** @ignore */
     update: function(t) {
         var frames = this.animation.get('frames'),
             numberOfFrames = frames.length,
@@ -429,7 +436,6 @@ var Animate = ActionInterval.extend(/** @scope cocos.Animate# */{
         }
     },
 
-    /** @ignore */
     copy: function() {
         return Animate.create({animation: this.animation, restoreOriginalFrame: this.restoreOriginalFrame});
     }

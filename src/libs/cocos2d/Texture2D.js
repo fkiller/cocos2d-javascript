@@ -1,8 +1,16 @@
 var util = require('util');
 
-/** @member cocos
- * @class */
-var Texture2D = BObject.extend(/** @scope cocos.Texture2D# */{
+/**
+ * @class cocos.Texture2D
+ * @extends BObject
+ *
+ * @constructor
+ * @namedparams
+ * @param {String} file (Optional) The file path of the image to use as a texture
+ * @param {Texture2D} data (Optional) Another Texture2D to use the image data from
+ * @param {HTMLImageElement} data (Optional) The image resource to use as a texture
+ **/
+var Texture2D = BObject.extend({
 	imgElement: null,
 	size: null,
     name: null,

@@ -1,17 +1,18 @@
 var util = require('util');
 
-/** @member cocos
- * @class
+/** 
+ * @class cocos.Animation
+ * @extends BObject
  *
- * A Animation object is used to perform animations on the Sprite objects.
+ * <p>A Animation object is used to perform animations on the Sprite objects.
  * 
  * The Animation object contains SpriteFrame objects, and a possible delay between the frames.
- * You can animate a Animation object by using the Animate action. Example:
+ * You can animate a Animation object by using the Animate action. Example:</p>
  * 
- *  sprite.runAction(Animate.create({animation: animation}));
+ *  <pre>sprite.runAction(Animate.create({animation: animation}));</pre>
  * 
  */
-var Animation = BObject.extend(/** @scope cocos.Animation# */{
+var Animation = BObject.extend({
     name: null,
     delay: 0.0,
     frames: null,

@@ -4,34 +4,39 @@ var util = require('util'),
     Node = require('./Node').Node,
     ccp = require('geometry').ccp;
 
-/** @member cocos
- * @class
- *
- * Renders a text label
- *
+/**
+ * @class cocos.Label Renders a simple text label
  * @extends cocos.Node
+ *
+ * @constructor
+ * @namedparams
+ * @param {Float} fontSize (Optional) The size of the font
+ * @param {String} fontName (Optional) The name of the font to use
+ * @param {String} fontColor (Optional) The color of the text
+ * @param {String} string The text string to draw
  */
-var Label = Node.extend(/** @scope cocos.Label# */{
+var Label = Node.extend({
     string:   '',
     fontName: 'Helvetica',
     fontSize: 16,
     fontColor: 'white',
 
-    /** @ignore */
     init: function(args) {
         @super;
 
         util.each('fontSize fontName fontColor string'.w(), util.callback(this, function(name) {
+            // Set property on init
             if (args[name]) {
                 this.set(name, args[name]);
             }
 
+            // Update content size
             this._updateLabelContentSize();
         }));
     },
 
-    /** @field
-     * The font to use
+    /** 
+     * @property font The font to use
      * @type String
      */
     get_font: function(key) {

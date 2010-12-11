@@ -1,12 +1,12 @@
 var util = require('util'),
     console = require('system').console;
 
-/** @member cocos
- * @class
+/** 
+ * @class cocos.Action Base class for Actions
  *
- * Base class for Actions
+ * @constructor
  */
-var Action = BObject.extend(/** @scope cocos.Action# */{
+var Action = BObject.extend({
     target: null,
     originalTarget: null,
 
@@ -46,10 +46,9 @@ var Action = BObject.extend(/** @scope cocos.Action# */{
         this.target = null;
     },
 
-    /** @field
-     * Return true if the action has finished
-     * 
-     * @returns {Boolean} True if action has finished
+    /**
+     * @property isDone Has the action finished
+     * @type {Boolean} 
      */
     get_isDone: function(key) {
         return true;
@@ -59,38 +58,38 @@ var Action = BObject.extend(/** @scope cocos.Action# */{
     /**
      * Returns a copy of this Action but in reverse
      *
-     * @returns {cocos.Action} A new Action in reverse
+     * @return {cocos.Action} A new Action in reverse
      */
     reverse: function() {
     }
 });
 
-/** @member cocos
- * @class
+/** 
+ * @class cocos.RepeatForever
  *
  * Repeats an action forever. To repeat the an action for a limited number of
  * times use the cocos.Repeat action.
  *
  * @extends cocos.Action
+ * @constructor
+ * @param {cocos.Action} action An action to repeat forever
  */
-var RepeatForever = Action.extend(/** @scope cocos.RepeatForever# */{
+var RepeatForever = Action.extend({
     other: null,
 
-    /** @ignore */
     init: function(action) {
+
         @super();
 
         this.other = action;
     },
 
-    /** @ignore */
     startWithTarget: function(target) {
         @super;
 
         this.other.startWithTarget(this.target);
     },
 
-    /** @ignore */
     step: function(dt) {
         this.other.step(dt);
         if (this.other.get('isDone')) {
@@ -101,31 +100,30 @@ var RepeatForever = Action.extend(/** @scope cocos.RepeatForever# */{
         }
     },
 
-    /** @ignore */
     get_isDone: function() {
         return false;
     },
 
-    /** @ignore */
     reverse: function() {
         return RepeatForever.create(this.other.reverse());
     },
 
-    /** @ignore */
     copy: function() {
         return RepeatForever.create(this.other.copy());
     }
 });
 
-/** @member cocos
- * @class
+/** 
+ * @class cocos.FiniteTimeAction
  *
  * Repeats an action a number of times. To repeat an action forever use the
  * cocos.RepeatForever action.
  *
  * @extends cocos.Action
+ *
+ * @constructor
  */
-var FiniteTimeAction = Action.extend(/** @scope cocos.FiniteTimeAction# */{
+var FiniteTimeAction = Action.extend({
     /**
      * Number of seconds to run the Action for
      * @type Float

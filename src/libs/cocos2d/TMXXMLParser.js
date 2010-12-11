@@ -7,10 +7,13 @@ var util = require('util'),
     TMXOrientationHex = require('./TMXOrientation').TMXOrientationHex,
     TMXOrientationIso = require('./TMXOrientation').TMXOrientationIso;
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.TMXMapInfo
+ * @extends BObject
+ * @constructor
+ * @param {String} tmxFile The file path of the TMX file to load
  */
-var TMXMapInfo = BObject.extend(/** @scope cocos.TMXMapInfo# */{
+var TMXMapInfo = BObject.extend({
     filename: '',
     orientation: 0,
     mapSize: null,
@@ -137,10 +140,12 @@ var TMXMapInfo = BObject.extend(/** @scope cocos.TMXMapInfo# */{
     }
 });
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.TMXLayerInfo
+ * @extends BObject
+ * @constructor
  */
-var TMXLayerInfo = BObject.extend(/** @scope cocos.TMXLayerInfo# */{
+var TMXLayerInfo = BObject.extend({
     name: '',
     layerSize: null,
     tiles: null,
@@ -159,10 +164,12 @@ var TMXLayerInfo = BObject.extend(/** @scope cocos.TMXLayerInfo# */{
     }
 });
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.TMXTilesetInfo
+ * @extends BObject
+ * @constructor
  */
-var TMXTilesetInfo = BObject.extend(/** @scope cocos.TMXTilesetInfo# */{
+var TMXTilesetInfo = BObject.extend({
     name: '',
     firstGID: 0,
     tileSize: null,

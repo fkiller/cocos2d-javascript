@@ -2,19 +2,25 @@ var util = require('util'),
     geo = require('geometry'),
     ccp = geo.ccp;
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.SpriteFrame Represents a single frame of animation for a cocos.Sprite
+ * @extends BObject
  *
- *  A SpriteFrame has:
- *  - texture: A Texture2D that will be used by the Sprite
- *  - rectangle: A rectangle of the texture
+ * <p>A SpriteFrame has:<br>
+ * - texture: A Texture2D that will be used by the Sprite<br>
+ * - rectangle: A rectangle of the texture</p>
  *
- * You can modify the frame of a Sprite by doing:
+ * <p>You can modify the frame of a Sprite by doing:</p>
  * 
- *  var frame = SpriteFrame.create({texture:texture rect:rect offset:offset});
- *  sprite.set('displayFrame', frame);
+ * <pre>var frame = SpriteFrame.create({texture: texture, rect: rect});
+ * sprite.set('displayFrame', frame);</pre>
+ *
+ * @constructor
+ * @namedparams
+ * @param {Texture2D} texture The texture to draw this frame using
+ * @param {geometry.Rect} rect The rectangle inside the texture to draw
  */
-var SpriteFrame = BObject.extend(/** @scope cocos.SpriteFrame# */{
+var SpriteFrame = BObject.extend({
     rect: null,
     rotated: false,
     offset: null,

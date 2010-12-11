@@ -9,10 +9,18 @@ var util = require('util'),
  }
 */
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.TextureAtlas A single texture that can represent lots of smaller images
+ * @extends BObject
+ *
+ * @constructor
+ * @namedparams
+ * @param {String} file (Optional) The file path of the image to use as a texture
+ * @param {Texture2D} data (Optional) Another Texture2D to use the image data from
+ * @param {HTMLImageElement} data (Optional) The image resource to use as a texture
+ * @param {CanvasElement} canvas (Optional) A canvas to use as a texture
  */
-var TextureAtlas = BObject.extend(/** @scope cocos.TextureAtlas */{
+var TextureAtlas = BObject.extend({
 	quads: null,
 	imgElement: null,
 	texture: null,

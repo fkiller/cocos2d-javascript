@@ -1,9 +1,11 @@
 var Node = require('./Node').Node;
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.Scene Everything in your view will be a child of this object. You need at least 1 scene per app.
+ * @extends cocos.Node
+ * @constructor
  */
-var Scene = Node.extend(/** @scope cocos.Scene# */{
+var Scene = Node.extend({
 
 });
 

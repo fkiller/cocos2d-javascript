@@ -3,20 +3,23 @@ var util = require('util'),
     Timer = require('./Scheduler').Timer,
     Scheduler = require('./Scheduler').Scheduler;
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.ActionManager
+ * @extends BObject
  *
- * cocos.ActionManager is a singleton that manages all the actions. Normally you
+ * <p>A singleton that manages all the actions. Normally you
  * won't need to use this singleton directly. 99% of the cases you will use the
  * cocos.Node interface, which uses this singleton. But there are some cases where
- * you might need to use this singleton. Examples:
+ * you might need to use this singleton. Examples:</p>
  *
- * - When you want to run an action where the target is different from a cocos.Node</li>
- * - When you want to pause / resume the actions
- * 
+ * <ul>
+ * <li>When you want to run an action where the target is different from a cocos.Node</li>
+ * <li>When you want to pause / resume the actions</li>
+ * </ul>
  *
+ * @singleton
  */
-var ActionManager = BObject.extend(/** @scope cocos.ActionManager# */{
+var ActionManager = BObject.extend({
     targets: null,
     currentTarget: null,
     currentTargetSalvaged: null,
@@ -122,9 +125,9 @@ var ActionManager = BObject.extend(/** @scope cocos.ActionManager# */{
 	}
 });
 
-util.extend(ActionManager, /** @scope cocos.ActionManager */{
-    /** @field
-     * A shared singleton instance of cocos.ActionManager
+util.extend(ActionManager, {
+    /**
+     * @property ActionManager.sharedManager A shared singleton instance of cocos.ActionManager
      * @type cocos.ActionManager
      */
     get_sharedManager: function(key) {

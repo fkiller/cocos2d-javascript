@@ -4,12 +4,13 @@ var util = require('util'),
     ActionManager = require('./ActionManager').ActionManager,
     geom = require('geometry'), ccp = geom.ccp;
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.Node The base class all visual elements extend from
+ * @extends BObject
  *
- * The base class all visual elements extend from
+ * @constructor Create a new empty cocos Node
  */
-var Node = BObject.extend(/** @scope cocos.Node# */{
+var Node = BObject.extend({
     isCocosNode: true,
     visible: true,
     position: null,
@@ -32,13 +33,10 @@ var Node = BObject.extend(/** @scope cocos.Node# */{
 
     /**
      * The child Nodes
-     * @property {cocos.Node[]}
+     * @type {Array: cocos.Node}
      */
     children: null,
 
-    /**
-     * Initializes the object
-     */
     init: function() {
         this.set('contentSize', {width: 0, height: 0});
         this.anchorPoint = ccp(0.5, 0.5);
@@ -65,10 +63,13 @@ var Node = BObject.extend(/** @scope cocos.Node# */{
 
     /**
      * Add a child Node
-     * @param {Object} params Parameters
-     * @param {cocos.Node} params.child The child node to add
      *
-     * @returns {cocos.Node} The parent node; 'this'.
+     * @namedparams
+     * @param {cocos.Node} child The child node to add
+     * @param {Integer} z (Optional) Z Index for the child
+     * @param {Integer/String} tag (Optional) A tag to reference the child with
+     *
+     * @return {cocos.Node} The node the child was added to. i.e. 'this'
      */
     addChild: function(params) {
         if (params.isCocosNode) {

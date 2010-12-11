@@ -6,12 +6,15 @@ var util = require('util'),
     RenderTexture = require('./RenderTexture').RenderTexture,
 	Node = require('./Node').Node;
 
-/** @member cocos
- * @class
- *
+/**
+ * @class cocos.BatchNode Draws all children to an in-memory canvas and only redraws when something changes
  * @extends cocos.Node
+ *
+ * @constructor
+ * @namedparams
+ * @param {geometry.Size} size The size of the in-memory canvas used for drawing to
  */
-var BatchNode = Node.extend(/** @scope cocos.BatchNode# */{
+var BatchNode = Node.extend({
     contentRect: null,
     renderTexture: null,
     dirty: true,
@@ -108,18 +111,19 @@ var BatchNode = Node.extend(/** @scope cocos.BatchNode# */{
     }
 });
 
-/** @member cocos
- * @class
- *
+/**
+ * @class cocos.SpriteBatchNode A BatchNode that accepts only Sprite using the same texture
  * @extends cocos.BatchNode
+ *
+ * @constructor
+ * @namedparams
+ * @param {String} file (Optional) Path to image to use as sprite atlas
+ * @param {Texture2D} texture (Optional) Texture to use as sprite atlas
+ * @param {cocos.TextureAtlas} textureAtlas (Optional) TextureAtlas to use as sprite atlas
  */
-var SpriteBatchNode = BatchNode.extend(/** @scope cocos.SpriteBatchNode# */{
+var SpriteBatchNode = BatchNode.extend({
     textureAtlas: null,
 
-    /** 
-     * @param {String} opts.file Path to image to use as sprite atlas
-     * @param {Rect} opts.rect The rect in the sprite atlas image file to use as the sprite
-     */
     init: function(opts) {
         @super;
 
@@ -134,6 +138,10 @@ var SpriteBatchNode = BatchNode.extend(/** @scope cocos.SpriteBatchNode# */{
         this.set('textureAtlas', textureAtlas);
     },
 
+    /**
+     * @property texture
+     * @type cocos.Texture2D
+     */
     get_texture: function() {
 		return this.textureAtlas ? this.textureAtlas.texture : null;
 	}

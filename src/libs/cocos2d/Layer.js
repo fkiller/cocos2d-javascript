@@ -5,10 +5,13 @@ var Node = require('./Node').Node,
     ccp    = require('geometry').ccp,
     EventDispatcher = require('./EventDispatcher').EventDispatcher;
 
-/** @member cocos
- * @class
+/** 
+ * @class cocos.Layer A fullscreen Node. You need at least 1 layer in your app to add things to.
+ * @extends cocos.Node
+ *
+ * @constructor
  */
-var Layer = Node.extend(/** @scope cocos.Layer# */{
+var Layer = Node.extend({
     isMouseEnabled: false,
     isKeyboardEnabled: false,
     mouseDelegatePriority: 0,

@@ -4,12 +4,15 @@ var util = require('util'),
     rectMake = require('geometry').rectMake,
     ccp = require('geometry').ccp;
 
-/** @member cocos
- * @class
- *
+/**
+ * @class cocos.MenuItem Base class for any buttons or options in a menu
  * @extends cocos.Node
+ *
+ * @constructor
+ * @namedparams
+ * @param {Function} callback Function to call when menu item is activated
  */
-var MenuItem = Node.extend(/** @scope cocos.MenuItem# */{
+var MenuItem = Node.extend({
 	isEnabled: true,
 	isSelected: false,
 	callback: null,
@@ -39,12 +42,17 @@ var MenuItem = Node.extend(/** @scope cocos.MenuItem# */{
 	}
 });
 
-/** @member cocos
- * @class
- *
+/**
+ * @class cocos.MenuItemSprite A menu item that accepts any cocos.Node
  * @extends cocos.MenuItem
+ *
+ * @constructor
+ * @namedparams
+ * @param {cocos.Node} normalImage Main Node to draw
+ * @param {cocos.Node} selectedImage Node to draw when menu item is selected
+ * @param {cocos.Node} disabledImage Node to draw when menu item is disabled
  */
-var MenuItemSprite = MenuItem.extend(/** @scope cocos.MenuItemSprite# */{
+var MenuItemSprite = MenuItem.extend({
 	normalImage: null,
 	selectedImage: null,
 	disabledImage: null,
@@ -80,10 +88,15 @@ var MenuItemSprite = MenuItem.extend(/** @scope cocos.MenuItemSprite# */{
 	}
 });
 
-/** @member cocos
- * @class
- *
+/**
+ * @class cocos.MenuItemImage MenuItem that accepts image files
  * @extends cocos.MenuItemSprite
+ *
+ * @constructor
+ * @namedparams
+ * @param {String} normalImage Main image file to draw
+ * @param {String} selectedImage Image file to draw when menu item is selected
+ * @param {String} disabledImage Image file to draw when menu item is disabled
  */
 var MenuItemImage = MenuItemSprite.extend(/** @scope cocos.MenuItemImage# */{
 	init: function(opts) {

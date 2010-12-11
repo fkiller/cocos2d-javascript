@@ -9,12 +9,15 @@ var util = require('util'),
     TMXLayer   = require('./TMXLayer').TMXLayer,
     TMXMapInfo = require('./TMXXMLParser').TMXMapInfo;
 
-/** @member cocos
- * @class
- *
+/**
+ * @class cocos.TMXTiledMap A TMX Map loaded from a .tmx file
  * @extends cocos.Node
+ *
+ * @constructor
+ * @namedparams
+ * @param {String} file The file path of the TMX map to load
  */
-var TMXTiledMap = Node.extend(/** @scope cocos.TMXTiledMap# */{
+var TMXTiledMap = Node.extend({
     mapSize: null,
     tileSize: null,
     mapOrientation: 0,

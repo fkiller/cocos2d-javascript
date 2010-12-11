@@ -4,7 +4,7 @@ var util = require('util'),
 var modules = ('Node Layer Scene Label Sprite SpriteFrame Director Action ' +
                'ActionInterval Animation Scheduler ActionManager TMXTiledMap ' +
                'TMXXMLParser BatchNode RenderTexture Menu ' +
-               'MenuItem KeyboardDispatcher ActionInstant').split(' ');
+               'MenuItem ActionInstant').split(' ');
 
 /** @namespace */
 var cocos = {};

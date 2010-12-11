@@ -18,10 +18,16 @@ function HashMethodEntry() {
     this.paused = false;
 }
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.Timer Runs a function repeatedly at a fixed interval
+ * @extends BObject
+ *
+ * @constructor
+ * @namedparams
+ * @param {Function} callback The function to run at each interval
+ * @param {Float} interval Number of milliseconds to wait between each exectuion of callback
  */
-var Timer = BObject.extend(/** @scope cocos.Timer# */{
+var Timer = BObject.extend({
     callback: null,
     interval: 0,
     elapsed: -1,
@@ -49,10 +55,13 @@ var Timer = BObject.extend(/** @scope cocos.Timer# */{
 });
 
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.Scheduler Runs timers
+ * @extends BObject
+ * @private
+ * @singleton
  */
-var Scheduler = BObject.extend(/** @scope cocos.Scheduler# */{
+var Scheduler = BObject.extend({
     updates0: null,
     updatesNeg: null,
     updatesPos: null,
@@ -188,8 +197,11 @@ var Scheduler = BObject.extend(/** @scope cocos.Scheduler# */{
 	}
 });
 
-util.extend(Scheduler, /** @scope cocos.Scheduler */{
-    /** @field */
+util.extend(Scheduler, {
+    /**
+     * @property Scheduler.sharedScheduler A shared singleton instance of cocos.Scheduler
+     * @type cocos.Scheduler
+     */
     get_sharedScheduler: function(key) {
         if (!this._instance) {
             this._instance = this.create();

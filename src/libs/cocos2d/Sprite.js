@@ -6,10 +6,15 @@ var util = require('util'),
     geo = require('geometry'),
     ccp = geo.ccp;
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.Sprite A small 2D graphics than can be animated
+ * @extends cocos.Node
+ *
+ * @constructor Create a new sprite
+ * @param {String} file Path to image to use as sprite atlas
+ * @param {Rect} rect (Optional) The rect in the sprite atlas image file to use as the sprite
  */
-var Sprite = Node.extend(/** @scope cocos.Sprite# */{
+var Sprite = Node.extend({
     textureAtlas: null,
     rect: null,
     dirty: true,
@@ -18,10 +23,6 @@ var Sprite = Node.extend(/** @scope cocos.Sprite# */{
     flipX: false,
     flipY: false,
 
-    /** 
-     * @param {String} opts.file Path to image to use as sprite atlas
-     * @param {Rect} opts.rect The rect in the sprite atlas image file to use as the sprite
-     */
     init: function(opts) {
         @super;
 

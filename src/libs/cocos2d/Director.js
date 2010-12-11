@@ -5,16 +5,19 @@ var util = require('util'),
     EventDispatcher = require('./EventDispatcher').EventDispatcher,
     Scene = require('./Scene').Scene;
 
-/** @member cocos
- * @class
+/**
+ * @class cocos.Director
+ * @extends BObject
  *
- * Creates and handles the main view and manages how and when to execute the
- * Scenes.
+ * <p>Creates and handles the main view and manages how and when to execute the
+ * Scenes.</p>
  *
- * This class is a singleton so don't instantiate it yourself, instead use
- * cocos.Director.get('sharedDirector') to return the instance.
+ * <p>This class is a singleton so don't instantiate it yourself, instead use
+ * cocos.Director.get('sharedDirector') to return the instance.</p>
+ *
+ * @singleton
  */
-var Director = BObject.extend(/** @scope cocos.Director# */{
+var Director = BObject.extend({
     canvas: null,
     context: null,
     sceneStack: null,
@@ -36,6 +39,8 @@ var Director = BObject.extend(/** @scope cocos.Director# */{
 
     /**
      * Append to a HTML element. It will create a canvas tag
+     *
+     * @param {HTMLElement} view Any HTML element to add the application to
      */
     attachInView: function(view) {
         if (!view.tagName) {
@@ -250,8 +255,8 @@ var Director = BObject.extend(/** @scope cocos.Director# */{
         this._runningScene.onEnter();
     },
 
-    /** @field
-     * Whether or not to display the FPS on the bottom-left corner
+    /**
+     * @property displayFPS Whether or not to display the FPS on the bottom-left corner
      * @type Boolean
      */
     get_displayFPS: function() {
@@ -275,9 +280,9 @@ var Director = BObject.extend(/** @scope cocos.Director# */{
 /**
  * Class methods
  */
-util.extend(Director, /** @scope cocos.Director */{
-    /** @field
-     * A shared singleton instance of cocos.Director
+util.extend(Director, {
+    /**
+     * @property Director.sharedDirector A shared singleton instance of cocos.Director
      * @type cocos.Director
      */
     get_sharedDirector: function(key) {
