@@ -3,7 +3,7 @@ var util = require('util'),
     ccp = require('geometry').ccp;
 
 /**
- * @class cocos.ActionInterval
+ * @class cocos.actions.ActionInterval
  *
  * Base class actions that do have a finite time duration. 
  *
@@ -12,7 +12,7 @@ var util = require('util'),
  * - An action with a duration of 0 seconds
  * - An action with a duration of 35.5 seconds Infinite time actions are valid
  *
- * @extends cocos.FiniteTimeAction
+ * @extends cocos.actions.FiniteTimeAction
  *
  * @constructor
  * @param {Float} duration Number of seconds to run action for
@@ -67,11 +67,11 @@ var ActionInterval = act.FiniteTimeAction.extend({
 });
 
 /**
- * @class cocos.ScaleTo
+ * @class cocos.actions.ScaleTo
  *
  * Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
  *
- * @extends cocos.ActionInterval
+ * @extends cocos.actions.ActionInterval
  *
  * @constructor
  * @param {Float} duration Number of seconds to run action for
@@ -166,11 +166,11 @@ var ScaleTo = ActionInterval.extend({
 });
 
 /**
- * @class cocos.ScaleBy
+ * @class cocos.actions.ScaleBy
  *
  * Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
  *
- * @extends cocos.ScaleTo
+ * @extends cocos.actions.ScaleTo
  *
  * @constructor
  * @param {Float} duration Number of seconds to run action for
@@ -193,12 +193,12 @@ var ScaleBy = ScaleTo.extend({
 
 
 /**
- * @class cocos.RotateTo
+ * @class cocos.actions.RotateTo
  *
  * Rotates a cocos.Node object to a certain angle by modifying its rotation
  * attribute. The direction will be decided by the shortest angle.
  *
- * @extends cocos.ActionInterval
+ * @extends cocos.actions.ActionInterval
  *
  * @constructor
  * @param {Float} duration Number of seconds to run action for
@@ -255,12 +255,12 @@ var RotateTo = ActionInterval.extend({
 });
 
 /**
- * @class cocos.RotateBy
+ * @class cocos.actions.RotateBy
  *
  * Rotates a cocos.Node object to a certain angle by modifying its rotation
  * attribute. The direction will be decided by the shortest angle.
  *
- * @extends cocos.RotateTo
+ * @extends cocos.actions.RotateTo
  *
  * @constructor
  * @param {Float} duration Number of seconds to run action for
@@ -301,11 +301,11 @@ var RotateBy = RotateTo.extend({
 
 
 /**
- * @class cocos.Sequence
+ * @class cocos.actions.Sequence
  *
  * Runs a number of actions sequentially, one after another
  *
- * @extends cocos.ActionInterval
+ * @extends cocos.actions.ActionInterval
  *
  * @constructor
  * @param {Float} duration Number of seconds to run action for
@@ -389,11 +389,11 @@ var Sequence = ActionInterval.extend({
 });
 
 /**
- * @class cocos.Animate
+ * @class cocos.actions.Animate
  *
  * Animates a sprite given the name of an Animation 
  *
- * @extends cocos.ActionInterval
+ * @extends cocos.actions.ActionInterval
  *
  * @constructor
  * @param {Float} duration Number of seconds to run action for

@@ -1,14 +1,14 @@
 var util = require('util'),
     event = require('event'),
-    Director = require('./Director').Director,
-    TextureAtlas = require('./TextureAtlas').TextureAtlas,
+    Director = require('../Director').Director,
+    TextureAtlas = require('../TextureAtlas').TextureAtlas,
     Node = require('./Node').Node,
     geo = require('geometry'),
     ccp = geo.ccp;
 
 /**
- * @class cocos.Sprite A small 2D graphics than can be animated
- * @extends cocos.Node
+ * @class cocos.nodes.Sprite A small 2D graphics than can be animated
+ * @extends cocos.nodes.Node
  *
  * @constructor Create a new sprite
  * @param {String} file Path to image to use as sprite atlas

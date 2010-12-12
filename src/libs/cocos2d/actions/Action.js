@@ -2,7 +2,7 @@ var util = require('util'),
     console = require('system').console;
 
 /** 
- * @class cocos.Action Base class for Actions
+ * @class cocos.actions.Action Base class for Actions
  *
  * @constructor
  */
@@ -65,12 +65,12 @@ var Action = BObject.extend({
 });
 
 /** 
- * @class cocos.RepeatForever
+ * @class cocos.actions.RepeatForever
  *
  * Repeats an action forever. To repeat the an action for a limited number of
  * times use the cocos.Repeat action.
  *
- * @extends cocos.Action
+ * @extends cocos.actions.Action
  * @constructor
  * @param {cocos.Action} action An action to repeat forever
  */
@@ -114,12 +114,12 @@ var RepeatForever = Action.extend({
 });
 
 /** 
- * @class cocos.FiniteTimeAction
+ * @class cocos.actions.FiniteTimeAction
  *
  * Repeats an action a number of times. To repeat an action forever use the
  * cocos.RepeatForever action.
  *
- * @extends cocos.Action
+ * @extends cocos.actions.Action
  *
  * @constructor
  */

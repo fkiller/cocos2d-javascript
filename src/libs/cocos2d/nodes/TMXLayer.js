@@ -1,16 +1,16 @@
 var util = require('util'),
     SpriteBatchNode = require('./BatchNode').SpriteBatchNode,
     Sprite = require('./Sprite').Sprite,
-    TMXOrientationOrtho = require('./TMXOrientation').TMXOrientationOrtho,
-    TMXOrientationHex   = require('./TMXOrientation').TMXOrientationHex,
-    TMXOrientationIso   = require('./TMXOrientation').TMXOrientationIso,
+    TMXOrientationOrtho = require('../TMXOrientation').TMXOrientationOrtho,
+    TMXOrientationHex   = require('../TMXOrientation').TMXOrientationHex,
+    TMXOrientationIso   = require('../TMXOrientation').TMXOrientationIso,
     geo    = require('geometry'),
     ccp    = geo.ccp,
     Node = require('./Node').Node;
 
 /** 
- * @class cocos.TMXLayer A tile map layer loaded from a TMX file. This will probably automatically be made by cocos.TMXTiledMap
- * @extends cocos.SpriteBatchNode
+ * @class cocos.nodes.TMXLayer A tile map layer loaded from a TMX file. This will probably automatically be made by cocos.TMXTiledMap
+ * @extends cocos.nodes.SpriteBatchNode
  *
  * @constructor
  * @namedparams

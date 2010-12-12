@@ -5,8 +5,8 @@ var util = require('util'),
     ccp = require('geometry').ccp;
 
 /**
- * @class cocos.MenuItem Base class for any buttons or options in a menu
- * @extends cocos.Node
+ * @class cocos.nodes.MenuItem Base class for any buttons or options in a menu
+ * @extends cocos.nodes.Node
  *
  * @constructor
  * @namedparams
@@ -43,8 +43,8 @@ var MenuItem = Node.extend({
 });
 
 /**
- * @class cocos.MenuItemSprite A menu item that accepts any cocos.Node
- * @extends cocos.MenuItem
+ * @class cocos.nodes.MenuItemSprite A menu item that accepts any cocos.Node
+ * @extends cocos.nodes.MenuItem
  *
  * @constructor
  * @namedparams
@@ -89,8 +89,8 @@ var MenuItemSprite = MenuItem.extend({
 });
 
 /**
- * @class cocos.MenuItemImage MenuItem that accepts image files
- * @extends cocos.MenuItemSprite
+ * @class cocos.nodes.MenuItemImage MenuItem that accepts image files
+ * @extends cocos.nodes.MenuItemSprite
  *
  * @constructor
  * @namedparams

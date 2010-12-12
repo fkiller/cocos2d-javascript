@@ -1,6 +1,8 @@
 var util = require('util'),
     Texture2D = require('cocos2d/Texture2D').Texture2D,
     cocos = require('cocos2d'),
+    nodes = cocos.nodes,
+    actions = cocos.actions,
     geo = require('geometry'),
     ccp = geo.ccp;
 
@@ -36,7 +38,7 @@ function restartAction() {
     return c;
 }
 
-var TileDemo = cocos.Layer.extend({
+var TileDemo = nodes.Layer.extend({
     title: 'No title',
     subtitle: null,
 
@@ -47,24 +49,24 @@ var TileDemo = cocos.Layer.extend({
 
         var s = cocos.Director.get('sharedDirector').get('winSize');
 
-        var label = cocos.Label.create({string: this.get('title'), fontName: 'Arial', fontSize: 26});
+        var label = nodes.Label.create({string: this.get('title'), fontName: 'Arial', fontSize: 26});
         this.addChild({child: label, z:1});
         label.set('position', ccp(s.width / 2, 50));
 
 
         var subtitle = this.get('subtitle');
         if (subtitle) {
-            var l = cocos.Label.create({string:subtitle, fontName: "Thonburi", fontSize: 16});
+            var l = nodes.Label.create({string:subtitle, fontName: "Thonburi", fontSize: 16});
             this.addChild({child: l, z:1});
             l.set('position', ccp(s.width/2, 80));
         }
 
 
-        var item1 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/b1.png", selectedImage:__dirname + "/resources/b2.png", callback:util.callback(this, 'backCallback')});
-        var item2 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/r1.png", selectedImage:__dirname + "/resources/r2.png", callback:util.callback(this, 'restartCallback')});
-        var item3 = cocos.MenuItemImage.create({normalImage:__dirname + "/resources/f1.png", selectedImage:__dirname + "/resources/f2.png", callback:util.callback(this, 'nextCallback')});
+        var item1 = nodes.MenuItemImage.create({normalImage:__dirname + "/resources/b1.png", selectedImage:__dirname + "/resources/b2.png", callback:util.callback(this, 'backCallback')});
+        var item2 = nodes.MenuItemImage.create({normalImage:__dirname + "/resources/r1.png", selectedImage:__dirname + "/resources/r2.png", callback:util.callback(this, 'restartCallback')});
+        var item3 = nodes.MenuItemImage.create({normalImage:__dirname + "/resources/f1.png", selectedImage:__dirname + "/resources/f2.png", callback:util.callback(this, 'nextCallback')});
 
-        var menu = cocos.Menu.create({items: [item1, item2, item3]});
+        var menu = nodes.Menu.create({items: [item1, item2, item3]});
 
         menu.set('position', ccp(0,0));
         item1.set('position', ccp(s.width /2 -100, s.height -30));
@@ -83,7 +85,7 @@ var TileDemo = cocos.Layer.extend({
     restartCallback: function() {
         var director = cocos.Director.get('sharedDirector');
 
-        var scene = cocos.Scene.create();
+        var scene = nodes.Scene.create();
         scene.addChild({child: restartAction().create()});
 
         director.replaceScene(scene);
@@ -92,7 +94,7 @@ var TileDemo = cocos.Layer.extend({
     backCallback: function() {
         var director = cocos.Director.get('sharedDirector');
 
-        var scene = cocos.Scene.create();
+        var scene = nodes.Scene.create();
         scene.addChild({child: backAction().create()});
 
         director.replaceScene(scene);
@@ -101,7 +103,7 @@ var TileDemo = cocos.Layer.extend({
     nextCallback: function() {
         var director = cocos.Director.get('sharedDirector');
 
-        var scene = cocos.Scene.create();
+        var scene = nodes.Scene.create();
         scene.addChild({child: nextAction().create()});
 
         director.replaceScene(scene);
@@ -116,7 +118,7 @@ var TMXOrthoTest2 = TileDemo.extend({
     init: function() {
         @super;
 
-        var map = cocos.TMXTiledMap.create({file: __dirname + "/resources/TileMaps/orthogonal-test1.tmx"});
+        var map = nodes.TMXTiledMap.create({file: __dirname + "/resources/TileMaps/orthogonal-test1.tmx"});
         this.addChild({child: map, z: 0, tag: kTagTileMap});
 
         var s = cocos.Director.get('sharedDirector').get('winSize');
@@ -126,7 +128,7 @@ var TMXOrthoTest2 = TileDemo.extend({
 
         map.set('position', ccp(0, s.height));
 
-        map.runAction(cocos.ScaleBy.create({duration: 2, scale: 0.5}));
+        map.runAction(actions.ScaleBy.create({duration: 2, scale: 0.5}));
     }
 });
 
@@ -135,7 +137,7 @@ var director = cocos.Director.get('sharedDirector');
 
 director.attachInView(document.getElementById('cocos2d-tests'));
 
-var scene = cocos.Scene.create();
+var scene = nodes.Scene.create();
 scene.addChild({child: nextAction().create()});
 
 director.runWithScene(scene);

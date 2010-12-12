@@ -2,13 +2,13 @@ var util = require('util'),
     event = require('event'),
     geo = require('geometry'),
     ccp = geo.ccp,
-    TextureAtlas = require('./TextureAtlas').TextureAtlas,
+    TextureAtlas = require('../TextureAtlas').TextureAtlas,
     RenderTexture = require('./RenderTexture').RenderTexture,
 	Node = require('./Node').Node;
 
 /**
- * @class cocos.BatchNode Draws all children to an in-memory canvas and only redraws when something changes
- * @extends cocos.Node
+ * @class cocos.nodes.BatchNode Draws all children to an in-memory canvas and only redraws when something changes
+ * @extends cocos.nodes.Node
  *
  * @constructor
  * @namedparams
@@ -112,8 +112,8 @@ var BatchNode = Node.extend({
 });
 
 /**
- * @class cocos.SpriteBatchNode A BatchNode that accepts only Sprite using the same texture
- * @extends cocos.BatchNode
+ * @class cocos.nodes.SpriteBatchNode A BatchNode that accepts only Sprite using the same texture
+ * @extends cocos.nodes.BatchNode
  *
  * @constructor
  * @namedparams

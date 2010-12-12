@@ -3,15 +3,15 @@ var util = require('util'),
     geo = require('geometry'),
     ccp = geo.ccp,
     Node = require('./Node').Node,
-    TMXOrientationOrtho = require('./TMXOrientation').TMXOrientationOrtho,
-    TMXOrientationHex   = require('./TMXOrientation').TMXOrientationHex,
-    TMXOrientationIso   = require('./TMXOrientation').TMXOrientationIso,
+    TMXOrientationOrtho = require('../TMXOrientation').TMXOrientationOrtho,
+    TMXOrientationHex   = require('../TMXOrientation').TMXOrientationHex,
+    TMXOrientationIso   = require('../TMXOrientation').TMXOrientationIso,
     TMXLayer   = require('./TMXLayer').TMXLayer,
-    TMXMapInfo = require('./TMXXMLParser').TMXMapInfo;
+    TMXMapInfo = require('../TMXXMLParser').TMXMapInfo;
 
 /**
- * @class cocos.TMXTiledMap A TMX Map loaded from a .tmx file
- * @extends cocos.Node
+ * @class cocos.nodes.TMXTiledMap A TMX Map loaded from a .tmx file
+ * @extends cocos.nodes.Node
  *
  * @constructor
  * @namedparams

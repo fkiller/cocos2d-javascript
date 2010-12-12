@@ -3,8 +3,8 @@ var util = require('util'),
     ccp = require('geometry').ccp;
 
 /**
- * @class cocos.ActionInstant Base class for actions that triggers instantly. They have no duration.
- * @extends cocos.FiniteTimeAction
+ * @class cocos.actions.ActionInstant Base class for actions that triggers instantly. They have no duration.
+ * @extends cocos.actions.FiniteTimeAction
  *
  * @constructor
  */
@@ -28,8 +28,8 @@ var ActionInstant = act.FiniteTimeAction.extend({
 });
 
 /**
- * @class cocos.FlipX Flips a sprite horizontally
- * @extends cocos.ActionInstant
+ * @class cocos.actions.FlipX Flips a sprite horizontally
+ * @extends cocos.actions.ActionInstant
  *
  * @constructor
  * @namedparams
@@ -56,8 +56,8 @@ var FlipX = ActionInstant.extend({
 });
 
 /**
- * @class cocos.FlipY Flips a sprite horizontally
- * @extends cocos.ActionInstant
+ * @class cocos.actions.FlipY Flips a sprite horizontally
+ * @extends cocos.actions.ActionInstant
  *
  * @constructor
  * @namedparams

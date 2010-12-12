@@ -3,12 +3,12 @@ var util = require('util'),
     Node = require('./Node').Node,
     geo = require('geometry'),
     Sprite = require('./Sprite').Sprite,
-    TextureAtlas = require('./TextureAtlas').TextureAtlas,
+    TextureAtlas = require('../TextureAtlas').TextureAtlas,
     ccp = geo.ccp;
 
 /** 
- * @class cocos.RenderTexture An in-memory canvas which can be drawn to in the background before drawing on screen
- * @extends cocos.Node
+ * @class cocos.nodes.RenderTexture An in-memory canvas which can be drawn to in the background before drawing on screen
+ * @extends cocos.nodes.Node
  *
  * @constructor
  * @namedparams

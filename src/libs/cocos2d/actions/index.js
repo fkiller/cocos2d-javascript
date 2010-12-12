@@ -1,12 +1,9 @@
 var util = require('util'),
     path = require('path');
 
-var modules = 'SpriteFrame Director Animation Scheduler ActionManager TMXXMLParser'.w()
+var modules = 'Action ActionInterval ActionInstant'.w();
 
-var cocos = {
-    nodes: require('./nodes'),
-    actions: require('./actions')
-};
+var cocos = {};
 
 util.each(modules, function(mod, i) {
     util.extend(cocos, require('./' + mod));

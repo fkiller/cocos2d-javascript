@@ -1,13 +1,13 @@
 var Node = require('./Node').Node,
     util = require('util'),
     event = require('event'),
-    Director = require('./Director').Director,
+    Director = require('../Director').Director,
     ccp    = require('geometry').ccp,
-    EventDispatcher = require('./EventDispatcher').EventDispatcher;
+    EventDispatcher = require('../EventDispatcher').EventDispatcher;
 
 /** 
- * @class cocos.Layer A fullscreen Node. You need at least 1 layer in your app to add things to.
- * @extends cocos.Node
+ * @class cocos.nodes.Layer A fullscreen Node. You need at least 1 layer in your app to add things to.
+ * @extends cocos.nodes.Node
  *
  * @constructor
  */

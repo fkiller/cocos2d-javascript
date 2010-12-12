@@ -1,12 +1,12 @@
 var util = require('util'),
     console = require('system').console,
-    Director = require('./Director').Director,
+    Director = require('../Director').Director,
     Node = require('./Node').Node,
     ccp = require('geometry').ccp;
 
 /**
- * @class cocos.Label Renders a simple text label
- * @extends cocos.Node
+ * @class cocos.nodes.Label Renders a simple text label
+ * @extends cocos.nodes.Node
  *
  * @constructor
  * @namedparams

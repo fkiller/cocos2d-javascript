@@ -1,6 +1,6 @@
 var util = require('util'),
     Layer = require('./Layer').Layer,
-    Director = require('./Director').Director,
+    Director = require('../Director').Director,
     MenuItem = require('./MenuItem').MenuItem,
     geom = require('geometry'), ccp = geom.ccp;
 
@@ -14,8 +14,8 @@ var kMenuStateTrackingTouch = 1;
 	
 
 /**
- * @class cocos.Menu A fullscreen node used to render a selection of menu options
- * @extends cocos.Layer
+ * @class cocos.nodes.Menu A fullscreen node used to render a selection of menu options
+ * @extends cocos.nodes.Layer
  *
  * @constructor
  * @namedparams

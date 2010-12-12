@@ -3,7 +3,7 @@ var util = require('util'),
     ccp = geo.ccp,
     Scheduler = require('./Scheduler').Scheduler,
     EventDispatcher = require('./EventDispatcher').EventDispatcher,
-    Scene = require('./Scene').Scene;
+    Scene = require('./nodes/Scene').Scene;
 
 /**
  * @class cocos.Director

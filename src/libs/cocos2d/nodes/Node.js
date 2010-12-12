@@ -1,11 +1,11 @@
 var util = require('util'),
     event = require('event'),
-    Scheduler = require('./Scheduler').Scheduler,
-    ActionManager = require('./ActionManager').ActionManager,
+    Scheduler = require('../Scheduler').Scheduler,
+    ActionManager = require('../ActionManager').ActionManager,
     geom = require('geometry'), ccp = geom.ccp;
 
 /**
- * @class cocos.Node The base class all visual elements extend from
+ * @class cocos.nodes.Node The base class all visual elements extend from
  * @extends BObject
  *
  * @constructor Create a new empty cocos Node
