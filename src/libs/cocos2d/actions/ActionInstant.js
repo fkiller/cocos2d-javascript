@@ -56,7 +56,7 @@ var FlipX = ActionInstant.extend({
 });
 
 /**
- * @class cocos.actions.FlipY Flips a sprite horizontally
+ * @class cocos.actions.FlipY Flips a sprite vertically
  * @extends cocos.actions.ActionInstant
  *
  * @constructor

@@ -1,7 +1,4 @@
-/** @member cocos
- * @namespace
- */
-var TMXOrientation = /** @scope cocos.TMXOrientation */{
+var TMXOrientation = {
     /**
      * Orthogonal orientation
      * @constant
