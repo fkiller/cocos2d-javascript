@@ -23,6 +23,7 @@ var Director = BObject.extend({
     sceneStack: null,
     winSize: null,
     isPaused: false,
+    displayFPS: false,
 
     // Time delta
     dt: 0,
@@ -181,7 +182,7 @@ var Director = BObject.extend({
      */
     startAnimation: function() {
         animationInterval = 1.0/30;
-        this._animationTimer = setInterval(util.callback(this, 'mainLoop'), animationInterval * 1000);
+        this._animationTimer = setInterval(util.callback(this, 'drawScene'), animationInterval * 1000);
     },
 
     /**
@@ -213,7 +214,7 @@ var Director = BObject.extend({
      * The main run loop
      * @private
      */
-    mainLoop: function() {
+    drawScene: function() {
         this.calculateDeltaTime();
 
         if (!this.isPaused) {
@@ -232,6 +233,10 @@ var Director = BObject.extend({
         }
 
         this._runningScene.visit(context);
+
+        if (this.get('displayFPS')) {
+            this.showFPS();
+        }
     },
 
     /**
@@ -255,13 +260,6 @@ var Director = BObject.extend({
         this._runningScene.onEnter();
     },
 
-    /**
-     * @property displayFPS Whether or not to display the FPS on the bottom-left corner
-     * @type Boolean
-     */
-    get_displayFPS: function() {
-    },
-
     convertEventToCanvas: function(evt) {
         var x = this.canvas.offsetLeft - document.documentElement.scrollLeft,
             y = this.canvas.offsetTop - document.documentElement.scrollTop;
@@ -273,6 +271,34 @@ var Director = BObject.extend({
         }
 
         return geo.ccpSub(evt.locationInWindow, ccp(x, y));
+    },
+
+    showFPS: function() {
+        if (!this._fpsLabel) {
+            var Label = require('./nodes/Label').Label;
+            this._fpsLabel = Label.create({string: '', fontSize: 16});
+            this._fpsLabel.set('anchorPoint', ccp(0, 1));
+            this._frames = 0;
+            this._accumDt = 0;
+        }
+
+
+        this._frames++;
+        this._accumDt += this.get('dt');
+        
+        if (this._accumDt > 1.0/3.0)  {
+            var frameRate = this._frames / this._accumDt;
+            this._frames = 0;
+            this._accumDt = 0;
+
+            this._fpsLabel.set('string', 'FPS: ' + (Math.round(frameRate*100)/100).toString());
+        }
+		
+
+        var s = this.get('winSize');
+        this._fpsLabel.set('position', ccp(10, s.height - 10));
+
+        this._fpsLabel.visit(this.get('context'));
     }
 
 });

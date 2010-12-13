@@ -136,6 +136,7 @@ var TMXOrthoTest2 = TileDemo.extend({
 var director = cocos.Director.get('sharedDirector');
 
 director.attachInView(document.getElementById('cocos2d-tests'));
+director.set('displayFPS', true);
 
 var scene = nodes.Scene.create();
 scene.addChild({child: nextAction().create()});
