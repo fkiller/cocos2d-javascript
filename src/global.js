@@ -88,7 +88,7 @@ exports.BObject.prototype = util.extend(exports.BObject.prototype, {
         var oldVal = this.get(key);
 
         // When bound property changes, trigger a 'changed' event on this one too
-        getBindings(this)[key] = event.addListener(target, targetKey.toLowerCase() + '_changed', function () {
+        getBindings(this)[key] = event.addListener(target, targetKey.toLowerCase() + '_changed', function (oldVal) {
             self.triggerChanged(key, oldVal);
         });
 
