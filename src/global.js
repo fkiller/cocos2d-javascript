@@ -183,13 +183,12 @@ exports.BObject.set = exports.BObject.prototype.set;
  * @constructor
  * @param {Array} arr A normal JS array to use for data
  */
-exports.BArray = function (arr) {
-    this.array = arr || [];
-    this.set('length', this.array.length);
-};
+exports.BArray = exports.BObject.extend({
+    init: function (arr) {
+        this.array = arr || [];
+        this.set('length', this.array.length);
+    },
 
-exports.BArray.prototype = new exports.BObject();
-exports.BArray.prototype = util.extend(exports.BArray.prototype, {
     /**
      * Get an item
      * @param {Integer} i Index to get item from
