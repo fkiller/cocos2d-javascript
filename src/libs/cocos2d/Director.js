@@ -18,6 +18,7 @@ var util = require('util'),
  * @singleton
  */
 var Director = BObject.extend({
+    backgroundColor: 'rgb(0, 0, 0)',
     canvas: null,
     context: null,
     sceneStack: null,
@@ -223,7 +224,7 @@ var Director = BObject.extend({
 
 
         var context = this.get('context');
-        context.fillStyle = 'rgb(0, 0, 0)';
+        context.fillStyle = this.get('backgroundColor');
         context.fillRect(0, 0, this.winSize.width, this.winSize.height);
         //this.canvas.width = this.canvas.width
 
