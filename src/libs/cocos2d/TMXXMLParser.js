@@ -123,11 +123,19 @@ var TMXMapInfo = BObject.extend({
             layer.set('offset', ccp(x, y));
 
 
+            // Firefox has a 4KB limit on node values. It will split larger
+            // nodes up into multiple nodes. So, we'll stitch them back
+            // together.
+            var nodeValue = '';
+            for (var j = 0, jen = data.childNodes.length; j < jen; j++) {
+                nodeValue += data.childNodes[j].nodeValue;
+            }
+
             // Unpack the tilemap data
             if (data.getAttribute('compression') == 'gzip') {
-                layer.set('tiles', gzip.unzipBase64AsArray(data.firstChild.nodeValue, 4));
+                layer.set('tiles', gzip.unzipBase64AsArray(nodeValue, 4));
             } else {
-                layer.set('tiles', base64.decodeAsArray(data.firstChild.nodeValue, 4));
+                layer.set('tiles', base64.decodeAsArray(nodeValue, 4));
             }
 
             this.layers.push(layer);
