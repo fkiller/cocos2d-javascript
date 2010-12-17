@@ -22,6 +22,7 @@ window.__resources__['%s'] = {meta: {mimetype: "%s"}, data: function(exports, re
 
 mimetypes.add_type('application/xml', '.tmx')
 mimetypes.add_type('application/xml', '.tsx')
+mimetypes.add_type('application/xml', '.plist')
 
 class Compiler:
     config = None

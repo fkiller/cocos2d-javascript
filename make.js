@@ -1,6 +1,6 @@
 {
     "output":     "public/tests.js",
-    "extensions": ["js", "gif", "jpeg", "jpg", "png", "tmx", "tsx"],
+    "extensions": ["js", "gif", "jpeg", "jpg", "png", "tmx", "tsx", "plist"],
     "ignore":     null,
     "main_module": "main",
 
