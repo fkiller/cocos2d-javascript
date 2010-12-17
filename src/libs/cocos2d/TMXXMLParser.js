@@ -36,8 +36,8 @@ var TMXMapInfo = BObject.extend({
     },
 
     parseXMLFile: function(xmlFile) {
-        var parser = new DOMParser();
-        doc = parser.parseFromString(resource(xmlFile), 'text/xml');
+        var parser = new DOMParser(),
+            doc = parser.parseFromString(resource(xmlFile), 'text/xml');
 
         // PARSE <map>
         var map = doc.documentElement;
