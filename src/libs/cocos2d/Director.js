@@ -24,6 +24,7 @@ var Director = BObject.extend({
     sceneStack: null,
     winSize: null,
     isPaused: false,
+    maxFrameRate: 30,
     displayFPS: false,
 
     // Time delta
@@ -182,7 +183,7 @@ var Director = BObject.extend({
      * cocos.Directory#stopAnimation was called earlier.
      */
     startAnimation: function() {
-        animationInterval = 1.0/30;
+        var animationInterval = 1.0 / this.get('maxFrameRate');
         this._animationTimer = setInterval(util.callback(this, 'drawScene'), animationInterval * 1000);
     },
 
