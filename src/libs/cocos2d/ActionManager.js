@@ -62,6 +62,12 @@ var ActionManager = BObject.extend({
             
             element.actions[actionIndex] = null;
             element.actions.splice(actionIndex, 1); // Delete array item
+
+            if (element.actions.length == 0) {
+                if (this.currentTarget == element) {
+                    this.set('currentTargetSalvaged', true);
+                }
+            }
         } else {
             console.log('cocos2d: removeAction: Target not found');
         }

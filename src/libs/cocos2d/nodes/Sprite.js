@@ -22,9 +22,14 @@ var Sprite = Node.extend({
     quad: null,
     flipX: false,
     flipY: false,
+    offsetPosition: null,
+    unflippedOffsetPositionFromCenter: null,
+    untrimmedSize: null,
 
     init: function(opts) {
         @super;
+
+        opts = opts || {};
 
         var file         = opts['file'],
             textureAtlas = opts['textureAtlas'],
@@ -32,6 +37,10 @@ var Sprite = Node.extend({
             frame        = opts['frame'],
             spritesheet  = opts['spritesheet'],
             rect         = opts['rect'];
+
+        this.set('offsetPosition', ccp(0, 0));
+        this.set('unflippedOffsetPositionFromCenter', ccp(0, 0));
+
 
         if (frame) {
             texture = frame.get('texture');
@@ -59,12 +68,12 @@ var Sprite = Node.extend({
         if (rect) {
             this.set('rect', rect);
             this.set('contentSize', rect.size);
-        }
 
-        this.quad = {
-            drawRect: {origin: ccp(0, 0), size: rect.size},
-            textureRect: rect
-        };
+            this.quad = {
+                drawRect: {origin: ccp(0, 0), size: rect.size},
+                textureRect: rect
+            };
+        }
 
         this.set('textureAtlas', textureAtlas);
 
@@ -83,13 +92,80 @@ var Sprite = Node.extend({
         }
     },
 
-    _updateQuad: function() {
-        if (!this.quad) {
-            return;
+    set_textureCoords: function(rect) {
+        var quad = this.get('quad');
+        if (!quad) {
+            quad = {
+                drawRect: geo.rectMake(0, 0, 0, 0), 
+                textureRect: geo.rectMake(0, 0, 0, 0)
+            };
         }
 
+        quad.textureRect = util.copy(rect);
+
+        this.set('quad', quad);
+    },
+
+    set_textureRect: function(opts) {
+        var rect = opts['rect'],
+            rotated = opts['rotated'],
+            untrimmedSize = opts['untrimmedSize'];
+
+        this.set('contentSize', untrimmedSize);
+        this.set('rect', util.copy(rect));
+        this.set('textureCoords', rect);
+
+        var quad = this.get('quad');
+
+        var relativeOffset = util.copy(this.get('unflippedOffsetPositionFromCenter'));
+
+        if (this.get('flipX')) {
+            relativeOffset.x = -relativeOffset.x;
+        }
+        if (this.get('flipY')) {
+            relativeOffset.y = -relativeOffset.y;
+        }
+
+        var offsetPosition = this.get('offsetPosition');
+        offsetPosition.x = relativeOffset.x + (this.get('contentSize').width  - rect.size.width) / 2;
+        offsetPosition.y = -relativeOffset.y + (this.get('contentSize').height - rect.size.height) / 2;
+
+        quad.drawRect.origin = util.copy(offsetPosition);
+        quad.drawRect.size = util.copy(rect.size);
+        if (this.flipX) {
+            quad.drawRect.size.width *= -1;
+            quad.drawRect.origin.x = -rect.size.width;
+        }
+        if (this.flipY) {
+            quad.drawRect.size.height *= -1;
+            quad.drawRect.origin.y = -rect.size.height;
+        }
+
+        this.set('quad', quad);
+    },
+    _updateQuad: function() {
+        if (!this.quad) {
+            this.quad = {
+                drawRect: geo.rectMake(0, 0, 0, 0), 
+                textureRect: geo.rectMake(0, 0, 0, 0)
+            };
+        }
+
+        var relativeOffset = util.copy(this.get('unflippedOffsetPositionFromCenter'));
+
+        if (this.get('flipX')) {
+            relativeOffset.x = -relativeOffset.x;
+        }
+        if (this.get('flipY')) {
+            relativeOffset.y = -relativeOffset.y;
+        }
+
+        var offsetPosition = this.get('offsetPosition');
+        offsetPosition.x = relativeOffset.x + (this.get('contentSize').width  - this.get('rect').size.width) / 2;
+        offsetPosition.y = relativeOffset.y + (this.get('contentSize').height - this.get('rect').size.height) / 2;
+
         this.quad.textureRect = util.copy(this.rect);
-        this.quad.drawRect.origin = ccp(0, 0);
+        this.quad.drawRect.origin = util.copy(offsetPosition);
         this.quad.drawRect.size = util.copy(this.rect.size);
         if (this.flipX) {
             this.quad.drawRect.size.width *= -1;
@@ -127,17 +203,32 @@ var Sprite = Node.extend({
     },
 
     draw: function(ctx) {
+        if (!this.quad) {
+            return;
+        }
         this.get('textureAtlas').drawQuad(ctx, this.quad);
     },
 
     isFrameDisplayed: function(frame) {
-        // TODO check texture name
-        return (geo.rectEqualToRect(frame.rect, this.rect));
+        if (!this.rect || !this.textureAtlas) {
+            return false;
+        }
+        return (frame.texture === this.textureAtlas.texture && geo.rectEqualToRect(frame.rect, this.rect));
     },
     set_displayFrame: function(frame) {
-        // TODO change texture
+        if (!frame) {
+            delete this.quad;
+            return;
+        }
+        this.set('unflippedOffsetPositionFromCenter', util.copy(frame.offset));
 
-        this.set('rect', frame.get('rect'));
+
+        // change texture
+        if (!this.textureAtlas || frame.texture !== this.textureAtlas.texture) {
+            this.set('textureAtlas', TextureAtlas.create({texture: frame.texture}));
+        }
+
+        this.set('textureRect', {rect: frame.rect, rotated: frame.rotated, untrimmedSize: frame.originalSize});
     }
 });
 

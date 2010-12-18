@@ -1,7 +1,7 @@
 var util = require('util'),
     path = require('path');
 
-var modules = 'SpriteFrame Director Animation Scheduler ActionManager TMXXMLParser'.w()
+var modules = 'SpriteFrame SpriteFrameCache Director Animation AnimationCache Scheduler ActionManager TMXXMLParser'.w()
 
 var cocos = {
     nodes: require('./nodes'),

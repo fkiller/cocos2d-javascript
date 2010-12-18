@@ -1,5 +1,6 @@
 *.swp
 *.pyc
+jsdocs/
 docs/
 public/cocos2d.js
 public/tests.js

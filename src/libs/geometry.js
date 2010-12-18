@@ -1,5 +1,8 @@
 var util = require('util');
 
+var RE_PAIR = /{\s*([\d.-]+)\s*,\s*([\d.-]+)\s*}/,
+    RE_DOUBLE_PAIR = /{\s*({[\s\d,.-]+})\s*,\s*({[\s\d,.-]+})\s*}/;
+
 /** @namespace */
 var geometry = {
     /**
@@ -31,13 +34,34 @@ var geometry = {
     rectMake: function(x, y, w, h) {
         return {origin: module.exports.pointMake(x, y), size: module.exports.sizeMake(w, h)};
     },
+    rectFromString: function(str) {
+        var matches = str.match(RE_DOUBLE_PAIR),
+            p = geometry.pointFromString(matches[1]),
+            s = geometry.sizeFromString(matches[2]);
+
+        return geometry.rectMake(p.x, p.y, s.width, s.height);
+    },
 
     sizeMake: function(w, h) {
         return {width: w, height: h};
     },
+    sizeFromString: function(str) {
+        var matches = str.match(RE_PAIR),
+            w = parseFloat(matches[1]),
+            h = parseFloat(matches[2]);
+
+        return geometry.sizeMake(w, h);
+    },
 
     pointMake: function(x, y) {
         return {x: x, y: y};
+    },
+    pointFromString: function(str) {
+        var matches = str.match(RE_PAIR),
+            x = parseFloat(matches[1]),
+            y = parseFloat(matches[2]);
+
+        return geometry.pointMake(x, y);
     },
 
     rectContainsPoint: function(r, p) {

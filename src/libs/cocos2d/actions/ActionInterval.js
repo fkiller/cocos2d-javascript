@@ -402,12 +402,12 @@ var Sequence = ActionInterval.extend({
  */
 var Animate = ActionInterval.extend({
     animation: null,
-    restoreOriginalFrame: false,
+    restoreOriginalFrame: true,
     origFrame: null,
 
     init: function(opts) {
         this.animation = opts['animation'];
-        this.restoreOriginalFrame = opts['restoreOriginalFrame'];
+        this.restoreOriginalFrame = opts['restoreOriginalFrame'] !== false;
         opts['duration'] = this.animation.frames.length * this.animation.delay;
 
         @super;
@@ -419,6 +419,15 @@ var Animate = ActionInterval.extend({
         if (this.restoreOriginalFrame) {
             this.set('origFrame', this.target.get('displayedFrame'));
         }
+    },
+
+    stop: function() {
+        if (this.target && this.restoreOriginalFrame) {
+            var sprite = this.target;
+            sprite.set('displayFrame', this.origFrame);
+        }
+
+        @super;
     },
 
     update: function(t) {

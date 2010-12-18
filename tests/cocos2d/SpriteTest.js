@@ -12,7 +12,8 @@ var transitions = [
     "SpriteBatchNode1",
     "SpriteAnchorPoint",
     "SpriteAnimationFlip",
-    "SpriteZOrder"
+    "SpriteZOrder",
+    "AnimationCache"
 ];
 
 var kTagTileMap = 1,
@@ -123,7 +124,7 @@ var SpriteDemo = nodes.Layer.extend({
  *
  * Example Sprite 1
  */
-var Sprite1 = SpriteDemo.extend(/** @scope Sprite1.prototype# */{
+var Sprite1 = SpriteDemo.extend(/** @lends Sprite1.prototype# */{
     title: 'Sprite',
     subtitle: 'Click screen',
 
@@ -184,7 +185,7 @@ var Sprite1 = SpriteDemo.extend(/** @scope Sprite1.prototype# */{
  *
  * Example SpriteBatchNode 1
  */
-var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# */{
+var SpriteBatchNode1 = SpriteDemo.extend(/** @lends SpriteBatchNode1.prototype# */{
     title: 'SpriteBatchNode',
     subtitle: 'Click screen',
 
@@ -248,7 +249,7 @@ var SpriteBatchNode1 = SpriteDemo.extend(/** @scope SpriteBatchNode1.prototype# 
  *
  * Example Sprite Animation and flip
  */
-var SpriteAnimationFlip = SpriteDemo.extend(/** @scope SpriteAnimationFlip.prototype# */{
+var SpriteAnimationFlip = SpriteDemo.extend(/** @lends SpriteAnimationFlip.prototype# */{
     title: 'Sprite Animation + Flip',
 
     init: function() {
@@ -281,7 +282,7 @@ var SpriteAnimationFlip = SpriteDemo.extend(/** @scope SpriteAnimationFlip.proto
 
 
         var animation = cocos.Animation.create({frames: animFrames, delay:0.2}),
-            animate   = actions.Animate.create({animation: animation, restoreOriginalFrame:false}),
+            animate   = actions.Animate.create({animation: animation, restoreOriginalFrame: false}),
             seq       = actions.Sequence.create({actions: [animate,
                                                          actions.FlipX.create({flipX: true}),
                                                          animate.copy(),
@@ -296,7 +297,7 @@ var SpriteAnimationFlip = SpriteDemo.extend(/** @scope SpriteAnimationFlip.proto
  *
  * Example Sprite Anchor Point
  */
-var SpriteAnchorPoint = SpriteDemo.extend(/** @scope SpriteAnchorPoint.prototype# */{
+var SpriteAnchorPoint = SpriteDemo.extend(/** @lends SpriteAnchorPoint.prototype# */{
     title: 'Sprite Anchor Point',
 
     init: function() {
@@ -342,7 +343,7 @@ var SpriteAnchorPoint = SpriteDemo.extend(/** @scope SpriteAnchorPoint.prototype
  *
  * Example Sprite Z ORder
  */
-var SpriteZOrder = SpriteDemo.extend(/** @scope SpriteZOrder.prototype# */{
+var SpriteZOrder = SpriteDemo.extend(/** @lends SpriteZOrder.prototype# */{
     title: 'Sprite Z Order',
     dir: 1,
 
@@ -386,6 +387,92 @@ var SpriteZOrder = SpriteDemo.extend(/** @scope SpriteZOrder.prototype# */{
         this.reorderChild({child: sprite, z: z});
     }
 });
+
+/**
+ * @class
+ *
+ * Example Sprite Z ORder
+ */
+var AnimationCache = SpriteDemo.extend(/** @lends AnimationCache.prototype# */{
+    title: 'AnimationCache',
+    subtitle: 'Sprite should be animated',
+
+    init: function() {
+        @super;
+
+        var frameCache = cocos.SpriteFrameCache.get('sharedSpriteFrameCache'),
+            animCache = cocos.AnimationCache.get('sharedAnimationCache');
+
+        frameCache.addSpriteFrames({file: __dirname + '/resources/animations/grossini.plist'});
+        frameCache.addSpriteFrames({file: __dirname + '/resources/animations/grossini_gray.plist'});
+        frameCache.addSpriteFrames({file: __dirname + '/resources/animations/grossini_blue.plist'});
+
+
+		// create "dance" animation
+        var animFrames = [],
+            frame;
+		for (var i = 1; i < 15; i++) {
+			frame = frameCache.getSpriteFrame({name: 'grossini_dance_' + (i >= 10 ? i : '0' + i) + '.png'});
+            animFrames.push(frame);
+		}
+		
+        var animation = cocos.Animation.create({frames: animFrames, delay:0.2});
+		
+		// Add an animation to the Cache
+		animCache.addAnimation({animation: animation, name: 'dance'});
+		
+		
+		// create animation "dance gray"
+		animFrames = [];
+		for (var i = 1; i < 15; i++) {
+			frame = frameCache.getSpriteFrame({name: 'grossini_dance_gray_' + (i >= 10 ? i : '0' + i) + '.png'});
+            animFrames.push(frame);
+		}
+		
+        animation = cocos.Animation.create({frames: animFrames, delay:0.2});
+		
+		// Add an animation to the Cache
+		animCache.addAnimation({animation: animation, name: 'dance_gray'});
+
+
+		// create animation "dance blue"
+		animFrames = [];
+		for (var i = 1; i < 4; i++) {
+			frame = frameCache.getSpriteFrame({name: 'grossini_blue_0' + i + '.png'});
+            animFrames.push(frame);
+		}
+		
+        animation = cocos.Animation.create({frames: animFrames, delay:0.2});
+		
+		// Add an animation to the Cache
+		animCache.addAnimation({animation: animation, name: 'dance_blue'});
+		
+	
+		var normal     = animCache.getAnimation({name: 'dance'}),
+            dance_gray = animCache.getAnimation({name: 'dance_gray'}),
+            dance_blue = animCache.getAnimation({name: 'dance_blue'});
+		
+        var animN = actions.Animate.create({animation: normal}),
+            animG = actions.Animate.create({animation: dance_gray}),
+            animB = actions.Animate.create({animation: dance_blue});
+
+        var seq = actions.Sequence.create({actions: [animN, animG, animB]});
+		
+		// create an sprite without texture
+		var grossini = nodes.Sprite.create();
+		
+        var winSize = cocos.Director.get('sharedDirector').get('winSize');
+		
+		grossini.set('position', ccp(winSize.width/2, winSize.height/2));
+		
+        this.addChild({child: grossini});
+		
+		
+		// run the animation
+        grossini.runAction(seq);
+    }
+});
+				
         
 
 // Initialise test
