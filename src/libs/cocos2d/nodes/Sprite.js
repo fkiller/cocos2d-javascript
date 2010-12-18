@@ -108,8 +108,8 @@ var Sprite = Node.extend({
 
     set_textureRect: function(opts) {
         var rect = opts['rect'],
-            rotated = opts['rotated'],
-            untrimmedSize = opts['untrimmedSize'];
+            rotated = !!opts['rotated'],
+            untrimmedSize = opts['untrimmedSize'] || rect.size;
 
         this.set('contentSize', untrimmedSize);
         this.set('rect', util.copy(rect));
@@ -127,7 +127,7 @@ var Sprite = Node.extend({
         }
 
         var offsetPosition = this.get('offsetPosition');
-        offsetPosition.x = relativeOffset.x + (this.get('contentSize').width  - rect.size.width) / 2;
+        offsetPosition.x =  relativeOffset.x + (this.get('contentSize').width  - rect.size.width) / 2;
         offsetPosition.y = -relativeOffset.y + (this.get('contentSize').height - rect.size.height) / 2;
 
         quad.drawRect.origin = util.copy(offsetPosition);

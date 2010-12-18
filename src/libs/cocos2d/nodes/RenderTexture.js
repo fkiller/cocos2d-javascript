@@ -52,7 +52,7 @@ var RenderTexture = Node.extend({
 
         var s = this.get('sprite');
         if (s) {
-            s.set('rect', geo.rectMake(0, 0, size.width, size.height));
+            s.set('textureRect', {rect: geo.rectMake(0, 0, size.width, size.height)});
         }
     },
 
