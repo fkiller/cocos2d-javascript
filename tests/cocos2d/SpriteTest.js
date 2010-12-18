@@ -371,7 +371,7 @@ var SpriteZOrder = SpriteDemo.extend(/** @lends SpriteZOrder.prototype# */{
         sprite.set('position', ccp(s.width/2, s.height/2 + 20));
         sprite.set('scaleX', 6);
         
-		cocos.Scheduler.get('sharedScheduler').schedule({target: this, method: this.reorderSprite, interval: 1});
+        cocos.Scheduler.get('sharedScheduler').schedule({target: this, method: this.reorderSprite, interval: 1});
     },
     reorderSprite: function(dt) {
         var sprite = this.getChild({tag: kTagSprite1});
@@ -391,7 +391,7 @@ var SpriteZOrder = SpriteDemo.extend(/** @lends SpriteZOrder.prototype# */{
 /**
  * @class
  *
- * Example Sprite Z ORder
+ * Example using AnimationCache and loading from a Zwoptex .plist file
  */
 var AnimationCache = SpriteDemo.extend(/** @lends AnimationCache.prototype# */{
     title: 'AnimationCache',
@@ -408,71 +408,71 @@ var AnimationCache = SpriteDemo.extend(/** @lends AnimationCache.prototype# */{
         frameCache.addSpriteFrames({file: __dirname + '/resources/animations/grossini_blue.plist'});
 
 
-		// create "dance" animation
+        // create "dance" animation
         var animFrames = [],
             frame;
-		for (var i = 1; i < 15; i++) {
-			frame = frameCache.getSpriteFrame({name: 'grossini_dance_' + (i >= 10 ? i : '0' + i) + '.png'});
+        for (var i = 1; i < 15; i++) {
+            frame = frameCache.getSpriteFrame({name: 'grossini_dance_' + (i >= 10 ? i : '0' + i) + '.png'});
             animFrames.push(frame);
-		}
-		
+        }
+        
         var animation = cocos.Animation.create({frames: animFrames, delay:0.2});
-		
-		// Add an animation to the Cache
-		animCache.addAnimation({animation: animation, name: 'dance'});
-		
-		
-		// create animation "dance gray"
-		animFrames = [];
-		for (var i = 1; i < 15; i++) {
-			frame = frameCache.getSpriteFrame({name: 'grossini_dance_gray_' + (i >= 10 ? i : '0' + i) + '.png'});
+        
+        // Add an animation to the Cache
+        animCache.addAnimation({animation: animation, name: 'dance'});
+        
+        
+        // create animation "dance gray"
+        animFrames = [];
+        for (var i = 1; i < 15; i++) {
+            frame = frameCache.getSpriteFrame({name: 'grossini_dance_gray_' + (i >= 10 ? i : '0' + i) + '.png'});
             animFrames.push(frame);
-		}
-		
+        }
+        
         animation = cocos.Animation.create({frames: animFrames, delay:0.2});
-		
-		// Add an animation to the Cache
-		animCache.addAnimation({animation: animation, name: 'dance_gray'});
+        
+        // Add an animation to the Cache
+        animCache.addAnimation({animation: animation, name: 'dance_gray'});
 
 
-		// create animation "dance blue"
-		animFrames = [];
-		for (var i = 1; i < 4; i++) {
-			frame = frameCache.getSpriteFrame({name: 'grossini_blue_0' + i + '.png'});
+        // create animation "dance blue"
+        animFrames = [];
+        for (var i = 1; i < 4; i++) {
+            frame = frameCache.getSpriteFrame({name: 'grossini_blue_0' + i + '.png'});
             animFrames.push(frame);
-		}
-		
+        }
+        
         animation = cocos.Animation.create({frames: animFrames, delay:0.2});
-		
-		// Add an animation to the Cache
-		animCache.addAnimation({animation: animation, name: 'dance_blue'});
-		
-	
-		var normal     = animCache.getAnimation({name: 'dance'}),
+        
+        // Add an animation to the Cache
+        animCache.addAnimation({animation: animation, name: 'dance_blue'});
+        
+    
+        var normal     = animCache.getAnimation({name: 'dance'}),
             dance_gray = animCache.getAnimation({name: 'dance_gray'}),
             dance_blue = animCache.getAnimation({name: 'dance_blue'});
-		
+        
         var animN = actions.Animate.create({animation: normal}),
             animG = actions.Animate.create({animation: dance_gray}),
             animB = actions.Animate.create({animation: dance_blue});
 
         var seq = actions.Sequence.create({actions: [animN, animG, animB]});
-		
-		// create an sprite without texture
-		var grossini = nodes.Sprite.create();
-		
+        
+        // create an sprite without texture
+        var grossini = nodes.Sprite.create();
+        
         var winSize = cocos.Director.get('sharedDirector').get('winSize');
-		
-		grossini.set('position', ccp(winSize.width/2, winSize.height/2));
-		
+        
+        grossini.set('position', ccp(winSize.width/2, winSize.height/2));
+        
         this.addChild({child: grossini});
-		
-		
-		// run the animation
+        
+        
+        // run the animation
         grossini.runAction(seq);
     }
 });
-				
+                
         
 
 // Initialise test
