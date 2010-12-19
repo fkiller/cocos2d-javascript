@@ -124,8 +124,8 @@ function resource(path) {
     });
 
     // Add a global require. Useful in the debug console.
-    window.require = function require(request) {
-        return loadModule(request).exports;
+    window.require = function require(request, parent) {
+        return loadModule(request, parent).exports;
     }
     window.require.paths = modulePaths;
     window.require.main = process.mainModule;

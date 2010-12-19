@@ -1,3 +1,5 @@
+var path = require('path');
+
 /** @namespace */
 var util = {
     /**
@@ -318,12 +320,35 @@ var util = {
      * @returns {Boolean} True if it is an Date, otherwise false
      */
     isDate: function(d) {
-      if (d instanceof Date) return true;
-      if (typeof d !== "object") return false;
-      var properties = Date.prototype && Object.getOwnPropertyNames(Date.prototype);
-      var proto = d.__proto__ && Object.getOwnPropertyNames(d.__proto__);
-      return JSON.stringify(proto) === JSON.stringify(properties);
+        if (d instanceof Date) return true;
+        if (typeof d !== "object") return false;
+        var properties = Date.prototype && Object.getOwnPropertyNames(Date.prototype);
+        var proto = d.__proto__ && Object.getOwnPropertyNames(d.__proto__);
+        return JSON.stringify(proto) === JSON.stringify(properties);
+    },
+
+    /**
+     * Utility to populate a namespace's index with its modules
+     *
+     * @param {Object} parent The module the namespace lives in. parent.exports will be populated automatically
+     * @param {String} modules A space separated string of all the module names
+     *
+     * @returns {Object} The index namespace
+     */
+    populateIndex: function(parent, modules) {
+        var namespace = {};
+        modules = modules.split(' ');
+
+        util.each(modules, function(mod, i) {
+            // Use the global 'require' which allows overriding the parent module
+            util.extend(namespace, window.require('./' + mod, parent));
+        });
+
+        parent.exports = namespace;
+
+        return namespace;
     }
+
 
 }
 
