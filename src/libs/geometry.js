@@ -23,8 +23,12 @@ var geometry = {
         return geometry.ccp(p1.x - p2.x, p1.y - p2.y);
     },
 
-    ccpMul: function(p1, p2) {
+    ccpMult: function(p1, p2) {
         return geometry.ccp(p1.x * p2.x, p1.y * p2.y);
+    },
+
+    ccpNeg: function(p) {
+        return geometry.ccp(-p.x, -p.y);
     },
 
     PointZero: function() {
