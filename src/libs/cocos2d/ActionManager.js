@@ -51,26 +51,31 @@ var ActionManager = BObject.extend({
 
     removeAction: function(action) {
         var targetID = action.originalTarget.get('id'),
-            element = this.targets[targetID],
-            actionIndex = element.actions.indexOf(action);
+            element = this.targets[targetID];
 
-        if (element && actionIndex > -1) {
-
-            if (this.currentTarget == element) {
-                element.currentActionSalvaged = true;
-            } 
-            
-            element.actions[actionIndex] = null;
-            element.actions.splice(actionIndex, 1); // Delete array item
-
-            if (element.actions.length == 0) {
-                if (this.currentTarget == element) {
-                    this.set('currentTargetSalvaged', true);
-                }
-            }
-        } else {
-            console.log('cocos2d: removeAction: Target not found');
+        if (!element) {
+            return;
         }
+
+        var actionIndex = element.actions.indexOf(action);
+
+        if (actionIndex == -1) {
+            return;
+        }
+
+        if (this.currentTarget == element) {
+            element.currentActionSalvaged = true;
+        } 
+        
+        element.actions[actionIndex] = null;
+        element.actions.splice(actionIndex, 1); // Delete array item
+
+        if (element.actions.length == 0) {
+            if (this.currentTarget == element) {
+                this.set('currentTargetSalvaged', true);
+            }
+        }
+            
     },
 
     removeAllActionsFromTarget: function(target) {
