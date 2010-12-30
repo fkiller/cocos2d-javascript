@@ -1,16 +1,11 @@
 Check the LICENSE file licensing details.
 
-This is in the very early stages of development and should be considered
-experimental.
+This is in the early stages of development and could break backwards compatibility at any time.
 
-Contact Me
-----------
-
-My name is Ryan Williams.
-
-* You can find me on Twitter: @Raticide and @cocos2djs
-* Email me at: <cocos2d@ryanwilliams.org>
-* My website is: <http://ryanwilliams.org/>
+* You can find me on Twitter: @cocos2djs
+* Email: <ryan@cocos2d-javascript.org>
+* Website: <http://cocos2d-javascript.org/>
+* Forum: <http://cocos2d-javascript.org/forum>
 
 Example Code
 ------------
@@ -62,7 +57,7 @@ Browser Support
 
 I intend for this to work in Firefox, Chrome, Safari, Opera and IE9. I
 mostly develop using Chrome so that's likely to have the best compatibility
-until I get close to an alpha quality build.
+until I get close to a proper release.
 
 Documentation
 -------------
@@ -75,5 +70,5 @@ Copy that to /usr/local/jsdoc-toolkit or wherever you like and then run:
 
 The documentation will appear in the jsdocs directory.
 
-© 2010 Ryan Williams <cocos2d@ryanwilliams.org>
+© 2010 Ryan Williams <ryan@cocos2d-javascript.org>
 
