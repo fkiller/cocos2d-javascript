@@ -31,6 +31,18 @@ var geometry = {
         return geometry.ccp(-p.x, -p.y);
     },
 
+    ccpRound: function(p) {
+        return geometry.ccp(Math.round(p.x), Math.round(p.y));
+    },
+
+    ccpCeil: function(p) {
+        return geometry.ccp(Math.ceil(p.x), Math.ceil(p.y));
+    },
+
+    ccpFloor: function(p) {
+        return geometry.ccp(Math.floor(p.x), Math.floor(p.y));
+    },
+
     PointZero: function() {
         return geometry.ccp(0,0);
     },
