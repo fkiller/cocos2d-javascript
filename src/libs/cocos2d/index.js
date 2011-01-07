@@ -3,6 +3,9 @@ var util = require('util'),
 
 var modules = 'SpriteFrame SpriteFrameCache Director Animation AnimationCache Scheduler ActionManager TMXXMLParser'.w()
 
+/**
+ * @namespace All cocos2d objects live in this namespace
+ */
 var cocos = {
     nodes: require('./nodes'),
     actions: require('./actions')

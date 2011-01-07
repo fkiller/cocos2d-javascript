@@ -15,7 +15,7 @@ var ELEMENT_NODE                = 1,
     NOTATION_NODE               = 12;
 
 
-var Plist = BObject.extend (/** @lends cocos.Plist# */{
+var Plist = BObject.extend (/** @lends Plist# */{
     /**
      * The unserialized data inside the Plist file
      * @type Object
@@ -23,11 +23,13 @@ var Plist = BObject.extend (/** @lends cocos.Plist# */{
     data: null,
 
     /**
-     * @memberOf cocos
-     * @extends BObject
+     * An object representation of an XML Property List file
+     *
      * @constructs
-     * @param {String} opts.file (Optional) The path to a .plist file
-     * @param {String} opts.data (Optional) The contents of a .plist file
+     * @extends BObject
+     * @param {Options} opts Options
+     * @param {String} [opts.file] The path to a .plist file
+     * @param {String} [opts.data] The contents of a .plist file
      */
     init: function(opts) {
         var file = opts['file'],

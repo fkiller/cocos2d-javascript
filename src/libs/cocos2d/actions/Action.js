@@ -2,11 +2,16 @@ var util = require('util'),
     console = require('system').console;
 
 /** 
+ * @memberOf cocos.actions
  * @class cocos.actions.Action Base class for Actions
- *
+ * @extends BObject
  * @constructor
  */
-var Action = BObject.extend({
+var Action = BObject.extend(/** @lends cocos.actions.Action# */{
+    /**
+     * The cocos.Node the action is being performed on
+     * @type cocos.Node
+     */
     target: null,
     originalTarget: null,
 
@@ -65,18 +70,19 @@ var Action = BObject.extend({
 });
 
 /** 
- * @class cocos.actions.RepeatForever
  *
  * Repeats an action forever. To repeat the an action for a limited number of
  * times use the cocos.Repeat action.
- *
- * @extends cocos.actions.Action
- * @constructor
- * @param {cocos.Action} action An action to repeat forever
  */
-var RepeatForever = Action.extend({
+var RepeatForever = Action.extend(/** @lends cocos.actions.RepeatForever# */{
     other: null,
 
+    /**
+     * @memberOf cocos.actions
+     * @extends cocos.actions.Action
+     * @constructs
+     * @param {cocos.actions.Action} action An action to repeat forever
+     */
     init: function(action) {
 
         @super();

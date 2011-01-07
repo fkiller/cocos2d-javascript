@@ -1,17 +1,26 @@
-exports.stdio = {
-    print: function() {
-        if (console) {
-            console.log.apply(console, arguments);
-        } else {
-            // TODO
+/** @namespace */
+var system = {
+    /** @namespace */
+    stdio: {
+        /**
+         * Print text and objects to the debug console if the browser has one
+         * 
+         * @param {*} Any value to output
+         */
+        print: function() {
+            if (console) {
+                console.log.apply(console, arguments);
+            } else {
+                // TODO
+            }
         }
     }
 };
 
 if (window.console) {
-    exports.console = window.console
+    system.console = window.console
 } else {
-    exports.console = {
+    system.console = {
         log: function(){}
     }
 }

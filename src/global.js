@@ -2,18 +2,29 @@ var util = require('util'),
     event = require('event');
 
 
+/**
+ * @ignore
+ */
 function getAccessors(obj) {
     if (!obj.js_accessors_) {
         obj.js_accessors_ = {};
     }
     return obj.js_accessors_;
 }
+
+/**
+ * @ignore
+ */
 function getBindings(obj) {
     if (!obj.js_bindings_) {
         obj.js_bindings_ = {};
     }
     return obj.js_bindings_;
 }
+
+/**
+ * @ignore
+ */
 function addAccessor(obj, key, target, targetKey, noNotify) {
     getAccessors(obj)[key] = {
         key: targetKey,
@@ -25,16 +36,39 @@ function addAccessor(obj, key, target, targetKey, noNotify) {
     }
 }
 
+
+/**
+ * @ignore
+ */
 var objectID = 0;
 
 /**
- * @class BObject A bindable object. Allows observing and binding to its properties.
- *
- * @constructor
+ * @class
+ * A bindable object. Allows observing and binding to its properties.
  */
-exports.BObject = function () {};
-exports.BObject.prototype = util.extend(exports.BObject.prototype, {
+var BObject = function () {};
+BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
+    /**
+     * Unique ID
+     * @type Integer
+     */
+    _id: 0,
+    
+
+    /**
+     * The constructor for subclasses. Overwrite this for any initalisation you
+     * need to do.
+     */
     init: function () {},
+
+    /**
+     * Get a property from the object. Always use this instead of trying to
+     * access the property directly. This will ensure all bindings, setters and
+     * getters work correctly.
+     * 
+     * @param {String} key Name of property to get
+     * @returns {*} Value of the property
+     */
     get: function (key) {
         var accessor = getAccessors(this)[key];
         if (accessor) {
@@ -48,6 +82,16 @@ exports.BObject.prototype = util.extend(exports.BObject.prototype, {
             return this[key];
         }
     },
+
+
+    /**
+     * Set a property on the object. Always use this instead of trying to
+     * access the property directly. This will ensure all bindings, setters and
+     * getters work correctly.
+     * 
+     * @param {String} key Name of property to get
+     * @param {*} value New value for the property
+     */
     set: function (key, value) {
         var accessor = getAccessors(this)[key],
             oldVal = this.get(key);
@@ -62,6 +106,21 @@ exports.BObject.prototype = util.extend(exports.BObject.prototype, {
         }
         this.triggerChanged(key, oldVal);
     },
+
+    /**
+     * Set multiple propertys in one go
+     *
+     * @param {Object} kvp An Object where the key is a property name and the value is the value to assign to the property
+     *
+     * @example
+     * var props = {
+     *   monkey: 'ook',
+     *   cat: 'meow',
+     *   dog: 'woof'
+     * };
+     * foo.setValues(props);
+     * console.log(foo.get('cat')); // Logs 'meow'
+     */
     setValues: function (kvp) {
         for (var x in kvp) {
             if (kvp.hasOwnProperty(x)) {
@@ -69,17 +128,37 @@ exports.BObject.prototype = util.extend(exports.BObject.prototype, {
             }
         }
     },
+
     changed: function (key) {
     },
+
+    /**
+     * @private
+     */
     notify: function (key, oldVal) {
         var accessor = getAccessors(this)[key];
         if (accessor) {
             accessor.target.notify(accessor.key, oldVal);
         }
     },
+
+    /**
+     * @private
+     */
     triggerChanged: function(key, oldVal) {
         event.trigger(this, key.toLowerCase() + '_changed', oldVal);
     },
+
+    /**
+     * Bind the value of a property on this object to that of another object so
+     * they always have the same value. Setting the value on either object will update
+     * the other too.
+     *
+     * @param {String} key Name of the property on this object that should be bound
+     * @param {BOject} target Object to bind to
+     * @param {String} [targetKey=key] Key on the target object to bind to
+     * @param {Boolean} [noNotify=false] Set to true to prevent this object's property triggering a 'changed' event when adding the binding
+     */
     bindTo: function (key, target, targetKey, noNotify) {
         targetKey = targetKey || key;
         var self = this;
@@ -94,6 +173,12 @@ exports.BObject.prototype = util.extend(exports.BObject.prototype, {
 
         addAccessor(this, key, target, targetKey, noNotify);
     },
+
+    /**
+     * Remove binding from a property which set setup using BObject#bindTo.
+     *
+     * @param {String} key Name of the property on this object to unbind
+     */
     unbind: function (key) {
         var binding = getBindings(this)[key];
         if (!binding) {
@@ -108,6 +193,10 @@ exports.BObject.prototype = util.extend(exports.BObject.prototype, {
         // Set bound value
         this[key] = val;
     },
+
+    /**
+     * Remove all bindings on this object
+     */
     unbindAll: function () {
         var keys = [],
             bindings = getBindings(this);
@@ -118,6 +207,12 @@ exports.BObject.prototype = util.extend(exports.BObject.prototype, {
         }
     },
 
+    /**
+     * Unique ID for this object
+     * @field
+     * @name BObject#id
+     */
+    /** @ignore */
     get_id: function() {
         if (!this._id) {
             this._id = ++objectID;
@@ -129,22 +224,20 @@ exports.BObject.prototype = util.extend(exports.BObject.prototype, {
 
 
 /**
- * @static
- * Creates a new instance of this object
- * @returns {BObject} An instance of this object
+ * Create a new instance of this object
+ * @returns {BObject} New instance of this object
  */
-exports.BObject.create = function() {
+BObject.create = function() {
     var ret = new this();
     ret.init.apply(ret, arguments);
     return ret;
 };
 
 /**
- * Create an new class by extending this one
- * @returns {Class} A new class
- * @static
+ * Create a new subclass by extending this one
+ * @returns {Object} A new subclass of this object
  */
-exports.BObject.extend = function() {
+BObject.extend = function() {
     var newObj = function() {},
         args = [],
         i;
@@ -173,25 +266,46 @@ exports.BObject.extend = function() {
     return newObj;
 };
 
-exports.BObject.get = exports.BObject.prototype.get;
-exports.BObject.set = exports.BObject.prototype.set;
+/**
+ * Get a property from the class. Always use this instead of trying to
+ * access the property directly. This will ensure all bindings, setters and
+ * getters work correctly.
+ * 
+ * @param {String} key Name of property to get
+ *
+ * @returns {*} Value of the property
+ */
+BObject.get = BObject.prototype.get;
 
 /**
- * @class BArray A bindable array. Allows observing for changes made to its contents
- * @extends BObject
- *
- * @constructor
- * @param {Array} arr A normal JS array to use for data
+ * Set a property on the class. Always use this instead of trying to
+ * access the property directly. This will ensure all bindings, setters and
+ * getters work correctly.
+ * 
+ * @param {String} key Name of property to get
+ * @param {*} value New value for the property
  */
-exports.BArray = exports.BObject.extend({
-    init: function (arr) {
-        this.array = arr || [];
+BObject.set = BObject.prototype.set;
+
+var BArray = BObject.extend(/** @lends BArray# */{
+
+    /**
+     * @constructs 
+     * A bindable array. Allows observing for changes made to its contents
+     *
+     * @extends BObject
+     * @param {Array} [array=[]] A normal JS array to use for data
+     */
+    init: function (array) {
+        this.array = arrary || [];
         this.set('length', this.array.length);
     },
 
     /**
      * Get an item
+     *
      * @param {Integer} i Index to get item from
+     * @returns {*} Value stored in the array at index 'i'
      */
     getAt: function (i) {
         return this.array[i];
@@ -199,6 +313,7 @@ exports.BArray = exports.BObject.extend({
 
     /**
      * Set an item -- Overwrites any existing item at index
+     *
      * @param {Integer} i Index to set item to
      * @param {*} value Value to assign to index
      */
@@ -211,6 +326,7 @@ exports.BArray = exports.BObject.extend({
 
     /**
      * Insert a new item into the array without overwriting anything
+     *
      * @param {Integer} i Index to insert item at
      * @param {*} value Value to insert
      */
@@ -219,6 +335,13 @@ exports.BArray = exports.BObject.extend({
         this.set('length', this.array.length);
         event.trigger(this, 'insert_at', i);
     },
+
+    /**
+     * Remove item from the array and return it
+     *
+     * @param {Integer} i Index to remove
+     * @returns {*} Value that was removed
+     */
     removeAt: function (i) {
         var oldVal = this.array[i];
         this.array.splice(i, 1);
@@ -227,14 +350,36 @@ exports.BArray = exports.BObject.extend({
 
         return oldVal;
     },
+
+    /**
+     * Get the internal Javascript Array instance
+     *
+     * @returns {Array} Internal Javascript Array
+     */
     getArray: function () {
         return this.array;
     },
-    push: function (a) {
-        this.insertAt(this.array.length, a);
+
+    /**
+     * Append a value to the end of the array and return its new length
+     *
+     * @param {*} value Value to append to the array
+     * @returns {Integer} New length of the array
+     */
+    push: function (value) {
+        this.insertAt(this.array.length, value);
         return this.array.length;
     },
+
+    /**
+     * Remove value from the end of the array and return it
+     *
+     * @returns {*} Value that was removed
+     */
     pop: function () {
         return this.removeAt(this.array.length - 1);
     }
 });
+
+exports.BObject = BObject;
+exports.BArray = BArray;

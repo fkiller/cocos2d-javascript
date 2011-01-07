@@ -4,13 +4,7 @@ var util = require('util'),
     ActionManager = require('../ActionManager').ActionManager,
     geom = require('geometry'), ccp = geom.ccp;
 
-/**
- * @class cocos.nodes.Node The base class all visual elements extend from
- * @extends BObject
- *
- * @constructor Create a new empty cocos Node
- */
-var Node = BObject.extend({
+var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     isCocosNode: true,
     visible: true,
     position: null,
@@ -33,10 +27,15 @@ var Node = BObject.extend({
 
     /**
      * The child Nodes
-     * @type {Array: cocos.Node}
+     * @type {Array: cocos.nodes.Node}
      */
     children: null,
 
+    /**
+     * @memberOf cocos.nodes
+     * @extends BObject
+     * @constructs The base class all visual elements extend from
+     */
     init: function() {
         this.set('contentSize', {width: 0, height: 0});
         this.anchorPoint = ccp(0.5, 0.5);
@@ -64,21 +63,21 @@ var Node = BObject.extend({
     /**
      * Add a child Node
      *
-     * @namedparams
-     * @param {cocos.Node} child The child node to add
-     * @param {Integer} z (Optional) Z Index for the child
-     * @param {Integer/String} tag (Optional) A tag to reference the child with
+     * @param {Options} opts Options
+     * @param {cocos.nodes.Node} opts.child The child node to add
+     * @param {Integer} [opts.z] Z Index for the child
+     * @param {Integer/String} [opts.tag] A tag to reference the child with
      *
-     * @return {cocos.Node} The node the child was added to. i.e. 'this'
+     * @returns {cocos.nodes.Node} The node the child was added to. i.e. 'this'
      */
-    addChild: function(params) {
-        if (params.isCocosNode) {
-            return arguments.callee.call(this, {child:params});
+    addChild: function(opts) {
+        if (opts.isCocosNode) {
+            return arguments.callee.call(this, {child:opts});
         }
 
-        var child = params['child'],
-            z = params['z'],
-            tag = params['tag'];
+        var child = opts['child'],
+            z = opts['z'],
+            tag = opts['tag'];
 
         if (z == undefined) {
             z = child.get('zOrder');

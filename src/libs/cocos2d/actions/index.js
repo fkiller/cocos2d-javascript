@@ -3,10 +3,14 @@ var util = require('util'),
 
 var modules = 'Action ActionInterval ActionInstant'.w();
 
-var cocos = {};
+/**
+ * @memberOf cocos
+ * @namespace Actions used to animate or change a Node
+ */
+var actions = {};
 
 util.each(modules, function(mod, i) {
-    util.extend(cocos, require('./' + mod));
+    util.extend(actions, require('./' + mod));
 });
 
-module.exports = cocos;
+module.exports = actions;
