@@ -58,6 +58,7 @@ BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
     /**
      * The constructor for subclasses. Overwrite this for any initalisation you
      * need to do.
+     * @ignore
      */
     init: function () {},
 
@@ -209,10 +210,8 @@ BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
 
     /**
      * Unique ID for this object
-     * @field
-     * @name BObject#id
+     * @getter id
      */
-    /** @ignore */
     get_id: function() {
         if (!this._id) {
             this._id = ++objectID;
@@ -271,8 +270,8 @@ BObject.extend = function() {
  * access the property directly. This will ensure all bindings, setters and
  * getters work correctly.
  * 
+ * @function
  * @param {String} key Name of property to get
- *
  * @returns {*} Value of the property
  */
 BObject.get = BObject.prototype.get;
@@ -282,6 +281,7 @@ BObject.get = BObject.prototype.get;
  * access the property directly. This will ensure all bindings, setters and
  * getters work correctly.
  * 
+ * @function
  * @param {String} key Name of property to get
  * @param {*} value New value for the property
  */

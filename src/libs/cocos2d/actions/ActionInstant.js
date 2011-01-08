@@ -2,13 +2,14 @@ var util = require('util'),
     act = require('./Action'),
     ccp = require('geometry').ccp;
 
-/**
- * @class cocos.actions.ActionInstant Base class for actions that triggers instantly. They have no duration.
- * @extends cocos.actions.FiniteTimeAction
- *
- * @constructor
- */
-var ActionInstant = act.FiniteTimeAction.extend({
+var ActionInstant = act.FiniteTimeAction.extend(/** @lends cocos.actions.ActionInstant */{
+    /**
+     * Base class for actions that triggers instantly. They have no duration.
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.FiniteTimeAction
+     */
     init: function(opts) {
         @super;
         this.duration = 0;
@@ -27,17 +28,18 @@ var ActionInstant = act.FiniteTimeAction.extend({
     }
 });
 
-/**
- * @class cocos.actions.FlipX Flips a sprite horizontally
- * @extends cocos.actions.ActionInstant
- *
- * @constructor
- * @namedparams
- * @param {Boolean} flipX Should the sprite be flipped
- */
-var FlipX = ActionInstant.extend({
+var FlipX = ActionInstant.extend(/** @lends cocos.actions.FlipX# */{
     flipX: false,
 
+    /**
+     * Flips a sprite horizontally
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInstant
+     *
+     * @opt {Boolean} flipX Should the sprite be flipped
+     */
     init: function(opts) {
         @super;
 
@@ -55,17 +57,18 @@ var FlipX = ActionInstant.extend({
     }
 });
 
-/**
- * @class cocos.actions.FlipY Flips a sprite vertically
- * @extends cocos.actions.ActionInstant
- *
- * @constructor
- * @namedparams
- * @param {Boolean} flipY Should the sprite be flipped
- */
-var FlipY = ActionInstant.extend({
+var FlipY = ActionInstant.extend(/** @lends cocos.actions.FlipY# */{
     flipY: false,
 
+    /**
+     * Flips a sprite vertically
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInstant
+     *
+     * @opt {Boolean} flipY Should the sprite be flipped
+     */
     init: function(opts) {
         @super;
 

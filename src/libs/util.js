@@ -1,14 +1,16 @@
 var path = require('path');
 
-/** @namespace */
+/**
+ * @namespace
+ * Useful utility functions
+ */
 var util = {
     /**
      * Merge two or more objects and return the result.
      *
      * @param {Object} firstObject First object to merge with
      * @param {Object} secondObject Second object to merge with
-     * @param {Object} [etc] More objects to merge
-     *
+     * @param {Object} [...] More objects to merge
      * @returns {Object} A new object containing the properties of all the objects passed in
      */
     merge: function(firstObject, secondObject) {
@@ -33,7 +35,6 @@ var util = {
      * Creates a deep copy of an object
      *
      * @param {Object} obj The Object to copy
-     *
      * @returns {Object} A copy of the original Object
      */
     copy: function(obj) {
@@ -72,7 +73,6 @@ var util = {
      *
      * @param {Array} arr An Array to iterate over
      * @param {Function} func A function to call for each item in the array
-     *
      * @returns {Array} The original array
      */
     each: function(arr, func) {
@@ -90,7 +90,6 @@ var util = {
      *
      * @param {Array} arr An Array to iterate over
      * @param {Function} func A function to call for each item in the array
-     *
      * @returns {Array} The return values from each function call
      */
     map: function(arr, func) {

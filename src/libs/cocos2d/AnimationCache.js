@@ -10,8 +10,9 @@ var AnimationCache = BObject.extend(/** @lends cocos.AnimationCache# */{
 
     /**
      * @memberOf cocos
-     * @extends BObject
      * @constructs
+     * @extends BObject
+     * @singleton
      */
     init: function() {
         @super;
@@ -19,6 +20,12 @@ var AnimationCache = BObject.extend(/** @lends cocos.AnimationCache# */{
         this.set('animations', {});
     },
 
+    /**
+     * Add an animation to the cache
+     *
+     * @opt {String} name Unique name of the animation
+     * @opt {cocos.Animcation} animation Animation to cache
+     */
     addAnimation: function(opts) {
         var name = opts['name'],
             animation = opts['animation'];
@@ -26,12 +33,23 @@ var AnimationCache = BObject.extend(/** @lends cocos.AnimationCache# */{
         this.get('animations')[name] = animation;
     },
 
+    /**
+     * Remove an animation from the cache
+     *
+     * @opt {String} name Unique name of the animation
+     */
     removeAnimation: function(opts) {
         var name = opts['name'];
 
         delete this.get('animations')[name];
     },
 
+    /**
+     * Get an animation from the cache
+     *
+     * @opt {String} name Unique name of the animation
+     * @returns {cocos.Animation} Cached animation
+     */
     getAnimation: function(opts) {
         var name = opts['name'];
 
@@ -44,8 +62,7 @@ var AnimationCache = BObject.extend(/** @lends cocos.AnimationCache# */{
  */
 util.extend(AnimationCache, /** @lends cocos.AnimationCache */{
     /**
-     * @field
-     * @name cocos.AnimationCache.sharedAnimationCache
+     * @getter sharedAnimationCache
      * @type cocos.AnimationCache
      */
     get_sharedAnimationCache: function(key) {

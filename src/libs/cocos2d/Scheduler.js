@@ -18,28 +18,32 @@ function HashMethodEntry() {
     this.paused = false;
 }
 
-/**
- * @class cocos.Timer Runs a function repeatedly at a fixed interval
- * @extends BObject
- *
- * @constructor
- * @namedparams
- * @param {Function} callback The function to run at each interval
- * @param {Float} interval Number of milliseconds to wait between each exectuion of callback
- */
-var Timer = BObject.extend({
+var Timer = BObject.extend(/** @lends cocos.Timer# */{
     callback: null,
     interval: 0,
     elapsed: -1,
 
+    /**
+     * Runs a function repeatedly at a fixed interval
+     *
+     * @memberOf cocos
+     * @constructs
+     * @extends BObject
+     *
+     * @opt {Function} callback The function to run at each interval
+     * @opt {Float} interval Number of milliseconds to wait between each exectuion of callback
+     */
     init: function(opts) {
         @super;
 
         this.set('callback', opts['callback']);
-        this.set('elapsed', -1);
         this.set('interval', opts['interval'] || 0);
+        this.set('elapsed', -1);
     },
 
+    /**
+     * @private
+     */
     update: function(dt) {
         if (this.elapsed == -1) {
             this.elapsed = 0;
@@ -55,13 +59,7 @@ var Timer = BObject.extend({
 });
 
 
-/**
- * @class cocos.Scheduler Runs timers
- * @extends BObject
- * @private
- * @singleton
- */
-var Scheduler = BObject.extend({
+var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
     updates0: null,
     updatesNeg: null,
     updatesPos: null,
@@ -69,6 +67,15 @@ var Scheduler = BObject.extend({
     hashForMethods: null,
     timeScale: 1.0,
 
+    /**
+     * Runs the timers
+     *
+     * @memberOf cocos
+     * @constructs
+     * @extends BObject
+     * @singleton
+     * @private
+     */
     init: function() {
         this.updates0 = [];
         this.updatesNeg = [];
@@ -197,9 +204,10 @@ var Scheduler = BObject.extend({
 	}
 });
 
-util.extend(Scheduler, {
+util.extend(Scheduler, /** @lends cocos.Scheduler */{
     /**
-     * @property Scheduler.sharedScheduler A shared singleton instance of cocos.Scheduler
+     * A shared singleton instance of cocos.Scheduler
+     * @getter sharedScheduler 
      * @type cocos.Scheduler
      */
     get_sharedScheduler: function(key) {

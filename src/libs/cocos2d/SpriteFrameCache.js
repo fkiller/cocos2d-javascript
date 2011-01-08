@@ -10,6 +10,7 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
      * @type Object
      */
     spriteFrames: null,
+
     /**
      * List of sprite frame aliases
      * @type Object
@@ -21,6 +22,7 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
      * @memberOf cocos
      * @extends BObject
      * @constructs
+     * @singleton
      */
     init: function() {
         @super;

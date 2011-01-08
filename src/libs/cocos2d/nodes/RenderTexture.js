@@ -6,20 +6,21 @@ var util = require('util'),
     TextureAtlas = require('../TextureAtlas').TextureAtlas,
     ccp = geo.ccp;
 
-/** 
- * @class cocos.nodes.RenderTexture An in-memory canvas which can be drawn to in the background before drawing on screen
- * @extends cocos.nodes.Node
- *
- * @constructor
- * @namedparams
- * @param {Integer} width The width of the canvas
- * @param {Integer} height The height of the canvas
- */
-var RenderTexture = Node.extend({
+var RenderTexture = Node.extend(/** @lends cocos.nodes.RenderTexture# */{
     canvas: null,
     context: null,
     sprite: null,
 
+    /** 
+     * An in-memory canvas which can be drawn to in the background before drawing on screen
+     *
+     * @memberOf cocos.nodes
+     * @constructs
+     * @extends cocos.nodes.Node
+     *
+     * @opt {Integer} width The width of the canvas
+     * @opt {Integer} height The height of the canvas
+     */
     init: function(opts) {
         @super;
 
@@ -43,6 +44,9 @@ var RenderTexture = Node.extend({
 
     },
 
+    /**
+     * @private
+     */
     _resizeCanvas: function() {
         var size = this.get('contentSize'),
             canvas = this.get('canvas');
@@ -56,6 +60,9 @@ var RenderTexture = Node.extend({
         }
     },
 
+    /**
+     * Clear the canvas
+     */
     clear: function() {
         this.canvas.width = this.canvas.width;
     }

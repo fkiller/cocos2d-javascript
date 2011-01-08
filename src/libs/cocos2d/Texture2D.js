@@ -1,20 +1,18 @@
 var util = require('util');
 
-/**
- * @class cocos.Texture2D
- * @extends BObject
- *
- * @constructor
- * @namedparams
- * @param {String} file (Optional) The file path of the image to use as a texture
- * @param {Texture2D} data (Optional) Another Texture2D to use the image data from
- * @param {HTMLImageElement} data (Optional) The image resource to use as a texture
- **/
-var Texture2D = BObject.extend({
+var Texture2D = BObject.extend(/** @lends cocos.Texture2D# */{
 	imgElement: null,
 	size: null,
     name: null,
 
+    /**
+     * @memberOf cocos
+     * @constructs
+     * @extends BObject
+     *
+     * @opt {String} [file] The file path of the image to use as a texture
+     * @opt {Texture2D|HTMLImageElement} [data] Image data to read from
+     */
 	init: function(opts) {
 		var file = opts['file'],
 			data = opts['data'],
@@ -44,10 +42,18 @@ var Texture2D = BObject.extend({
 		);
 	},
 
+    /**
+     * @getter data
+     * @type {String} Base64 encoded image data
+     */
     get_data: function() {
         return this.imgElement ? this.imgElement.src : null;
 	},
 
+    /**
+     * @getter contentSize
+     * @type {geometry.Size} Size of the texture
+     */
     get_contentSize: function() {
 		return this.size;
     }

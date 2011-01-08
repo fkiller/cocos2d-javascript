@@ -6,15 +6,7 @@ var util = require('util'),
     geo = require('geometry'),
     ccp = geo.ccp;
 
-/**
- * @class cocos.nodes.Sprite A small 2D graphics than can be animated
- * @extends cocos.nodes.Node
- *
- * @constructor Create a new sprite
- * @param {String} file Path to image to use as sprite atlas
- * @param {Rect} rect (Optional) The rect in the sprite atlas image file to use as the sprite
- */
-var Sprite = Node.extend({
+var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
     textureAtlas: null,
     rect: null,
     dirty: true,
@@ -26,6 +18,16 @@ var Sprite = Node.extend({
     unflippedOffsetPositionFromCenter: null,
     untrimmedSize: null,
 
+    /**
+     * A small 2D graphics than can be animated
+     *
+     * @memberOf cocos.nodes
+     * @constructs
+     * @extends cocos.nodes.Node
+     *
+     * @opt {String} file Path to image to use as sprite atlas
+     * @opt {Rect} [rect] The rect in the sprite atlas image file to use as the sprite
+     */
     init: function(opts) {
         @super;
 
@@ -82,6 +84,9 @@ var Sprite = Node.extend({
         }
     },
 
+    /**
+     * @private
+     */
     _updateTextureQuad: function(obj, key, texture, oldTexture) {
         if (oldTexture) {
             oldTexture.removeQuad({quad: this.get('quad')})
@@ -92,6 +97,10 @@ var Sprite = Node.extend({
         }
     },
 
+    /**
+     * @setter textureCoords
+     * @type geometry.Rect
+     */
     set_textureCoords: function(rect) {
         var quad = this.get('quad');
         if (!quad) {
@@ -106,6 +115,10 @@ var Sprite = Node.extend({
         this.set('quad', quad);
     },
 
+    /**
+     * @setter textureRect
+     * @type geometry.Rect
+     */
     set_textureRect: function(opts) {
         var rect = opts['rect'],
             rotated = !!opts['rotated'],
@@ -143,6 +156,10 @@ var Sprite = Node.extend({
 
         this.set('quad', quad);
     },
+
+    /**
+     * @private
+     */
     _updateQuad: function() {
         if (!this.quad) {
             this.quad = {
@@ -215,6 +232,12 @@ var Sprite = Node.extend({
         }
         return (frame.texture === this.textureAtlas.texture && geo.rectEqualToRect(frame.rect, this.rect));
     },
+
+
+    /**
+     * @setter displayFrame
+     * @type cocos.SpriteFrame
+     */
     set_displayFrame: function(frame) {
         if (!frame) {
             delete this.quad;

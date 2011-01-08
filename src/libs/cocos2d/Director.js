@@ -5,19 +5,7 @@ var util = require('util'),
     EventDispatcher = require('./EventDispatcher').EventDispatcher,
     Scene = require('./nodes/Scene').Scene;
 
-/**
- * @class cocos.Director
- * @extends BObject
- *
- * <p>Creates and handles the main view and manages how and when to execute the
- * Scenes.</p>
- *
- * <p>This class is a singleton so don't instantiate it yourself, instead use
- * cocos.Director.get('sharedDirector') to return the instance.</p>
- *
- * @singleton
- */
-var Director = BObject.extend({
+var Director = BObject.extend(/** @lends cocos.Director# */{
     backgroundColor: 'rgb(0, 0, 0)',
     canvas: null,
     context: null,
@@ -34,6 +22,18 @@ var Director = BObject.extend({
 
     _nextScene:null,
 
+    /**
+     * <p>Creates and handles the main view and manages how and when to execute the
+     * Scenes.</p>
+     *
+     * <p>This class is a singleton so don't instantiate it yourself, instead use
+     * cocos.Director.get('sharedDirector') to return the instance.</p>
+     *
+     * @memberOf cocos
+     * @constructs
+     * @extends BObject
+     * @singleton
+     */
     init: function() {
         @super;
 
@@ -308,9 +308,11 @@ var Director = BObject.extend({
 /**
  * Class methods
  */
-util.extend(Director, {
+util.extend(Director, /** @lends cocos.Director */{
     /**
-     * @property Director.sharedDirector A shared singleton instance of cocos.Director
+     * A shared singleton instance of cocos.Director
+     *
+     * @getter sharedDirector
      * @type cocos.Director
      */
     get_sharedDirector: function(key) {

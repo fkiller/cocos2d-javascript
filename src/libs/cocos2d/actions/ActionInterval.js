@@ -2,22 +2,7 @@ var util = require('util'),
     act = require('./Action'),
     ccp = require('geometry').ccp;
 
-/**
- * @class cocos.actions.ActionInterval
- *
- * Base class actions that do have a finite time duration. 
- *
- * Possible actions:
- *
- * - An action with a duration of 0 seconds
- * - An action with a duration of 35.5 seconds Infinite time actions are valid
- *
- * @extends cocos.actions.FiniteTimeAction
- *
- * @constructor
- * @param {Float} duration Number of seconds to run action for
- */
-var ActionInterval = act.FiniteTimeAction.extend({
+var ActionInterval = act.FiniteTimeAction.extend(/** @lends cocos.actions.ActionInterval# */{
     /**
      * Number of seconds that have elapsed
      * @type Float
@@ -26,6 +11,20 @@ var ActionInterval = act.FiniteTimeAction.extend({
 
     _firstTick: true,
 
+    /**
+     * Base class actions that do have a finite time duration. 
+     *
+     * Possible actions:
+     *
+     * - An action with a duration of 0 seconds
+     * - An action with a duration of 35.5 seconds Infinite time actions are valid
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.FiniteTimeAction
+     *
+     * @opt {Float} duration Number of seconds to run action for
+     */
     init: function(opts) {
         @super;
 
@@ -66,20 +65,7 @@ var ActionInterval = act.FiniteTimeAction.extend({
     }
 });
 
-/**
- * @class cocos.actions.ScaleTo
- *
- * Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
- *
- * @extends cocos.actions.ActionInterval
- *
- * @constructor
- * @param {Float} duration Number of seconds to run action for
- * @param {Float} scale (Optional) Size to scale Node to
- * @param {Float} scaleX (Optional) Size to scale width of Node to
- * @param {Float} scaleY (Optional) Size to scale height of Node to
- */
-var ScaleTo = ActionInterval.extend({
+var ScaleTo = ActionInterval.extend(/** @lends cocos.actions.ScaleTo# */{
     /**
      * Current X Scale
      * @type Float
@@ -130,7 +116,18 @@ var ScaleTo = ActionInterval.extend({
      */
     deltaY: 0.0,
 
-    /** @ignore */
+    /**
+     * Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInterval
+     *
+     * @opt {Float} duration Number of seconds to run action for
+     * @opt {Float} [scale] Size to scale Node to
+     * @opt {Float} [scaleX] Size to scale width of Node to
+     * @opt {Float} [scaleY] Size to scale height of Node to
+     */
     init: function(opts) {
         @super;
 
@@ -144,7 +141,6 @@ var ScaleTo = ActionInterval.extend({
 
     },
 
-    /** @ignore */
     startWithTarget: function(target) {
         @super;
 
@@ -154,7 +150,6 @@ var ScaleTo = ActionInterval.extend({
         this.deltaY = this.endScaleY - this.startScaleY;
     },
 
-    /** @ignore */
     update: function(t) {
         if (!this.target) {
             return;
@@ -165,20 +160,23 @@ var ScaleTo = ActionInterval.extend({
     }
 });
 
-/**
- * @class cocos.actions.ScaleBy
- *
- * Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
- *
- * @extends cocos.actions.ScaleTo
- *
- * @constructor
- * @param {Float} duration Number of seconds to run action for
- * @param {Float} scale (Optional) Size to scale Node by
- * @param {Float} scaleX (Optional) Size to scale width of Node by
- * @param {Float} scaleY (Optional) Size to scale height of Node by
- */
-var ScaleBy = ScaleTo.extend({
+var ScaleBy = ScaleTo.extend(/** @lends cocos.actions.ScaleBy# */{
+    /**
+     * Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ScaleTo
+     *
+     * @opt {Float} duration Number of seconds to run action for
+     * @opt {Float} [scale] Size to scale Node by
+     * @opt {Float} [scaleX] Size to scale width of Node by
+     * @opt {Float} [scaleY] Size to scale height of Node by
+     */
+    init: function() {
+        @super;
+    },
+
     startWithTarget: function(target) {
         @super;
 
@@ -192,19 +190,7 @@ var ScaleBy = ScaleTo.extend({
 });
 
 
-/**
- * @class cocos.actions.RotateTo
- *
- * Rotates a cocos.Node object to a certain angle by modifying its rotation
- * attribute. The direction will be decided by the shortest angle.
- *
- * @extends cocos.actions.ActionInterval
- *
- * @constructor
- * @param {Float} duration Number of seconds to run action for
- * @param {Float} angle Angle in degrees to rotate to
- */
-var RotateTo = ActionInterval.extend({
+var RotateTo = ActionInterval.extend(/** @lends cocos.actions.RotateTo# */{
     /**
      * Final angle
      * @type Float
@@ -223,6 +209,17 @@ var RotateTo = ActionInterval.extend({
      */
     diffAngle: 0,
 
+    /**
+     * Rotates a cocos.Node object to a certain angle by modifying its rotation
+     * attribute. The direction will be decided by the shortest angle.
+     * 
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInterval
+     *
+     * @opt {Float} duration Number of seconds to run action for
+     * @opt {Float} angle Angle in degrees to rotate to
+     */
     init: function(opts) {
         @super;
 
@@ -248,31 +245,29 @@ var RotateTo = ActionInterval.extend({
         }
     },
 
-    /** @ignore */
     update: function(t) {
         this.target.set('rotation', this.startAngle + this.diffAngle * t);
     }
 });
 
-/**
- * @class cocos.actions.RotateBy
- *
- * Rotates a cocos.Node object to a certain angle by modifying its rotation
- * attribute. The direction will be decided by the shortest angle.
- *
- * @extends cocos.actions.RotateTo
- *
- * @constructor
- * @param {Float} duration Number of seconds to run action for
- * @param {Float} angle Angle in degrees to rotate by
- */
-var RotateBy = RotateTo.extend({
+var RotateBy = RotateTo.extend(/** @lends cocos.actions.RotateBy# */{
     /**
      * Number of degrees to rotate by
      * @type Float
      */
     angle: 0,
 
+    /**
+     * Rotates a cocos.Node object to a certain angle by modifying its rotation
+     * attribute. The direction will be decided by the shortest angle.
+     *
+     * @memberOf cocos.action
+     * @constructs
+     * @extends cocos.actions.RotateTo
+     *
+     * @opt {Float} duration Number of seconds to run action for
+     * @opt {Float} angle Angle in degrees to rotate by
+     */
     init: function(opts) {
         @super;
 
@@ -300,18 +295,7 @@ var RotateBy = RotateTo.extend({
 
 
 
-/**
- * @class cocos.actions.Sequence
- *
- * Runs a number of actions sequentially, one after another
- *
- * @extends cocos.actions.ActionInterval
- *
- * @constructor
- * @param {Float} duration Number of seconds to run action for
- * @param {Array:cocos.Action} Array of actions to run in sequence
- */
-var Sequence = ActionInterval.extend({
+var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     /**
      * Array of actions to run
      * @type cocos.Node[]
@@ -330,6 +314,16 @@ var Sequence = ActionInterval.extend({
      */
     currentActionEndDuration: 0,
 
+    /**
+     * Runs a number of actions sequentially, one after another
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInterval
+     *
+     * @opt {Float} duration Number of seconds to run action for
+     * @opt {cocos.actions.Action[]} Array of actions to run in sequence
+     */
     init: function(opts) {
         @super;
 
@@ -388,23 +382,23 @@ var Sequence = ActionInterval.extend({
     }
 });
 
-/**
- * @class cocos.actions.Animate
- *
- * Animates a sprite given the name of an Animation 
- *
- * @extends cocos.actions.ActionInterval
- *
- * @constructor
- * @param {Float} duration Number of seconds to run action for
- * @param {cocos.Animation} animation Animation to run
- * @param {Boolean} restoreOriginalFrame (Optional) Return to first frame when finished
- */
-var Animate = ActionInterval.extend({
+var Animate = ActionInterval.extend(/** @lends cocos.actions.Animate# */{
     animation: null,
     restoreOriginalFrame: true,
     origFrame: null,
 
+
+    /**
+     * Animates a sprite given the name of an Animation 
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInterval
+     *
+     * @opt {Float} duration Number of seconds to run action for
+     * @opt {cocos.Animation} animation Animation to run
+     * @opt {Boolean} [restoreOriginalFrame=true] Return to first frame when finished
+     */
     init: function(opts) {
         this.animation = opts['animation'];
         this.restoreOriginalFrame = opts['restoreOriginalFrame'] !== false;

@@ -2,31 +2,32 @@ var util = require('util'),
     geo = require('geometry'),
     ccp = geo.ccp;
 
-/**
- * @class cocos.SpriteFrame Represents a single frame of animation for a cocos.Sprite
- * @extends BObject
- *
- * <p>A SpriteFrame has:<br>
- * - texture: A Texture2D that will be used by the Sprite<br>
- * - rectangle: A rectangle of the texture</p>
- *
- * <p>You can modify the frame of a Sprite by doing:</p>
- * 
- * <pre>var frame = SpriteFrame.create({texture: texture, rect: rect});
- * sprite.set('displayFrame', frame);</pre>
- *
- * @constructor
- * @namedparams
- * @param {Texture2D} texture The texture to draw this frame using
- * @param {geometry.Rect} rect The rectangle inside the texture to draw
- */
-var SpriteFrame = BObject.extend({
+var SpriteFrame = BObject.extend(/** @lends cocos.SpriteFrame# */{
     rect: null,
     rotated: false,
     offset: null,
     originalSize: null,
     texture: null,
 
+    /**
+     * Represents a single frame of animation for a cocos.Sprite
+     *
+     * <p>A SpriteFrame has:<br>
+     * - texture: A Texture2D that will be used by the Sprite<br>
+     * - rectangle: A rectangle of the texture</p>
+     *
+     * <p>You can modify the frame of a Sprite by doing:</p>
+     * 
+     * <code>var frame = SpriteFrame.create({texture: texture, rect: rect});
+     * sprite.set('displayFrame', frame);</code>
+     *
+     * @memberOf cocos
+     * @constructs
+     * @extends BObject
+     *
+     * @opt {cocos.Texture2D} texture The texture to draw this frame using
+     * @opt {geometry.Rect} rect The rectangle inside the texture to draw
+     */
     init: function(opts) {
         @super;
 
@@ -37,10 +38,18 @@ var SpriteFrame = BObject.extend({
         this.originalSize = opts['originalSize'] || util.copy(this.rect.size);
     },
 
+    /**
+     * @ignore
+     */
     toString: function() {
         return "[object SpriteFrame | TextureName=" + this.texture.get('name') + ", Rect = (" + this.rect.origin.x + ", " + this.rect.origin.y + ", " + this.rect.size.width + ", " + this.rect.size.height + ")]";
     },
 
+    /**
+     * Make a copy of this frame
+     *
+     * @returns {cocos.SpriteFrame} Exact copy of this object
+     */
     copy: function() {
         return SpriteFrame.create({rect: this.rect, rotated: this.rotated, offset: this.offset, originalSize: this.originalSize, texture: this.texture});
     }

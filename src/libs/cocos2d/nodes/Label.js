@@ -4,30 +4,30 @@ var util = require('util'),
     Node = require('./Node').Node,
     ccp = require('geometry').ccp;
 
-/**
- * @class cocos.nodes.Label Renders a simple text label
- * @extends cocos.nodes.Node
- *
- * @constructor
- * @namedparams
- * @param {Float} fontSize (Optional) The size of the font
- * @param {String} fontName (Optional) The name of the font to use
- * @param {String} fontColor (Optional) The color of the text
- * @param {String} string The text string to draw
- */
-var Label = Node.extend({
+var Label = Node.extend(/** @lends cocos.nodes.Label# */{
     string:   '',
     fontName: 'Helvetica',
     fontSize: 16,
     fontColor: 'white',
 
-    init: function(args) {
+    /**
+     * Renders a simple text label
+     *
+     * @constructs
+     * @extends cocos.nodes.Node
+     *
+     * @opt {String} [string=""] The text string to draw
+     * @opt {Float} [fontSize=16] The size of the font
+     * @opt {String} [fontName="Helvetica"] The name of the font to use
+     * @opt {String} [fontColor="white"] The color of the text
+     */
+    init: function(opts) {
         @super;
 
         util.each('fontSize fontName fontColor string'.w(), util.callback(this, function(name) {
             // Set property on init
-            if (args[name]) {
-                this.set(name, args[name]);
+            if (opts[name]) {
+                this.set(name, opts[name]);
             }
 
             // Update content size
@@ -36,7 +36,9 @@ var Label = Node.extend({
     },
 
     /** 
-     * @property font The font to use
+     * String of the font name and size to use in a format &lt;canvas&gt; understands
+     *
+     * @getter font
      * @type String
      */
     get_font: function(key) {

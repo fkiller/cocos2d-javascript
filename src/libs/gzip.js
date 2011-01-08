@@ -1,20 +1,43 @@
 /**
- * Thin wrapper around JXG's GZip utils
+ * @fileoverview 
  */
 
 /** @ignore */
 var JXG = require('./JXGUtil');
 
-/** @namespace */
+/**
+ * @namespace
+ * Wrappers around JXG's GZip utils
+ * @see JXG.Util
+ */
 var gzip = {
+    /**
+     * Unpack a gzipped byte array
+     *
+     * @param {Integer[]} input Byte array
+     * @returns {String} Unpacked byte string
+     */
     unzip: function(input) {
         return (new JXG.Util.Unzip(input)).unzip()[0][0];
     },
 
+    /**
+     * Unpack a gzipped byte string encoded as base64
+     *
+     * @param {String} input Byte string encoded as base64
+     * @returns {String} Unpacked byte string
+     */
     unzipBase64: function(input) {
         return (new JXG.Util.Unzip(JXG.Util.Base64.decodeAsArray(input))).unzip()[0][0];
     },
 
+    /**
+     * Unpack a gzipped byte string encoded as base64
+     *
+     * @param {String} input Byte string encoded as base64
+     * @param {Integer} bytes Bytes per array item
+     * @returns {Integer[]} Unpacked byte array
+     */
     unzipBase64AsArray: function(input, bytes) {
         var bytes = bytes || 1;
 
@@ -29,6 +52,13 @@ var gzip = {
         return ar;
     },
 
+    /**
+     * Unpack a gzipped byte array
+     *
+     * @param {Integer[]} input Byte array
+     * @param {Integer} bytes Bytes per array item
+     * @returns {Integer[]} Unpacked byte array
+     */
     unzipAsArray: function (input, bytes) {
         var bytes = bytes || 1;
 

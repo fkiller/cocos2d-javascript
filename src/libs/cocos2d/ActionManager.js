@@ -3,27 +3,27 @@ var util = require('util'),
     Timer = require('./Scheduler').Timer,
     Scheduler = require('./Scheduler').Scheduler;
 
-/**
- * @class cocos.ActionManager
- * @extends BObject
- *
- * <p>A singleton that manages all the actions. Normally you
- * won't need to use this singleton directly. 99% of the cases you will use the
- * cocos.Node interface, which uses this singleton. But there are some cases where
- * you might need to use this singleton. Examples:</p>
- *
- * <ul>
- * <li>When you want to run an action where the target is different from a cocos.Node</li>
- * <li>When you want to pause / resume the actions</li>
- * </ul>
- *
- * @singleton
- */
-var ActionManager = BObject.extend({
+var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
     targets: null,
     currentTarget: null,
     currentTargetSalvaged: null,
 
+    /**
+     * <p>A singleton that manages all the actions. Normally you
+     * won't need to use this singleton directly. 99% of the cases you will use the
+     * cocos.nodes.Node interface, which uses this singleton. But there are some cases where
+     * you might need to use this singleton. Examples:</p>
+     *
+     * <ul>
+     * <li>When you want to run an action where the target is different from a cocos.nodes.Node</li>
+     * <li>When you want to pause / resume the actions</li>
+     * </ul>
+     *
+     * @memberOf cocos
+     * @constructs
+     * @extends BObject
+     * @singleton
+     */
     init: function() {
         @super;
 
@@ -31,6 +31,15 @@ var ActionManager = BObject.extend({
         this.targets = [];
     },
 
+    /**
+     * Adds an action with a target. If the target is already present, then the
+     * action will be added to the existing target. If the target is not
+     * present, a new instance of this target will be created either paused or
+     * paused, and the action will be added to the newly created target. When
+     * the target is paused, the queued actions won't be 'ticked'.
+     *
+     * @opt {cocos.nodes.Node} target Node to run the action on
+     */
     addAction: function(opts) {
 
         var targetID = opts['target'].get('id');
@@ -49,6 +58,11 @@ var ActionManager = BObject.extend({
         opts['action'].startWithTarget(opts['target']);
     },
 
+    /**
+     * Remove an action
+     *
+     * @param {cocos.actions.Action} action Action to remove
+     */
     removeAction: function(action) {
         var targetID = action.originalTarget.get('id'),
             element = this.targets[targetID];
@@ -78,6 +92,11 @@ var ActionManager = BObject.extend({
             
     },
 
+    /**
+     * Remove all actions for a cocos.nodes.Node
+     *
+     * @param {cocos.nodes.Node} target Node to remove all actions for
+     */
     removeAllActionsFromTarget: function(target) {
         var targetID = target.get('id');
 
@@ -90,6 +109,9 @@ var ActionManager = BObject.extend({
         element.actions.splice(0, element.actions.length-1);
     },
 
+    /**
+     * @private
+     */
     update: function(dt) {
         var self = this;
         util.each(this.targets, function(currentTarget, i) {
@@ -136,9 +158,10 @@ var ActionManager = BObject.extend({
 	}
 });
 
-util.extend(ActionManager, {
+util.extend(ActionManager, /** @lends cocos.ActionManager */{
     /**
-     * @property ActionManager.sharedManager A shared singleton instance of cocos.ActionManager
+     * Singleton instance of cocos.ActionManager
+     * @getter sharedManager
      * @type cocos.ActionManager
      */
     get_sharedManager: function(key) {

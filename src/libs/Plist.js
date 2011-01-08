@@ -28,8 +28,8 @@ var Plist = BObject.extend (/** @lends Plist# */{
      * @constructs
      * @extends BObject
      * @param {Options} opts Options
-     * @param {String} [opts.file] The path to a .plist file
-     * @param {String} [opts.data] The contents of a .plist file
+     * @config {String} [file] The path to a .plist file
+     * @config {String} [data] The contents of a .plist file
      */
     init: function(opts) {
         var file = opts['file'],

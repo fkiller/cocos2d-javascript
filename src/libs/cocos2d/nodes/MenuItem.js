@@ -4,19 +4,20 @@ var util = require('util'),
     rectMake = require('geometry').rectMake,
     ccp = require('geometry').ccp;
 
-/**
- * @class cocos.nodes.MenuItem Base class for any buttons or options in a menu
- * @extends cocos.nodes.Node
- *
- * @constructor
- * @namedparams
- * @param {Function} callback Function to call when menu item is activated
- */
-var MenuItem = Node.extend({
+var MenuItem = Node.extend(/** @lends cocos.nodes.MenuItem# */{
 	isEnabled: true,
 	isSelected: false,
 	callback: null,
 
+    /**
+     * Base class for any buttons or options in a menu
+     *
+     * @memberOf cocos.nodes
+     * @constructs
+     * @extends cocos.nodes.Node
+     *
+     * @opt {Function} callback Function to call when menu item is activated
+     */
 	init: function(opts) {
 		@super;
 
@@ -32,6 +33,10 @@ var MenuItem = Node.extend({
 		}
 	},
 
+    /**
+     * @getter rect
+     * @type geometry.Rect
+     */
 	get_rect: function() {
 		return rectMake(
 			this.position.x - this.contentSize.width  * this.anchorPoint.x,
@@ -42,21 +47,22 @@ var MenuItem = Node.extend({
 	}
 });
 
-/**
- * @class cocos.nodes.MenuItemSprite A menu item that accepts any cocos.Node
- * @extends cocos.nodes.MenuItem
- *
- * @constructor
- * @namedparams
- * @param {cocos.Node} normalImage Main Node to draw
- * @param {cocos.Node} selectedImage Node to draw when menu item is selected
- * @param {cocos.Node} disabledImage Node to draw when menu item is disabled
- */
-var MenuItemSprite = MenuItem.extend({
+var MenuItemSprite = MenuItem.extend(/** @lends cocos.nodes.MenuItemSprite# */{
 	normalImage: null,
 	selectedImage: null,
 	disabledImage: null,
 
+    /**
+     * A menu item that accepts any cocos.nodes.Node
+     *
+     * @memberOf cocos.nodes
+     * @constructs
+     * @extends cocos.nodes.MenuItem
+     *
+     * @opt {cocos.nodes.Node} normalImage Main Node to draw
+     * @opt {cocos.nodes.Node} selectedImage Node to draw when menu item is selected
+     * @opt {cocos.nodes.Node} disabledImage Node to draw when menu item is disabled
+     */
 	init: function(opts) {
 		@super;
 
@@ -88,17 +94,19 @@ var MenuItemSprite = MenuItem.extend({
 	}
 });
 
-/**
- * @class cocos.nodes.MenuItemImage MenuItem that accepts image files
- * @extends cocos.nodes.MenuItemSprite
- *
- * @constructor
- * @namedparams
- * @param {String} normalImage Main image file to draw
- * @param {String} selectedImage Image file to draw when menu item is selected
- * @param {String} disabledImage Image file to draw when menu item is disabled
- */
-var MenuItemImage = MenuItemSprite.extend(/** @scope cocos.MenuItemImage# */{
+var MenuItemImage = MenuItemSprite.extend(/** @lends cocos.nodes.MenuItemImage# */{
+
+    /**
+     * MenuItem that accepts image files
+     *
+     * @memberOf cocos.nodes
+     * @constructs
+     * @extends cocos.nodes.MenuItemSprite
+     *
+     * @opt {String} normalImage Main image file to draw
+     * @opt {String} selectedImage Image file to draw when menu item is selected
+     * @opt {String} disabledImage Image file to draw when menu item is disabled
+     */
 	init: function(opts) {
 		var normalI   = opts['normalImage'],
 			selectedI = opts['selectedImage'],
@@ -114,7 +122,7 @@ var MenuItemImage = MenuItemSprite.extend(/** @scope cocos.MenuItemImage# */{
 		}
 
 		return @super({normalImage: normalImage, selectedImage: selectedImage, disabledImage: disabledImage, callback: callback});
-	}
+    }
 });
 
 exports.MenuItem = MenuItem;

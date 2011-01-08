@@ -6,50 +6,174 @@ var RE_PAIR = /{\s*([\d.-]+)\s*,\s*([\d.-]+)\s*}/,
 /** @namespace */
 var geometry = {
     /**
-     * Creates a Point instance
+     * @class
+     * A 2D point in space
      *
-     * @param {Number} x X coordinate
-     * @param {Number} y Y coordinate
+     * @param {Float} x X value
+     * @param {Float} y Y value
+     */
+    Point: function(x, y) {
+        /**
+         * X coordinate
+         * @type Float
+         */
+        this.x = x;
+
+        /**
+         * Y coordinate
+         * @type Float
+         */
+        this.y = y;
+    },
+
+    /**
+     * @class
+     * A 2D size
+     *
+     * @param {Float} w Width
+     * @param {Float} h Height
+     */
+    Size: function(w, h) {
+        /**
+         * Width
+         * @type Float
+         */
+        this.width = w;
+
+        /**
+         * Height
+         * @type Float
+         */
+        this.height = h;
+    },
+
+    /**
+     * @class
+     * A rectangle
+     *
+     * @param {Float} x X value
+     * @param {Float} y Y value
+     * @param {Float} w Width
+     * @param {Float} h Height
+     */
+    Rect: function(x, y, w, h) {
+        /**
+         * Coordinate in 2D space
+         * @type {geometry.Point}
+         */
+        this.origin = new geometry.Point(x, y);
+
+        /**
+         * Size in 2D space
+         * @type {geometry.Size}
+         */
+        this.size   = new geometry.Size(w, h);
+    },
+
+    /**
+     * Creates a geometry.Point instance
+     *
+     * @param {Float} x X coordinate
+     * @param {Float} y Y coordinate
+     * @returns {geometry.Point} 
      */
     ccp: function(x, y) {
         return module.exports.pointMake(x, y);
     },
 
+    /**
+     * Add the values of two points together
+     *
+     * @param {geometry.Point} p1 First point
+     * @param {geometry.Point} p2 Second point
+     * @returns {geometry.Point} New point
+     */
     ccpAdd: function(p1, p2) {
         return geometry.ccp(p1.x + p2.x, p1.y + p2.y);
     },
 
+    /**
+     * Subtract the values of two points
+     *
+     * @param {geometry.Point} p1 First point
+     * @param {geometry.Point} p2 Second point
+     * @returns {geometry.Point} New point
+     */
     ccpSub: function(p1, p2) {
         return geometry.ccp(p1.x - p2.x, p1.y - p2.y);
     },
 
+    /**
+     * Muliply the values of two points together
+     *
+     * @param {geometry.Point} p1 First point
+     * @param {geometry.Point} p2 Second point
+     * @returns {geometry.Point} New point
+     */
     ccpMult: function(p1, p2) {
         return geometry.ccp(p1.x * p2.x, p1.y * p2.y);
     },
 
+
+    /**
+     * Invert the values of a geometry.Point
+     *
+     * @param {geometry.Point} p Point to invert
+     * @returns {geometry.Point} New point
+     */
     ccpNeg: function(p) {
         return geometry.ccp(-p.x, -p.y);
     },
 
+    /**
+     * Round values on a geometry.Point to whole numbers
+     *
+     * @param {geometry.Point} p Point to round
+     * @returns {geometry.Point} New point
+     */
     ccpRound: function(p) {
         return geometry.ccp(Math.round(p.x), Math.round(p.y));
     },
 
+    /**
+     * Round up values on a geometry.Point to whole numbers
+     *
+     * @param {geometry.Point} p Point to round
+     * @returns {geometry.Point} New point
+     */
     ccpCeil: function(p) {
         return geometry.ccp(Math.ceil(p.x), Math.ceil(p.y));
     },
 
+    /**
+     * Round down values on a geometry.Point to whole numbers
+     *
+     * @param {geometry.Point} p Point to round
+     * @returns {geometry.Point} New point
+     */
     ccpFloor: function(p) {
         return geometry.ccp(Math.floor(p.x), Math.floor(p.y));
     },
 
+    /**
+     * A point at 0x0
+     *
+     * @returns {geometry.Point} New point at 0x0
+     */
     PointZero: function() {
         return geometry.ccp(0,0);
     },
 
+    /**
+     * @returns {geometry.Rect}
+     */
     rectMake: function(x, y, w, h) {
-        return {origin: module.exports.pointMake(x, y), size: module.exports.sizeMake(w, h)};
+        return new geometry.Rect(x, y, w, h);
     },
+
+    /**
+     * @returns {geometry.Rect}
+     */
     rectFromString: function(str) {
         var matches = str.match(RE_DOUBLE_PAIR),
             p = geometry.pointFromString(matches[1]),
@@ -58,9 +182,16 @@ var geometry = {
         return geometry.rectMake(p.x, p.y, s.width, s.height);
     },
 
+    /**
+     * @returns {geometry.Size}
+     */
     sizeMake: function(w, h) {
-        return {width: w, height: h};
+        return new geometry.Size(w, h);
     },
+
+    /**
+     * @returns {geometry.Size}
+     */
     sizeFromString: function(str) {
         var matches = str.match(RE_PAIR),
             w = parseFloat(matches[1]),
@@ -69,9 +200,16 @@ var geometry = {
         return geometry.sizeMake(w, h);
     },
 
+    /**
+     * @returns {geometry.Point}
+     */
     pointMake: function(x, y) {
-        return {x: x, y: y};
+        return new geometry.Point(x, y);
     },
+
+    /**
+     * @returns {geometry.Point}
+     */
     pointFromString: function(str) {
         var matches = str.match(RE_PAIR),
             x = parseFloat(matches[1]),
@@ -80,21 +218,38 @@ var geometry = {
         return geometry.pointMake(x, y);
     },
 
+    /**
+     * @returns {Boolean}
+     */
     rectContainsPoint: function(r, p) {
         return ((p.x >= r.origin.x && p.x <= r.origin.x + r.size.width)
                 && (p.y >= r.origin.y && p.y <= r.origin.y + r.size.height));
     },
 
+    /**
+     * @returns {Boolean}
+     */
     pointEqualToPoint: function(point1, point2) {
         return (point1.x == point2.x && point1.y == point2.y);
     },
+
+    /**
+     * @returns {Boolean}
+     */
     sizeEqualToSize: function(size1, size2) {
         return (size1.width == size2.width && size1.height == size2.height);
     },
+
+    /**
+     * @returns {Boolean}
+     */
     rectEqualToRect: function(rect1, rect2) {
         return (module.exports.sizeEqualToSize(rect1.size, rect2.size) && module.exports.pointEqualToPoint(rect1.origin, rect2.origin));
     },
 
+    /**
+     * @returns {geometry.Point}
+     */
     pointApplyAffineTransform: function(p, trans) {
         var newPoint = geometry.ccp(0, 0);
         
@@ -103,6 +258,10 @@ var geometry = {
 
         return newPoint;
     },
+
+    /**
+     * @returns {Float}
+     */
     affineTransformDeterminant: function(trans) {
         var det = 1,
             t = util.copy(trans);
@@ -139,6 +298,10 @@ var geometry = {
 
         return det;
     },
+
+    /**
+     * @returns {Float[]}
+     */
     affineTransformInvert: function(trans) {
         var newTrans = module.exports.affineTransformIdentity();
 
@@ -198,6 +361,7 @@ var geometry = {
 
     /**
      * Multiply 2 transform (3x3) matrices together
+     * @returns {Float[]} New transform matrix
      */
     affineTransformConcat: function(trans1, trans2) {
         var newTrans = module.exports.affineTransformIdentity();
@@ -215,9 +379,16 @@ var geometry = {
         return newTrans;
     },
 
+    /**
+     * @returns {Float}
+     */
     degressToRadians: function(angle) {
         return angle / 180.0 * Math.PI;
     },
+
+    /**
+     * @returns {Float[]}
+     */
     affineTransformTranslate: function(trans, x, y) {
         // tx = 6, ty = 7
 
@@ -238,6 +409,9 @@ var geometry = {
         return trans;
     },
 
+    /**
+     * @returns {Float[]} 3x3 identity matrix
+     */
     affineTransformIdentity: function() {
         return [[1, 0, 0],
                 [0, 1, 0],

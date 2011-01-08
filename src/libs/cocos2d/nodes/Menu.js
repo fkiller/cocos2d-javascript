@@ -13,21 +13,22 @@ var kMenuStateWaiting = 0;
 var kMenuStateTrackingTouch = 1;
 	
 
-/**
- * @class cocos.nodes.Menu A fullscreen node used to render a selection of menu options
- * @extends cocos.nodes.Layer
- *
- * @constructor
- * @namedparams
- * @param {Array:cocos.MenuItem} items An array of MenuItems to draw on the menu
- */
-var Menu = Layer.extend({
+var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
 	mouseDelegatePriority: (-Number.MAX_VALUE +1),
 	state: kMenuStateWaiting,
 	selectedItem: null,
 	opacuty: 255,
 	color: null,
 
+    /**
+     * A fullscreen node used to render a selection of menu options
+     *
+     * @memberOf cocos.nodes
+     * @constructs
+     * @extends cocos.nodes.Layer
+     *
+     * @opt {cocos.nodes.MenuItem[]} items An array of MenuItems to draw on the menu
+     */
 	init: function(opts) {
 		@super;
 

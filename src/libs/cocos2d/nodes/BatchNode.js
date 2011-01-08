@@ -6,15 +6,7 @@ var util = require('util'),
     RenderTexture = require('./RenderTexture').RenderTexture,
 	Node = require('./Node').Node;
 
-/**
- * @class cocos.nodes.BatchNode Draws all children to an in-memory canvas and only redraws when something changes
- * @extends cocos.nodes.Node
- *
- * @constructor
- * @namedparams
- * @param {geometry.Size} size The size of the in-memory canvas used for drawing to
- */
-var BatchNode = Node.extend({
+var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
     contentRect: null,
     renderTexture: null,
     dirty: true,
@@ -28,6 +20,15 @@ var BatchNode = Node.extend({
     _dirtyRects: null,
 
 
+    /**
+     * Draws all children to an in-memory canvas and only redraws when something changes
+     *
+     * @memberOf cocos.nodes
+     * @constructs
+     * @extends cocos.nodes.Node
+     *
+     * @opt {geometry.Size} size The size of the in-memory canvas used for drawing to
+     */
 	init: function(opts) {
 		@super;
 
@@ -111,19 +112,20 @@ var BatchNode = Node.extend({
     }
 });
 
-/**
- * @class cocos.nodes.SpriteBatchNode A BatchNode that accepts only Sprite using the same texture
- * @extends cocos.nodes.BatchNode
- *
- * @constructor
- * @namedparams
- * @param {String} file (Optional) Path to image to use as sprite atlas
- * @param {Texture2D} texture (Optional) Texture to use as sprite atlas
- * @param {cocos.TextureAtlas} textureAtlas (Optional) TextureAtlas to use as sprite atlas
- */
 var SpriteBatchNode = BatchNode.extend({
     textureAtlas: null,
 
+    /**
+     * A BatchNode that accepts only Sprite using the same texture
+     *
+     * @memberOf cocos.nodes
+     * @constructs
+     * @extends cocos.nodes.BatchNode
+     *
+     * @opt {String} file (Optional) Path to image to use as sprite atlas
+     * @opt {Texture2D} texture (Optional) Texture to use as sprite atlas
+     * @opt {cocos.TextureAtlas} textureAtlas (Optional) TextureAtlas to use as sprite atlas
+     */
     init: function(opts) {
         @super;
 
@@ -139,7 +141,7 @@ var SpriteBatchNode = BatchNode.extend({
     },
 
     /**
-     * @property texture
+     * @getter texture
      * @type cocos.Texture2D
      */
     get_texture: function() {

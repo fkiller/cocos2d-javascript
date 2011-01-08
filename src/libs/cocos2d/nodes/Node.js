@@ -27,14 +27,15 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
     /**
      * The child Nodes
-     * @type {Array: cocos.nodes.Node}
+     * @type {cocos.nodes.Node[]}
      */
     children: null,
 
     /**
+     * The base class all visual elements extend from
      * @memberOf cocos.nodes
+     * @constructs
      * @extends BObject
-     * @constructs The base class all visual elements extend from
      */
     init: function() {
         this.set('contentSize', {width: 0, height: 0});
@@ -50,9 +51,10 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         event.addListener(this, 'contentsize_changed', util.callback(this, this._updateAnchorPointInPixels));
     },
 
-    /** @private
+    /**
      * Calculates the anchor point in pixels and updates the
      * anchorPointInPixels property
+     * @private
      */
     _updateAnchorPointInPixels: function() {
         var ap = this.get('anchorPoint'),
@@ -63,11 +65,9 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     /**
      * Add a child Node
      *
-     * @param {Options} opts Options
-     * @param {cocos.nodes.Node} opts.child The child node to add
-     * @param {Integer} [opts.z] Z Index for the child
-     * @param {Integer/String} [opts.tag] A tag to reference the child with
-     *
+     * @opt {cocos.nodes.Node} child The child node to add
+     * @opt {Integer} [z] Z Index for the child
+     * @opt {Integer|String} [tag] A tag to reference the child with
      * @returns {cocos.nodes.Node} The node the child was added to. i.e. 'this'
      */
     addChild: function(opts) {
@@ -160,6 +160,10 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         // All draw code goes here
     },
 
+    /**
+     * @getter scale
+     * @type Float
+     */
     get_scale: function() {
         if (this.scaleX != this.scaleY) {
             throw "scaleX and scaleY aren't identical"
@@ -167,6 +171,11 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
         return this.scaleX;
     },
+
+    /**
+     * @setter scale
+     * @type Float
+     */
     set_scale: function(val) {
         this.set('scaleX', val);
         this.set('scaleY', val);
@@ -179,12 +188,23 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: priority, paused: !this.get('isRunning')});
     },
 
+    /**
+     * Triggered when the node is added to a scene
+     *
+     * @event
+     */
     onEnter: function() {
         util.each(this.children, function(child) { child.onEnter(); });
 
         this.resumeSchedulerAndActions();
         this.set('isRunning', true);
     },
+
+    /**
+     * Triggered when the node is removed from a scene
+     *
+     * @event
+     */
     onExit: function() {
         this.pauseSchedulerAndActions();
         this.set('isRunning', false);
@@ -320,18 +340,33 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         return geom.pointApplyAffineTransform(worldPoint, this.worldToNodeTransform());
     },
 
+    /**
+     * @getter acceptsFirstResponder
+     * @type Boolean
+     */
     get_acceptsFirstResponder: function() {
         return false;
     },
 
+    /**
+     * @getter becomeFirstResponder
+     * @type Boolean
+     */
     get_becomeFirstResponder: function() {
         return true;
     },
 
+    /**
+     * @getter resignFirstResponder
+     * @type Boolean
+     */
     get_resignFirstResponder: function() {
         return true;
     },
 
+    /**
+     * @private
+     */
     _dirtyTransform: function() {
         this.set('isTransformDirty', true);
     }
