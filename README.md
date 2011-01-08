@@ -5,22 +5,37 @@ This is in the early stages of development and could break backwards compatibili
 * You can find me on Twitter: @cocos2djs
 * Email: <ryan@cocos2d-javascript.org>
 * Website: <http://cocos2d-javascript.org/>
+* Documentation: <http://cocos2d-javascript.org/documentation>
 * Forum: <http://cocos2d-javascript.org/forum>
 
-Example Code
-------------
+Creating a new project
+----------------------
 
-If you want a very basic example and a good starting point then you should checkout
-<https://github.com/RyanWilliams/cocos2d-helloworld>
+To create a new project you first need to get a copy of cocos2d-javascript. Grab the latest using git
+
+    git clone git://github.com/RyanWilliams/cocos2d-javascript.git
+
+To create your initial project simply navigate to the cocos2d-javascript directory and run
+
+    ./cocos new ~/Projects/MyApp
+
+This will create a new directory at that path with everything you need to
+get started. It will also add cocos2d-javascript as a git submodule. If you
+prefer to just copy the cocos2d-javascript code instead of using a git
+submodule then use
+
+    ./cocos new ~/Projects/MyApp -g
 
 Getting things running
 ----------------------
 
-To get things up and running simply run the development web server
+To get your project running simply navigate to the newly created directory run
+the development web server
 
-    $ ./cocos server
+    ./cocos server
 
-And visit <http://localhost:4000/>. You will see a selection of tests you can run.
+And visit <http://localhost:4000/>. There you will see a simple application
+outputting your application name.
 
 Developing
 ----------
@@ -31,17 +46,15 @@ including images, sound files, map files, etc.
 
 The entry point for the code is path defined as "main.js" inside the in "make.js" file.
 
-In the public/index.html you will see &lt;script src="cocos2d.js"&gt; tag to include the code.
+In the public/index.html you will see &lt;script src="appname.js"&gt; tag to include the code.
 
-The development web server will compile your code each time it is
-requested. This makes development a lot easier.
+The web server will compile your code each time it is requested. This makes
+development a lot easier.
 
 Run ./cocos server -h for help.
 
-More documentation is coming when the framework is in a more usable state.
-
-Compiling your app
-------------------
+Compiling your application
+--------------------------
 
 To compile your code you run ./cocos make. Which reads the make.js file
 to work out what you want to build.
@@ -66,9 +79,9 @@ Download JsDoc 2.3 (or 2.4) from <http://code.google.com/p/jsdoc-toolkit/>.
 
 Copy that to /usr/local/jsdoc-toolkit or wherever you like and then run:
     
-    java -jar /usr/local/jsdoc-toolkit/jsrun.jar /usr/local/jsdoc-toolkit/app/run.js -t=/usr/local/jsdoc-toolkit/templates/jsdoc -d=./jsdocs/ -r 10 src/
+    JSDOC_HOME=/usr/local/jsdoc-toolkit ./jsdoc
 
-The documentation will appear in the jsdocs directory.
+The documentation will appear in the 'docs' directory.
 
 © 2010 Ryan Williams <ryan@cocos2d-javascript.org>
 
