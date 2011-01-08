@@ -169,7 +169,7 @@ var __main_module_name__ = %s
 
 
 def main():
-    parser = OptionParser()
+    parser = OptionParser(usage="Usage: cocos make [options]")
     parser.add_option("-c", "--config", dest="config",
                       help="configuration file. Default is make.js", metavar="CONFIG")
 

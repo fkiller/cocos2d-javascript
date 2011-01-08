@@ -16,41 +16,41 @@ If you want a very basic example and a good starting point then you should check
 Getting things running
 ----------------------
 
-To get things up and running simply run the server.py Python script:
+To get things up and running simply run the development web server
 
-    $ ./server.py
+    $ ./cocos server
 
 And visit <http://localhost:4000/>. You will see a selection of tests you can run.
 
 Developing
 ----------
 
-Everything you write will be in JavaScript. The two Python scripts (make.py and
-server.py) are to build and serve your code during development. It would be
-very unwise to use the server.py script in production.
+Everything you write will be in separate JavaScript files. These will be
+compiled into a single file which also includes all your other resources
+including images, sound files, map files, etc.
 
 The entry point for the code is path defined as "main.js" inside the in "make.js" file.
 
 In the public/index.html you will see &lt;script src="cocos2d.js"&gt; tag to include the code.
 
-The server uses the make.py script to compile your code each time it is
+The development web server will compile your code each time it is
 requested. This makes development a lot easier.
 
-Run ./server.py -h for help.
+Run ./cocos server -h for help.
 
 More documentation is coming when the framework is in a more usable state.
 
 Compiling your app
 ------------------
 
-To compile your code you run the make.py script. Which reads the make.js file
+To compile your code you run ./cocos make. Which reads the make.js file
 to work out what you want to build.
 
 When built the resulting .js file will contain all your code aswell as all your
 images and map files. This means you only need to update a single file and only
 a single HTTP request is needed to serve everything.
 
-Run ./make.py -h for help.
+Run ./cocos make -h for help.
 
 Browser Support
 ---------------

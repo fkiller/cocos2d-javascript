@@ -43,7 +43,7 @@ class Cocos2D(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 def main():
     global CODE_URL, CONFIG_FILE
-    parser = OptionParser()
+    parser = OptionParser(usage="Usage: cocos server [options]")
     parser.add_option("-c", "--config", dest="config",
                       help="configuration file. Default is make.js", metavar="CONFIG")
 
