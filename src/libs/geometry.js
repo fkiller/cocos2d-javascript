@@ -229,6 +229,22 @@ var geometry = {
     /**
      * @returns {Boolean}
      */
+    rectOverlapsRect: function(r1, r2) {
+        if (r1.origin.x + r1.size.width < r2.origin.x)
+            return false
+        if (r2.origin.x + r2.size.width < r1.origin.x)
+            return false
+        if (r1.origin.y + r1.size.height < r2.origin.y)
+            return false
+        if (r2.origin.y + r2.size.height < r1.origin.y)
+            return false
+
+        return true;
+    },
+
+    /**
+     * @returns {Boolean}
+     */
     pointEqualToPoint: function(point1, point2) {
         return (point1.x == point2.x && point1.y == point2.y);
     },
