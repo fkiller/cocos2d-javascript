@@ -248,6 +248,43 @@ var geometry = {
     },
 
     /**
+     * @returns {Float}
+     */
+    rectGetMinX: function(rect) {
+        return rect.origin.x;
+    },
+
+    /**
+     * @returns {Float}
+     */
+    rectGetMinY: function(rect) {
+        return rect.origin.y;
+    },
+
+    /**
+     * @returns {Float}
+     */
+    rectGetMaxX: function(rect) {
+        return rect.origin.x + rect.size.width;
+    },
+
+    /**
+     * @returns {Float}
+     */
+    rectGetMaxY: function(rect) {
+        return rect.origin.y + rect.size.height;
+    },
+
+    boundingRectMake: function(p1, p2, p3, p4) {
+        var minX = Math.min(p1.x, Math.min(p2.x, Math.min(p3.x, p4.x)));
+        var minY = Math.min(p1.y, Math.min(p2.y, Math.min(p3.y, p4.y)));
+        var maxX = Math.max(p1.x, Math.max(p2.x, Math.max(p3.x, p4.x)));
+        var maxY = Math.max(p1.y, Math.max(p2.y, Math.max(p3.y, p4.y)));
+
+        return geometry.rectMake(minX, minY, (maxX - minX), (maxY - minY));
+    },
+
+    /**
      * @returns {geometry.Point}
      */
     pointApplyAffineTransform: function(p, trans) {
@@ -257,6 +294,24 @@ var geometry = {
         newPoint.y = p.x * trans[0][1] + p.y * trans[1][1] + trans[2][1];
 
         return newPoint;
+    },
+
+    /**
+     * @returns {geometry.Rect}
+     */
+    rectApplyAffineTransform: function(rect, trans) {
+
+        var p1 = geometry.ccp(geometry.rectGetMinX(rect), geometry.rectGetMinY(rect));
+        var p2 = geometry.ccp(geometry.rectGetMaxX(rect), geometry.rectGetMinY(rect));
+        var p3 = geometry.ccp(geometry.rectGetMinX(rect), geometry.rectGetMaxY(rect));
+        var p4 = geometry.ccp(geometry.rectGetMaxX(rect), geometry.rectGetMaxY(rect));
+
+        p1 = geometry.pointApplyAffineTransform(p1, trans);
+        p2 = geometry.pointApplyAffineTransform(p2, trans);
+        p3 = geometry.pointApplyAffineTransform(p3, trans);
+        p4 = geometry.pointApplyAffineTransform(p4, trans);
+
+        return geometry.boundingRectMake(p1, p2, p3, p4);
     },
 
     /**

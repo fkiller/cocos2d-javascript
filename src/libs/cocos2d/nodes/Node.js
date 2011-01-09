@@ -397,6 +397,16 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     },
 
     /**
+     * @getter boundingBox
+     * @type geometry.Rect
+     */
+    get_boundingBox: function() {
+        var cs = this.get('contentSize');
+        var rect = geom.rectMake(0, 0, cs.width, cs.height);
+        return geom.rectApplyAffineTransform(rect, this.nodeToParentTransform());
+    },
+
+    /**
      * @private
      */
     _dirtyTransform: function() {
