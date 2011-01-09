@@ -123,7 +123,39 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     },
 
     removeChild: function(opts) {
-        // TODO
+        var child = opts.child,
+            cleanup = opts.cleanup;
+
+        if (!child) {
+            return;
+        }
+
+        var children = this.get('children'),
+            idx = children.indexOf(child);
+
+        if (idx > -1) {
+            this.detatchChild({child: child, cleanup: cleanup});
+        }
+    },
+
+    detatchChild: function(opts) {
+        var child = opts.child,
+            cleanup = opts.cleanup;
+
+        var children = this.get('children'),
+            isRunning = this.get('isRunning'),
+            idx = children.indexOf(child);
+
+        if (isRunning) {
+            child.onExit();
+        }
+
+        if (cleanup) {
+            child.cleanup();
+        }
+
+        child.set('parent', null);
+        children.splice(idx, 1);
     },
 
     reorderChild: function(opts) {

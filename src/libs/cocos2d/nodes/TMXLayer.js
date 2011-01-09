@@ -137,7 +137,26 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
         var x = Math.floor(pos.x * this.mapTileSize.width + 0.49);
         var y = Math.floor(pos.y * this.mapTileSize.height + 0.49) + overlap;
         return ccp(x,y);
-        
+    },
+
+    removeTile: function(pos) {
+        var gid = this.tileGID(pos);
+        if (gid == 0) {
+            // Tile is already blank
+            return;
+        }
+
+        var tiles = this.get('tiles'),
+            tilesPerRow = this.get('layerSize').width,
+            tilePos = pos.x + (pos.y * tilesPerRow);
+
+
+        tiles[tilePos] = 0;
+
+        var sprite = this.getChild({tag: tilePos});
+        if (sprite) {
+            this.removeChild({child: sprite});
+        }
     }
 });
 

@@ -44,13 +44,13 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
 	},
 
     addChild: function(opts) {
-        var ret = @super;
+        @super;
 
         var child = opts['child'],
             z     = opts['z'];
 
         if (child == this.renderTexture) {
-            return ret;
+            return;
         }
 
         // TODO handle texture resize
@@ -60,8 +60,14 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
         event.addListener(child, 'visible_changed', util.callback(this, function() { this.set('dirty', true); }));
 
         this.set('dirty', true);
+    },
 
-        return ret;
+    removeChild: function(opts) {
+        @super;
+
+        // TODO remove istransformdirty_changed and visible_changed listeners
+
+        this.set('dirty', true);
     },
 
     _resizeCanvas: function(oldSize) {
