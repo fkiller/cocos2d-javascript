@@ -113,7 +113,7 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
         tile.set('anchorPoint', ccp(0, 0));
         tile.set('opacity', this.get('opacity'));
         
-        this.addChild({child: tile, z: 0});
+        this.addChild({child: tile, z: 0, tag: z});
     },
     positionAt: function(pos) {
         var ret = ccp(0, 0);
@@ -139,6 +139,12 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
         return ccp(x,y);
     },
 
+    tileGID: function(pos) {
+        var tilesPerRow = this.get('layerSize').width,
+            tilePos = pos.x + (pos.y * tilesPerRow);
+
+        return this.tiles[tilePos];
+    },
     removeTile: function(pos) {
         var gid = this.tileGID(pos);
         if (gid == 0) {
