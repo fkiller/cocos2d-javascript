@@ -71,16 +71,20 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
 
         // Mouse events
         var eventDispatcher = EventDispatcher.get('sharedDispatcher');
+        var self = this;
         function mouseDown(evt) {
             evt.locationInWindow = ccp(evt.clientX, evt.clientY);
+            evt.locationInCanvas = self.convertEventToCanvas(evt);
 
             function mouseDragged(evt) {
                 evt.locationInWindow = ccp(evt.clientX, evt.clientY);
+                evt.locationInCanvas = self.convertEventToCanvas(evt);
 
                 eventDispatcher.mouseDragged(evt);
             };
             function mouseUp(evt) {
                 evt.locationInWindow = ccp(evt.clientX, evt.clientY);
+                evt.locationInCanvas = self.convertEventToCanvas(evt);
 
                 document.body.removeEventListener('mousemove', mouseDragged, false);
                 document.body.removeEventListener('mouseup',   mouseUp,   false);
@@ -96,6 +100,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
         }
         function mouseMoved(evt) {
             evt.locationInWindow = ccp(evt.clientX, evt.clientY);
+            evt.locationInCanvas = self.convertEventToCanvas(evt);
 
             eventDispatcher.mouseMoved(evt);
         }
