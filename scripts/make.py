@@ -9,7 +9,7 @@ except:
     import simplejson as json
 
 TEXT_MIMETYPES = 'application/xml text/plain text/json application/json text/html'.split(' ')
-CODE_MIMETYPES = 'text/javascript application/javascript'.split(' ')
+CODE_MIMETYPES = 'text/javascript application/javascript application/x-javascript'.split(' ')
 
 IMAGE_RESOURCE_TEMPLATE  = u'\nwindow.__resources__["%s"] = {meta: {mimetype: "%s"}, data: __imageResource("data:%s;base64,%s")};\n'
 BINARY_RESOURCE_TEMPLATE = u'\nwindow.__resources__["%s"] = {meta: {mimetype: "%s"}, data: "%s"};\n'
@@ -132,7 +132,7 @@ var __main_module_name__ = %s
             code = IMAGE_RESOURCE_TEMPLATE % (resource_name, mimetype, mimetype, data.getvalue().replace('\n', ''))
         else: # Binaries
             base64.encode(open(filename), data)
-            code = BINARY_RESOURCE_TEMPLATE % (resource_name, mimetype, mimetype, data.getvalue().replace('\n', ''))
+            code = BINARY_RESOURCE_TEMPLATE % (resource_name, mimetype, data.getvalue().replace('\n', ''))
 
         return code
 
