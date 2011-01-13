@@ -154,6 +154,7 @@ def main():
         os.chdir(project_path)
 
     shutil.copy2('cocos2d/cocos', './cocos')
+    shutil.copy2('cocos2d/cocos.bat', './cocos.bat')
 
 
     
