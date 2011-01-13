@@ -98,6 +98,11 @@ def main():
 
     (options, args) = parser.parse_args()
 
+    if not str(args[0]).strip():
+        print "Usage: cocos new APP_PATH"
+        return 1
+
+
     use_git = not options.nogit
     project_path = os.path.abspath(args[0])
     project_name = os.path.basename(project_path)
