@@ -111,6 +111,7 @@ var __main_module_name__ = %s
             print "Skipping:", filename
             return ''
 
+        resource_name = resource_name.replace('\\', '/')
         print "Reading: '%s' --> '%s'" % (filename, resource_name)
 
         mimetype = mimetypes.guess_type(filename)[0]
@@ -122,17 +123,17 @@ var __main_module_name__ = %s
         data = StringIO()
 
         if is_code:
-            file_code = codecs.open(filename, encoding='utf-8').read()
+            file_code = codecs.open(filename, 'r', encoding='utf-8').read()
             file_code = self.parse_supers(file_code)
             code = CODE_RESOURCE_TEMPLATE % (resource_name, mimetype, file_code)
         elif is_text:
-            code = TEXT_RESOURCE_TEMPLATE % (resource_name, mimetype, json.dumps(open(filename).read()))
+            code = TEXT_RESOURCE_TEMPLATE % (resource_name, mimetype, json.dumps(open(filename, 'r').read()))
         elif is_image:
-            base64.encode(open(filename), data)
-            code = IMAGE_RESOURCE_TEMPLATE % (resource_name, mimetype, mimetype, data.getvalue().replace('\n', ''))
+            base64.encode(open(filename, 'rb'), data)
+            code = IMAGE_RESOURCE_TEMPLATE % (resource_name, mimetype, mimetype, data.getvalue().replace('\n', '').replace('\r', ''))
         else: # Binaries
-            base64.encode(open(filename), data)
-            code = BINARY_RESOURCE_TEMPLATE % (resource_name, mimetype, data.getvalue().replace('\n', ''))
+            base64.encode(open(filename, 'rb'), data)
+            code = BINARY_RESOURCE_TEMPLATE % (resource_name, mimetype, data.getvalue().replace('\n', '').replace('\r', ''))
 
         return code
 
