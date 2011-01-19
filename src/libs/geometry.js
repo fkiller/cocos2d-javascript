@@ -453,8 +453,15 @@ var geometry = {
     /**
      * @returns {Float}
      */
-    degressToRadians: function(angle) {
+    degreesToRadians: function(angle) {
         return angle / 180.0 * Math.PI;
+    },
+
+    /**
+     * @returns {Float}
+     */
+    radiansToDegrees: function(angle) {
+        return angle * (180.0 / Math.PI);
     },
 
     /**

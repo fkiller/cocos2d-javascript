@@ -305,7 +305,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         }
 
         // Rotate
-        context.rotate(geom.degressToRadians(this.get('rotation')));
+        context.rotate(geom.degreesToRadians(this.get('rotation')));
 
         // Scale
         context.scale(this.scaleX, this.scaleY);
@@ -332,7 +332,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
             }
 
             if(this.rotation != 0) {
-                this.transformMatrix = geom.affineTransformRotate(this.transformMatrix, -geom.degressToRadians(this.rotation));
+                this.transformMatrix = geom.affineTransformRotate(this.transformMatrix, -geom.degreesToRadians(this.rotation));
             }
             if(!(this.scaleX == 1 && this.scaleY == 1)) {
                 this.transformMatrix = geom.affineTransformScale(this.transformMatrix, this.scaleX, this.scaleY);
