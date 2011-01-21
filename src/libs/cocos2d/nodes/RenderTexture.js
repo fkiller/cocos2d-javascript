@@ -40,8 +40,6 @@ var RenderTexture = Node.extend(/** @lends cocos.nodes.RenderTexture# */{
         this.set('anchorPoint', ccp(0, 0));
         this.sprite.set('anchorPoint', ccp(0, 0));
 
-
-
     },
 
     /**
@@ -53,6 +51,11 @@ var RenderTexture = Node.extend(/** @lends cocos.nodes.RenderTexture# */{
 
         canvas.width  = size.width;
         canvas.height = size.height;
+        if (FLIP_Y_AXIS) {
+            this.context.scale(1, -1);
+            this.context.translate(0, -canvas.height);
+        }
+
 
         var s = this.get('sprite');
         if (s) {
@@ -65,6 +68,10 @@ var RenderTexture = Node.extend(/** @lends cocos.nodes.RenderTexture# */{
      */
     clear: function() {
         this.canvas.width = this.canvas.width;
+        if (FLIP_Y_AXIS) {
+            this.context.scale(1, -1);
+            this.context.translate(0, -this.canvas.height);
+        }
     }
 });
 
