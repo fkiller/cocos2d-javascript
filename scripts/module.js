@@ -1,5 +1,5 @@
 function resource(path) {
-    return window.__resources__[path].data;
+    return __resources__[path].data;
 }
 
 (function() {
@@ -103,7 +103,7 @@ function resource(path) {
         require.paths = modulePaths;
         require.main = process.mainModule;
 
-        window.__resources__[this.filename].data.apply(this.exports, [this.exports, require, this, this.filename, this.dirname])
+        __resources__[this.filename].data.apply(this.exports, [this.exports, require, this, this.filename, this.dirname])
 
         return this;
     }
