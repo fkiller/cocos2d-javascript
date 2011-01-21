@@ -149,6 +149,9 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
         if (this._previousMouseMovePosition) {
             evt.deltaX = evt.clientX - this._previousMouseMovePosition.x;
             evt.deltaY = evt.clientY - this._previousMouseMovePosition.y;
+            if (FLIP_Y_AXIS) {
+                evt.deltaY *= -1;
+            }
         } else {
             evt.deltaX = 0;
             evt.deltaY = 0;
@@ -173,6 +176,9 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
         if (this._previousMouseDragPosition) {
             evt.deltaX = evt.clientX - this._previousMouseDragPosition.x;
             evt.deltaY = evt.clientY - this._previousMouseDragPosition.y;
+            if (FLIP_Y_AXIS) {
+                evt.deltaY *= -1;
+            }
         } else {
             evt.deltaX = 0;
             evt.deltaY = 0;

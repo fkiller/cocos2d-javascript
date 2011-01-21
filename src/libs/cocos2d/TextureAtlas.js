@@ -75,8 +75,15 @@ var TextureAtlas = BObject.extend(/** @lends cocos.TextureAtlas# */{
             dw = quad.drawRect.size.width, 
             dh = quad.drawRect.size.height;
 
+
         var scaleX = 1;
         var scaleY = 1;
+
+        if (FLIP_Y_AXIS) {
+            dy -= dh;
+            dh *= -1;
+        }
+
             
         if (dw < 0) {
             dw *= -1
