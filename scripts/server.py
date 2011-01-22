@@ -2,7 +2,7 @@
 
 from optparse import OptionParser
 import SocketServer
-import SimpleHTTPServer
+import SimpleHTTPServer, BaseHTTPServer
 import urllib
 import threading
 from make import Compiler
@@ -69,25 +69,17 @@ def main():
     if options.config:
         CONFIG_FILE = options.config
 
-    httpd = SocketServer.TCPServer((host, port), Cocos2D)
-    httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    httpd_thread = threading.Thread(target=httpd.serve_forever)
-    httpd_thread.setDaemon(True)
-    httpd_thread.start()
-    print "Listening at http://%s:%d/" % (host, port)
-    
-    
-    running = True
-    while running:
-        try:
-            time.sleep(3600)
-        except (KeyboardInterrupt, SystemExit):
-            running = False
-            print "Shutting down"
-            httpd.shutdown()
-            httpd.server_close()
 
-    return 0
+    httpd = BaseHTTPServer.HTTPServer((host, port), Cocos2D)
+    print "Listening at http://%s:%d/" % (host, port)
+    try:
+        httpd.serve_forever()
+
+    except (KeyboardInterrupt, SystemExit):
+        print "Shutting down"
+        return 0
+
+    return 1
 
 
 if __name__ == "__main__":
