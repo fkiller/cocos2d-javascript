@@ -39,7 +39,7 @@ var gzip = {
      * @returns {Integer[]} Unpacked byte array
      */
     unzipBase64AsArray: function(input, bytes) {
-        var bytes = bytes || 1;
+        bytes = bytes || 1;
 
         var dec = this.unzipBase64(input),
             ar = [], i, j, len;
@@ -60,7 +60,7 @@ var gzip = {
      * @returns {Integer[]} Unpacked byte array
      */
     unzipAsArray: function (input, bytes) {
-        var bytes = bytes || 1;
+        bytes = bytes || 1;
 
         var dec = this.unzip(input),
             ar = [], i, j, len;

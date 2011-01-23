@@ -239,7 +239,8 @@ BObject.create = function() {
 BObject.extend = function() {
     var newObj = function() {},
         args = [],
-        i;
+        i,
+        x;
 
     // Copy 'class' methods
     for (x in this) {
@@ -253,7 +254,7 @@ BObject.extend = function() {
 
 
     // Add given properties to the prototype
-    newObj.prototype = util.beget(this.prototype)
+    newObj.prototype = util.beget(this.prototype);
     args.push(newObj.prototype);
     for (i = 0; i<arguments.length; i++) {
         args.push(arguments[i])
@@ -297,7 +298,7 @@ var BArray = BObject.extend(/** @lends BArray# */{
      * @param {Array} [array=[]] A normal JS array to use for data
      */
     init: function (array) {
-        this.array = arrary || [];
+        this.array = array || [];
         this.set('length', this.array.length);
     },
 

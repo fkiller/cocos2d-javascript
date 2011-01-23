@@ -67,6 +67,7 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
         var tilesets = map.getElementsByTagName('tileset');
         for (var i = 0, len = tilesets.length; i < len; i++) {
             var t = tilesets[i];
+            var i, len, s;
 
             var tileset = TMXTilesetInfo.create();
             tileset.set('name', t.getAttribute('name'));
@@ -78,7 +79,7 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
                 tileset.set('margin', parseInt(t.getAttribute('margin'), 10));
             }
 
-            var s = {};
+            s = {};
             s.width = parseInt(t.getAttribute('tilewidth'), 10)
             s.height = parseInt(t.getAttribute('tileheight'), 10)
             tileset.set('tileSize', s);
@@ -93,7 +94,7 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
 
         // PARSE <layers>
         var layers = map.getElementsByTagName('layer');
-        for (var i = 0, len = layers.length; i < len; i++) {
+        for (i = 0, len = layers.length; i < len; i++) {
             var l = layers[i];
             var data = l.getElementsByTagName('data')[0];
             var layer = TMXLayerInfo.create();
@@ -105,7 +106,7 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
                 layer.set('visible', !!parseInt(l.getAttribute('visible')));
             }
 
-            var s = {};
+            s = {};
             s.width = parseInt(l.getAttribute('width'), 10)
             s.height = parseInt(l.getAttribute('height'), 10)
             layer.set('layerSize', s);

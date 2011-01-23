@@ -117,7 +117,6 @@ var Plist = BObject.extend (/** @lends Plist# */{
             // Grab the key, next noe should be the value
             if (child.tagName == 'key') {
                 key = child.firstChild.nodeValue;
-                continue;
             } else {
                 // Parse the value node
                 data[key] = this.parseNode_(child);

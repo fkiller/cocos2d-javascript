@@ -109,7 +109,7 @@ var util = {
             throw "You must provide at least a target and 1 object to extend from"
         }
 
-        var i, obj, key, val;
+        var i, j, obj, key, val;
 
         for (i = 1; i < arguments.length; i++) {
             obj = arguments[i];
@@ -145,9 +145,8 @@ var util = {
                         }
 
 
-                        var i;
-                        for (i = 0; i<val._observing.length; i++) {
-                            target._observingFunctions.push({property:val._observing[i], method: key});
+                        for (j = 0; j<val._observing.length; j++) {
+                            target._observingFunctions.push({property:val._observing[j], method: key});
                         }
                     } // if (val._observing)
 
@@ -172,7 +171,7 @@ var util = {
 
     beget: function(o) {
         var F = function(){};
-        F.prototype = o
+        F.prototype = o;
         var ret  = new F();
         F.prototype = null;
         return ret;

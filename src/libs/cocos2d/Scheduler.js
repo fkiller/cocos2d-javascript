@@ -110,13 +110,14 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
             priority = opts['priority'],
             paused   = opts['paused'];
 
+        var i, len;
         var entry = {target: target, priority: priority, paused: paused};
         var added = false;
 
         if (priority == 0) {
             this.updates0.push(entry);
         } else if (priority < 0) {
-            for (var i = 0, len = this.updatesNeg.length; i < len; i++) {
+            for (i = 0, len = this.updatesNeg.length; i < len; i++) {
                 if (priority < this.updatesNeg[i].priority) {
                     this.updatesNeg.splice(i, 0, entry);
                     added = true;
@@ -128,7 +129,7 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
                 this.updatesNeg.push(entry);
             }
         } else /* priority > 0 */{
-            for (var i = 0, len = this.updatesPos.length; i < len; i++) {
+            for (i = 0, len = this.updatesPos.length; i < len; i++) {
                 if (priority < this.updatesPos[i].priority) {
                     this.updatesPos.splice(i, 0, entry);
                     added = true;
@@ -145,29 +146,30 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
     },
 
     tick: function(dt) {
+        var i;
         if (this.timeScale != 1.0) {
             dt *= this.timeScale;
         }
 
         var entry;
-        for (var i = 0, len = this.updatesNeg.length; i < len; i++) {
+        for (i = 0, len = this.updatesNeg.length; i < len; i++) {
             entry = this.updatesNeg[i];
             if (!entry.paused) entry.target.update(dt);
         }
 
-        for (var i = 0, len = this.updates0.length; i < len; i++) {
+        for (i = 0, len = this.updates0.length; i < len; i++) {
             entry = this.updates0[i];
             if (!entry.paused) entry.target.update(dt);
         }
 
-        for (var i = 0, len = this.updatesPos.length; i < len; i++) {
+        for (i = 0, len = this.updatesPos.length; i < len; i++) {
             entry = this.updatesPos[i];
             if (!entry.paused) entry.target.update(dt);
         }
 
         for (var x in this.hashForMethods) {
-            var entry = this.hashForMethods[x];
-            for (var i = 0, len = entry.timers.length; i < len; i++) {
+            entry = this.hashForMethods[x];
+            for (i = 0, len = entry.timers.length; i < len; i++) {
                 var timer = entry.timers[i];
                 timer.update(dt);
             }

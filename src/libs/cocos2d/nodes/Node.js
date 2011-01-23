@@ -214,8 +214,8 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     },
 
     scheduleUpdate: function(opts) {
-        var opts = opts || {},
-            priority = opts['priority'] || 0;
+        opts = opts || {};
+        var priority = opts['priority'] || 0;
 
         Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: priority, paused: !this.get('isRunning')});
     },

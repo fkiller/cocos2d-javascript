@@ -35,7 +35,7 @@ var TextureAtlas = BObject.extend(/** @lends cocos.TextureAtlas# */{
             // If we've been given a canvas element then we'll use that for our image
             this.imgElement = canvas;
         } else {
-            var texture = Texture2D.create({texture: texture, file: file, data: data});
+            texture = Texture2D.create({texture: texture, file: file, data: data});
 			this.set('texture', texture);
 			this.imgElement = texture.get('imgElement');
         }
@@ -86,12 +86,12 @@ var TextureAtlas = BObject.extend(/** @lends cocos.TextureAtlas# */{
 
             
         if (dw < 0) {
-            dw *= -1
+            dw *= -1;
             scaleX = -1;
         }
             
         if (dh < 0) {
-            dh *= -1
+            dh *= -1;
             scaleY = -1;
         }
 

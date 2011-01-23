@@ -70,7 +70,7 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
 
                 switch (format) {
                 case 0:
-                    var x = frameDict.x
+                    var x = frameDict.x,
                         y =  frameDict.y,
                         w =  frameDict.width,
                         h =  frameDict.height,

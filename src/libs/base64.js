@@ -24,7 +24,7 @@ var base64 = {
      * @returns {Integer[]} Array of bytes
      */
     decodeAsArray: function(input, bytes) {
-        var bytes = bytes || 1;
+        bytes = bytes || 1;
 
         var dec = JXG.Util.Base64.decode(input),
             ar = [], i, j, len;
