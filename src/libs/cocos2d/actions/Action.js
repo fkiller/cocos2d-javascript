@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     console = require('system').console;
 
@@ -20,7 +24,7 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
      *
      * @param {Float} dt The delta time
      */
-    step: function(dt) {
+    step: function (dt) {
         console.log('Action.step() Override me');
     },
 
@@ -29,7 +33,7 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
      *
      * @param {Float} time How much of the animation has played. 0.0 = just started, 1.0 just finished.
      */
-    update: function(time) {
+    update: function (time) {
         console.log('Action.update() Override me');
     },
 
@@ -38,7 +42,7 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
      *
      * @param {cocos.nodes.Node} target The Node to run the action on
      */
-    startWithTarget: function(target) {
+    startWithTarget: function (target) {
         this.target = this.originalTarget = target;
     },
 
@@ -47,7 +51,7 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
      * <strong>Important</strong>: You should never call cocos.Action#stop manually.
      * Instead, use cocos.Node#stopAction(action)
      */
-    stop: function() {
+    stop: function () {
         this.target = null;
     },
 
@@ -55,7 +59,7 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
      * @getter isDone
      * @type {Boolean} 
      */
-    get_isDone: function(key) {
+    get_isDone: function (key) {
         return true;
     },
 
@@ -65,7 +69,7 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
      *
      * @returns {cocos.actions.Action} A new Action in reverse
      */
-    reverse: function() {
+    reverse: function () {
     }
 });
 
@@ -83,20 +87,19 @@ var RepeatForever = Action.extend(/** @lends cocos.actions.RepeatForever# */{
      * @constructs
      * @param {cocos.actions.Action} action An action to repeat forever
      */
-    init: function(action) {
-
-        @super();
+    init: function (action) {
+        RepeatForever.superclass.init(this, action);
 
         this.other = action;
     },
 
-    startWithTarget: function(target) {
-        @super;
+    startWithTarget: function (target) {
+        RepeatForever.superclass.startWithTarget.call(this, target);
 
         this.other.startWithTarget(this.target);
     },
 
-    step: function(dt) {
+    step: function (dt) {
         this.other.step(dt);
         if (this.other.get('isDone')) {
             var diff = dt - this.other.get('duration') - this.other.get('elapsed');
@@ -106,15 +109,15 @@ var RepeatForever = Action.extend(/** @lends cocos.actions.RepeatForever# */{
         }
     },
 
-    get_isDone: function() {
+    get_isDone: function () {
         return false;
     },
 
-    reverse: function() {
+    reverse: function () {
         return RepeatForever.create(this.other.reverse());
     },
 
-    copy: function() {
+    copy: function () {
         return RepeatForever.create(this.other.copy());
     }
 });
@@ -134,12 +137,12 @@ var FiniteTimeAction = Action.extend(/** @lends cocos.actions.FiniteTimeAction# 
      * @constructs
      * @extends cocos.actions.Action
      */
-    init: function() {
-        @super;
+    init: function () {
+        FiniteTimeAction.superclass.init.call(this);
     },
 
     /** @ignore */
-    reverse: function() {
+    reverse: function () {
         console.log('FiniteTimeAction.reverse() Override me');
     }
 });

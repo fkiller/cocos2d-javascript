@@ -1,7 +1,11 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     path = require('path');
 
-var modules = 'Node Layer Scene Label Sprite TMXTiledMap BatchNode RenderTexture Menu MenuItem'.w()
+var modules = 'Node Layer Scene Label Sprite TMXTiledMap BatchNode RenderTexture Menu MenuItem'.w();
 
 /** 
  * @memberOf cocos
@@ -9,7 +13,7 @@ var modules = 'Node Layer Scene Label Sprite TMXTiledMap BatchNode RenderTexture
  */
 var nodes = {};
 
-util.each(modules, function(mod, i) {
+util.each(modules, function (mod, i) {
     util.extend(nodes, require('./' + mod));
 });
 

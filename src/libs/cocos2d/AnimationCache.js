@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     Plist = require('Plist').Plist;
 
@@ -14,8 +18,8 @@ var AnimationCache = BObject.extend(/** @lends cocos.AnimationCache# */{
      * @extends BObject
      * @singleton
      */
-    init: function() {
-        @super;
+    init: function () {
+        AnimationCache.superclass.init.call(this);
 
         this.set('animations', {});
     },
@@ -26,9 +30,9 @@ var AnimationCache = BObject.extend(/** @lends cocos.AnimationCache# */{
      * @opt {String} name Unique name of the animation
      * @opt {cocos.Animcation} animation Animation to cache
      */
-    addAnimation: function(opts) {
-        var name = opts['name'],
-            animation = opts['animation'];
+    addAnimation: function (opts) {
+        var name = opts.name,
+            animation = opts.animation;
 
         this.get('animations')[name] = animation;
     },
@@ -38,8 +42,8 @@ var AnimationCache = BObject.extend(/** @lends cocos.AnimationCache# */{
      *
      * @opt {String} name Unique name of the animation
      */
-    removeAnimation: function(opts) {
-        var name = opts['name'];
+    removeAnimation: function (opts) {
+        var name = opts.name;
 
         delete this.get('animations')[name];
     },
@@ -50,8 +54,8 @@ var AnimationCache = BObject.extend(/** @lends cocos.AnimationCache# */{
      * @opt {String} name Unique name of the animation
      * @returns {cocos.Animation} Cached animation
      */
-    getAnimation: function(opts) {
-        var name = opts['name'];
+    getAnimation: function (opts) {
+        var name = opts.name;
 
         return this.get('animations')[name];
     }
@@ -65,7 +69,7 @@ util.extend(AnimationCache, /** @lends cocos.AnimationCache */{
      * @getter sharedAnimationCache
      * @type cocos.AnimationCache
      */
-    get_sharedAnimationCache: function(key) {
+    get_sharedAnimationCache: function (key) {
         if (!this._instance) {
             this._instance = this.create();
         }

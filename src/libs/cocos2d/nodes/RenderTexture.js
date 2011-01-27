@@ -1,5 +1,9 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
-    event = require('event'),
+    evt = require('event'),
     Node = require('./Node').Node,
     geo = require('geometry'),
     Sprite = require('./Sprite').Sprite,
@@ -21,19 +25,19 @@ var RenderTexture = Node.extend(/** @lends cocos.nodes.RenderTexture# */{
      * @opt {Integer} width The width of the canvas
      * @opt {Integer} height The height of the canvas
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        RenderTexture.superclass.init.call(this, opts);
 
-        var width = opts['width'],
-            height = opts['height'];
+        var width = opts.width,
+            height = opts.height;
 
-        event.addListener(this, 'contentsize_changed', util.callback(this, this._resizeCanvas));
+        evt.addListener(this, 'contentsize_changed', util.callback(this, this._resizeCanvas));
 
         this.canvas = document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
 
         var atlas = TextureAtlas.create({canvas: this.canvas});
-        this.sprite = Sprite.create({textureAtlas: atlas, rect: {origin: ccp(0,0), size: {width: width, height: height}}});
+        this.sprite = Sprite.create({textureAtlas: atlas, rect: {origin: ccp(0, 0), size: {width: width, height: height}}});
 
         this.set('contentSize', geo.sizeMake(width, height));
         this.addChild(this.sprite);
@@ -45,7 +49,7 @@ var RenderTexture = Node.extend(/** @lends cocos.nodes.RenderTexture# */{
     /**
      * @private
      */
-    _resizeCanvas: function() {
+    _resizeCanvas: function () {
         var size = this.get('contentSize'),
             canvas = this.get('canvas');
 
@@ -66,7 +70,7 @@ var RenderTexture = Node.extend(/** @lends cocos.nodes.RenderTexture# */{
     /**
      * Clear the canvas
      */
-    clear: function() {
+    clear: function () {
         this.canvas.width = this.canvas.width;
         if (FLIP_Y_AXIS) {
             this.context.scale(1, -1);

@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray FLIP_Y_AXIS*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     SpriteBatchNode = require('./BatchNode').SpriteBatchNode,
     Sprite = require('./Sprite').Sprite,
@@ -28,10 +32,10 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
      * @opt {cocos.TMXLayerInfo} layerInfo
      * @opt {cocos.TMXMapInfo} mapInfo
      */
-    init: function(opts) {
-        var tilesetInfo = opts['tilesetInfo'],
-            layerInfo = opts['layerInfo'],
-            mapInfo = opts['mapInfo'];
+    init: function (opts) {
+        var tilesetInfo = opts.tilesetInfo,
+            layerInfo = opts.layerInfo,
+            mapInfo = opts.mapInfo;
 
         var size = layerInfo.get('layerSize'),
             totalNumberOfTiles = size.width * size.height;
@@ -41,7 +45,7 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
             tex = tilesetInfo.sourceImage;
         }
 
-        @super({file: tex});
+        TMXLayer.superclass.init.call(this, {file: tex});
 
 		this.set('anchorPoint', ccp(0, 0));
 
@@ -63,7 +67,7 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
         this.set('contentSize', geo.sizeMake(this.layerSize.width * this.mapTileSize.width, this.layerSize.height * this.mapTileSize.height));
     },
 
-    calculateLayerOffset: function(pos) {
+    calculateLayerOffset: function (pos) {
         var ret = ccp(0, 0);
 
         switch (this.layerOrientation) {
@@ -81,18 +85,18 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
         return ret;
     },
 
-    setupTiles: function() {
+    setupTiles: function () {
         this.tileset.bindTo('imageSize', this.get('texture'), 'contentSize');
 
 
-        for (var y=0; y < this.layerSize.height; y++) {
-            for (var x=0; x < this.layerSize.width; x++) {
+        for (var y = 0; y < this.layerSize.height; y++) {
+            for (var x = 0; x < this.layerSize.width; x++) {
                 
                 var pos = x + this.layerSize.width * y,
                     gid = this.tiles[pos];
                 
-                if (gid != 0) {
-                    this.appendTile({gid:gid, position:ccp(x,y)});
+                if (gid !== 0) {
+                    this.appendTile({gid: gid, position: ccp(x, y)});
                     
                     // Optimization: update min and max GID rendered by the layer
                     this.minGID = Math.min(gid, this.minGID);
@@ -101,9 +105,9 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
             }
         }
     },
-    appendTile: function(opts) {
-        var gid = opts['gid'],
-            pos = opts['position'];
+    appendTile: function (opts) {
+        var gid = opts.gid,
+            pos = opts.position;
 
         var z = pos.x + pos.y * this.layerSize.width;
             
@@ -115,7 +119,7 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
         
         this.addChild({child: tile, z: 0, tag: z});
     },
-    positionAt: function(pos) {
+    positionAt: function (pos) {
         var ret = ccp(0, 0);
 
         switch (this.layerOrientation) {
@@ -132,27 +136,27 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
 
         return ret;
     },
-    positionForOrthoAt: function(pos) {
+    positionForOrthoAt: function (pos) {
         var overlap = this.mapTileSize.height - this.tileset.tileSize.height;
         var x = Math.floor(pos.x * this.mapTileSize.width + 0.49);
         var y;
         if (FLIP_Y_AXIS) {
-            y = Math.floor((this.get('layerSize').height - pos.y -1) * this.mapTileSize.height + 0.49);
+            y = Math.floor((this.get('layerSize').height - pos.y - 1) * this.mapTileSize.height + 0.49);
         } else {
             y = Math.floor(pos.y * this.mapTileSize.height + 0.49) + overlap;
         }
-        return ccp(x,y);
+        return ccp(x, y);
     },
 
-    tileGID: function(pos) {
+    tileGID: function (pos) {
         var tilesPerRow = this.get('layerSize').width,
             tilePos = pos.x + (pos.y * tilesPerRow);
 
         return this.tiles[tilePos];
     },
-    removeTile: function(pos) {
+    removeTile: function (pos) {
         var gid = this.tileGID(pos);
-        if (gid == 0) {
+        if (gid === 0) {
             // Tile is already blank
             return;
         }

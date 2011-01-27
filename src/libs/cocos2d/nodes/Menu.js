@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     Layer = require('./Layer').Layer,
     Director = require('../Director').Director,
@@ -14,7 +18,7 @@ var kMenuStateTrackingTouch = 1;
 	
 
 var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
-	mouseDelegatePriority: (-Number.MAX_VALUE +1),
+	mouseDelegatePriority: (-Number.MAX_VALUE + 1),
 	state: kMenuStateWaiting,
 	selectedItem: null,
 	opacuty: 255,
@@ -29,10 +33,10 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
      *
      * @opt {cocos.nodes.MenuItem[]} items An array of MenuItems to draw on the menu
      */
-	init: function(opts) {
-		@super;
+	init: function (opts) {
+		Menu.superclass.init.call(this, opts);
 
-		var items = opts['items'];
+		var items = opts.items;
 
 		this.set('isMouseEnabled', true);
 		
@@ -42,28 +46,28 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
 		this.anchorPoint = ccp(0.5, 0.5);
 		this.set('contentSize', s);
 
-		this.set('position', ccp(s.width /2, s.height /2));
+		this.set('position', ccp(s.width / 2, s.height / 2));
 
 
 		if (items) {
 			var z = 0;
-			util.each(items, util.callback(this, function(item) {
-				this.addChild({child: item, z:z++});
+			util.each(items, util.callback(this, function (item) {
+				this.addChild({child: item, z: z++});
 			}));
 		}
 
         
 	},
 
-	addChild: function(opts) {
-		if (!opts['child'] instanceof MenuItem) {
+	addChild: function (opts) {
+		if (!opts.child instanceof MenuItem) {
 			throw "Menu only supports MenuItem objects as children";
 		}
 
-		return @super;
+        Menu.superclass.addChild.call(this, opts);
     },
 
-    itemForMouseEvent: function(event) {
+    itemForMouseEvent: function (event) {
         var location = Director.get('sharedDirector').convertEventToCanvas(event);
 
         var children = this.get('children');
@@ -86,7 +90,7 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
         return null;
     },
 
-    mouseUp: function(event) {
+    mouseUp: function (event) {
         if (this.selectedItem) {
             this.selectedItem.set('isSelected', false);
             this.selectedItem.activate();
@@ -101,7 +105,7 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
         return false;
 
     },
-    mouseDown: function(event) {
+    mouseDown: function (event) {
         if (this.state != kMenuStateWaiting || !this.visible) {
             return false;
         }
@@ -116,7 +120,8 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
 
         return false;
     },
-    mouseDragged: function(event) {
+
+    mouseDragged: function (event) {
         var currentItem = this.itemForMouseEvent(event);
 
         if (currentItem != this.selectedItem) {

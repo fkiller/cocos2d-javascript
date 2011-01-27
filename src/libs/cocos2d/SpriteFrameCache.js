@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     geo = require('geometry'),
     Plist = require('Plist').Plist,
@@ -24,8 +28,8 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
      * @constructs
      * @singleton
      */
-    init: function() {
-        @super;
+    init: function () {
+        SpriteFrameCache.superclass.init.call(this);
 
         this.set('spriteFrames', {});
         this.set('spriteFrameAliases', {});
@@ -36,8 +40,8 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
      *
      * @param {String} opts.file The filename of a Zwoptex .plist containing the frame definiitons.
      */
-    addSpriteFrames: function(opts) {
-        var plistPath = opts['file'],
+    addSpriteFrames: function (opts) {
+        var plistPath = opts.file,
             plist = Plist.create({file: plistPath}),
             plistData = plist.get('data');
 
@@ -48,10 +52,10 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
         var format = 0,
             texturePath = null;
 
-        if (metaDataDict != null) {
+        if (metaDataDict) {
             format = metaDataDict.format;
             // Get texture path from meta data
-            texturePath = metaDataDict.textureFileName
+            texturePath = metaDataDict.textureFileName;
         }
 
         if (!texturePath) {
@@ -80,7 +84,7 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
                         oh = frameDict.originalHeight;
 
                     // check ow/oh
-                    if(!ow || !oh) {
+                    if (!ow || !oh) {
                         //console.log("cocos2d: WARNING: originalWidth/Height not found on the CCSpriteFrame. AnchorPoint won't work as expected. Regenerate the .plist");
                     }
 
@@ -135,7 +139,7 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
                     break;
 
                 default:
-                    throw "Unsupported Zwoptex format: " + format
+                    throw "Unsupported Zwoptex format: " + format;
                 }
 
                 // Add sprite frame
@@ -150,8 +154,8 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
      * @param {String} opts.name The name of the sprite frame
      * @returns {cocos.SpriteFrame} The sprite frame
      */
-    getSpriteFrame: function(opts) {
-        var name = opts['name'];
+    getSpriteFrame: function (opts) {
+        var name = opts.name;
 
         var frame = this.get('spriteFrames')[name];
 
@@ -181,7 +185,7 @@ util.extend(SpriteFrameCache, /** @lends cocos.SpriteFrameCache */{
      * @name cocos.SpriteFrameCache.sharedSpriteFrameCache
      * @type cocos.SpriteFrameCache
      */
-    get_sharedSpriteFrameCache: function(key) {
+    get_sharedSpriteFrameCache: function (key) {
         if (!this._instance) {
             this._instance = this.create();
         }

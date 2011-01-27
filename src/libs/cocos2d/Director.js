@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray FLIP_Y_AXIS*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     geo = require('geometry'),
     ccp = geo.ccp,
@@ -20,7 +24,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
     nextDeltaTimeZero: false,
     lastUpdate: 0,
 
-    _nextScene:null,
+    _nextScene: null,
 
     /**
      * <p>Creates and handles the main view and manages how and when to execute the
@@ -34,8 +38,8 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      * @extends BObject
      * @singleton
      */
-    init: function() {
-        @super;
+    init: function () {
+        Director.superclass.init.call(this);
 
         this.set('sceneStack', []);
     },
@@ -45,7 +49,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      *
      * @param {HTMLElement} view Any HTML element to add the application to
      */
-    attachInView: function(view) {
+    attachInView: function (view) {
         if (!view.tagName) {
             throw "Director.attachInView must be given a HTML DOM Node";
         }
@@ -86,7 +90,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
                 evt.locationInCanvas = self.convertEventToCanvas(evt);
 
                 eventDispatcher.mouseDragged(evt);
-            };
+            }
             function mouseUp(evt) {
                 evt.locationInWindow = ccp(evt.clientX, evt.clientY);
                 evt.locationInCanvas = self.convertEventToCanvas(evt);
@@ -96,7 +100,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
 
 
                 eventDispatcher.mouseUp(evt);
-            };
+            }
 
             document.body.addEventListener('mousemove', mouseDragged, false);
             document.body.addEventListener('mouseup',   mouseUp,   false);
@@ -115,10 +119,10 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
         // Keyboard events
         function keyDown(evt) {
             this._keysDown = this._keysDown || {};
-            eventDispatcher.keyDown(evt)
+            eventDispatcher.keyDown(evt);
         }
         function keyUp(evt) {
-            eventDispatcher.keyUp(evt)
+            eventDispatcher.keyUp(evt);
         }
         /*
         function keyPress(evt) {
@@ -139,13 +143,13 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      *
      * @param {cocos.Scene} scene The scene to start
      */
-    runWithScene: function(scene) {
+    runWithScene: function (scene) {
         if (!(scene instanceof Scene)) {
             throw "Director.runWithScene must be given an instance of Scene";
         }
 
         if (this._runningScene) {
-            throw "You can't run an scene if another Scene is running. Use replaceScene or pushScene instead"
+            throw "You can't run an scene if another Scene is running. Use replaceScene or pushScene instead";
         }
 
         this.pushScene(scene);
@@ -158,7 +162,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      *
      * @param {cocos.Scene} scene The scene to replace with
      */
-    replaceScene: function(scene) {
+    replaceScene: function (scene) {
         var index = this.sceneStack.length;
 
         this._sendCleanupToScene = true;
@@ -173,7 +177,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      * the stack the execution is terminated. ONLY call it if there is a
      * running scene.
      */
-    popScene: function() {
+    popScene: function () {
     },
 
     /**
@@ -184,7 +188,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      *
      * @param {cocos.Scene} scene The scene to add to the stack
      */
-    pushScene: function(scene) {
+    pushScene: function (scene) {
         this._nextScene = scene;
     },
 
@@ -192,7 +196,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      * The main loop is triggered again. Call this function only if
      * cocos.Directory#stopAnimation was called earlier.
      */
-    startAnimation: function() {
+    startAnimation: function () {
         var animationInterval = 1.0 / this.get('maxFrameRate');
         this._animationTimer = setInterval(util.callback(this, 'drawScene'), animationInterval * 1000);
     },
@@ -202,15 +206,15 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      * triggered anymore. If you want to pause your animation call
      * cocos.Directory#pause instead.
      */
-    stopAnimation: function() {
+    stopAnimation: function () {
     },
 
     /**
      * Calculate time since last call
      * @private
      */
-    calculateDeltaTime: function() {
-        var now = (new Date).getTime() /1000;
+    calculateDeltaTime: function () {
+        var now = (new Date()).getTime() / 1000;
 
         if (this.nextDeltaTimeZero) {
             this.dt = 0;
@@ -226,7 +230,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      * The main run loop
      * @private
      */
-    drawScene: function() {
+    drawScene: function () {
         this.calculateDeltaTime();
 
         if (!this.isPaused) {
@@ -255,7 +259,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      * Initialises the next scene
      * @private
      */
-    setNextScene: function() {
+    setNextScene: function () {
         // TODO transitions
 
         if (this._runningScene) {
@@ -272,12 +276,12 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
         this._runningScene.onEnter();
     },
 
-    convertEventToCanvas: function(evt) {
+    convertEventToCanvas: function (evt) {
         var x = this.canvas.offsetLeft - document.documentElement.scrollLeft,
             y = this.canvas.offsetTop - document.documentElement.scrollTop;
 
         var o = this.canvas;
-        while (o = o.offsetParent) {
+        while ((o = o.offsetParent)) {
             x += o.offsetLeft - o.scrollLeft;
             y += o.offsetTop - o.scrollTop;
         }
@@ -290,7 +294,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
         return p;
     },
 
-    showFPS: function() {
+    showFPS: function () {
         if (!this._fpsLabel) {
             var Label = require('./nodes/Label').Label;
             this._fpsLabel = Label.create({string: '', fontSize: 16});
@@ -303,12 +307,12 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
         this._frames++;
         this._accumDt += this.get('dt');
         
-        if (this._accumDt > 1.0/3.0)  {
+        if (this._accumDt > 1.0 / 3.0)  {
             var frameRate = this._frames / this._accumDt;
             this._frames = 0;
             this._accumDt = 0;
 
-            this._fpsLabel.set('string', 'FPS: ' + (Math.round(frameRate*100)/100).toString());
+            this._fpsLabel.set('string', 'FPS: ' + (Math.round(frameRate * 100) / 100).toString());
         }
 		
 
@@ -330,7 +334,7 @@ util.extend(Director, /** @lends cocos.Director */{
      * @getter sharedDirector
      * @type cocos.Director
      */
-    get_sharedDirector: function(key) {
+    get_sharedDirector: function (key) {
         if (!this._instance) {
             this._instance = this.create();
         }

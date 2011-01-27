@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     console = require('system').console,
     Timer = require('./Scheduler').Timer,
@@ -24,8 +28,8 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
      * @extends BObject
      * @singleton
      */
-    init: function() {
-        @super;
+    init: function () {
+        ActionManager.superclass.init.call(this);
 
         Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
         this.targets = [];
@@ -40,22 +44,22 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
      *
      * @opt {cocos.nodes.Node} target Node to run the action on
      */
-    addAction: function(opts) {
+    addAction: function (opts) {
 
-        var targetID = opts['target'].get('id');
+        var targetID = opts.target.get('id');
         var element = this.targets[targetID];
 
         if (!element) {
             element = this.targets[targetID] = {
                 paused: false,
-                target: opts['target'],
+                target: opts.target,
                 actions: []
             };
         }
 
-        element.actions.push(opts['action']);
+        element.actions.push(opts.action);
 
-        opts['action'].startWithTarget(opts['target']);
+        opts.action.startWithTarget(opts.target);
     },
 
     /**
@@ -63,7 +67,7 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
      *
      * @param {cocos.actions.Action} action Action to remove
      */
-    removeAction: function(action) {
+    removeAction: function (action) {
         var targetID = action.originalTarget.get('id'),
             element = this.targets[targetID];
 
@@ -84,7 +88,7 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
         element.actions[actionIndex] = null;
         element.actions.splice(actionIndex, 1); // Delete array item
 
-        if (element.actions.length == 0) {
+        if (element.actions.length === 0) {
             if (this.currentTarget == element) {
                 this.set('currentTargetSalvaged', true);
             }
@@ -97,7 +101,7 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
      *
      * @param {cocos.nodes.Node} target Node to remove all actions for
      */
-    removeAllActionsFromTarget: function(target) {
+    removeAllActionsFromTarget: function (target) {
         var targetID = target.get('id');
 
         var element = this.targets[targetID];
@@ -106,22 +110,26 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
         }
 
         // Delete everything in array but don't replace it incase something else has a reference
-        element.actions.splice(0, element.actions.length-1);
+        element.actions.splice(0, element.actions.length - 1);
     },
 
     /**
      * @private
      */
-    update: function(dt) {
+    update: function (dt) {
         var self = this;
-        util.each(this.targets, function(currentTarget, i) {
+        util.each(this.targets, function (currentTarget, i) {
 
-            if (!currentTarget) return;
+            if (!currentTarget) {
+                return;
+            }
             self.currentTarget = currentTarget;
 
             if (!currentTarget.paused) {
-                util.each(currentTarget.actions, function(currentAction, j) {
-                    if (!currentAction) return;
+                util.each(currentTarget.actions, function (currentAction, j) {
+                    if (!currentAction) {
+                        return;
+                    }
 
                     currentTarget.currentAction = currentAction;
                     currentTarget.currentActionSalvaged = false;
@@ -141,19 +149,17 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
                 });
             }
 
-            if (self.currentTargetSalvaged && currentTarget.actions.length == 0) {
+            if (self.currentTargetSalvaged && currentTarget.actions.length === 0) {
                 self.targets[i] = null;
                 delete self.targets[i];
             }
         });
-
-        delete self;
     },
 
-    pauseTarget: function(target) {
+    pauseTarget: function (target) {
     },
 
-	resumeTarget: function(target) {
+	resumeTarget: function (target) {
 		// TODO
 	}
 });
@@ -164,7 +170,7 @@ util.extend(ActionManager, /** @lends cocos.ActionManager */{
      * @getter sharedManager
      * @type cocos.ActionManager
      */
-    get_sharedManager: function(key) {
+    get_sharedManager: function (key) {
         if (!this._instance) {
             this._instance = this.create();
         }

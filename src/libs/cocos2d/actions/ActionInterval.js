@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     act = require('./Action'),
     ccp = require('geometry').ccp;
@@ -25,11 +29,11 @@ var ActionInterval = act.FiniteTimeAction.extend(/** @lends cocos.actions.Action
      *
      * @opt {Float} duration Number of seconds to run action for
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        ActionInterval.superclass.init.call(this, opts);
 
-        var dur = opts['duration'] || 0;
-        if (dur == 0) {
+        var dur = opts.duration || 0;
+        if (dur === 0) {
             dur = 0.0000001;
         }
 
@@ -38,11 +42,11 @@ var ActionInterval = act.FiniteTimeAction.extend(/** @lends cocos.actions.Action
         this._firstTick = true;
     },
 
-    get_isDone: function() {
+    get_isDone: function () {
         return (this.elapsed >= this.duration);
     },
 
-    step: function(dt) {
+    step: function (dt) {
         if (this._firstTick) {
             this._firstTick = false;
             this.elapsed = 0;
@@ -50,18 +54,18 @@ var ActionInterval = act.FiniteTimeAction.extend(/** @lends cocos.actions.Action
             this.elapsed += dt;
         }
 
-        this.update(Math.min(1, this.elapsed/this.duration));
+        this.update(Math.min(1, this.elapsed / this.duration));
     },
 
-    startWithTarget: function(target) {
-        @super;
+    startWithTarget: function (target) {
+        ActionInterval.superclass.startWithTarget.call(this, target);
 
         this.elapsed = 0.0;
         this._firstTick = true;
     },
 
-    reverse: function() {
-        throw "Reverse Action not implemented"
+    reverse: function () {
+        throw "Reverse Action not implemented";
     }
 });
 
@@ -128,21 +132,21 @@ var ScaleTo = ActionInterval.extend(/** @lends cocos.actions.ScaleTo# */{
      * @opt {Float} [scaleX] Size to scale width of Node to
      * @opt {Float} [scaleY] Size to scale height of Node to
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        ScaleTo.superclass.init.call(this, opts);
 
-        if (opts['scale'] != undefined) {
-            this.endScaleX = this.endScaleY = opts['scale'];
+        if (opts.scale !== undefined) {
+            this.endScaleX = this.endScaleY = opts.scale;
         } else {
-            this.endScaleX = opts['scaleX'];
-            this.endScaleY = opts['scaleY'];
+            this.endScaleX = opts.scaleX;
+            this.endScaleY = opts.scaleY;
         }
 
 
     },
 
-    startWithTarget: function(target) {
-        @super;
+    startWithTarget: function (target) {
+        ScaleTo.superclass.startWithTarget.call(this, target);
 
         this.startScaleX = this.target.get('scaleX');
         this.startScaleY = this.target.get('scaleY');
@@ -150,7 +154,7 @@ var ScaleTo = ActionInterval.extend(/** @lends cocos.actions.ScaleTo# */{
         this.deltaY = this.endScaleY - this.startScaleY;
     },
 
-    update: function(t) {
+    update: function (t) {
         if (!this.target) {
             return;
         }
@@ -173,19 +177,19 @@ var ScaleBy = ScaleTo.extend(/** @lends cocos.actions.ScaleBy# */{
      * @opt {Float} [scaleX] Size to scale width of Node by
      * @opt {Float} [scaleY] Size to scale height of Node by
      */
-    init: function() {
-        @super;
+    init: function (opts) {
+        ScaleBy.superclass.init.call(this, opts);
     },
 
-    startWithTarget: function(target) {
-        @super;
+    startWithTarget: function (target) {
+        ScaleBy.superclass.startWithTarget.call(this, target);
 
         this.deltaX = this.startScaleX * this.endScaleX - this.startScaleX;
         this.deltaY = this.startScaleY * this.endScaleY - this.startScaleY;
     },
 
-    reverse: function() {
-        return ScaleBy.create({duration: this.duration, scaleX:1/this.endScaleX, scaleY:1/this.endScaleY});
+    reverse: function () {
+        return ScaleBy.create({duration: this.duration, scaleX: 1 / this.endScaleX, scaleY: 1 / this.endScaleY});
     }
 });
 
@@ -220,14 +224,14 @@ var RotateTo = ActionInterval.extend(/** @lends cocos.actions.RotateTo# */{
      * @opt {Float} duration Number of seconds to run action for
      * @opt {Float} angle Angle in degrees to rotate to
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        RotateTo.superclass.init.call(this, opts);
 
-        this.dstAngle = opts['angle'];
+        this.dstAngle = opts.angle;
     },
 
-    startWithTarget: function(target) {
-        @super;
+    startWithTarget: function (target) {
+        RotateTo.superclass.startWithTarget.call(this, target);
 
         this.startAngle = target.get('rotation');
 
@@ -245,7 +249,7 @@ var RotateTo = ActionInterval.extend(/** @lends cocos.actions.RotateTo# */{
         }
     },
 
-    update: function(t) {
+    update: function (t) {
         this.target.set('rotation', this.startAngle + this.diffAngle * t);
     }
 });
@@ -268,27 +272,27 @@ var RotateBy = RotateTo.extend(/** @lends cocos.actions.RotateBy# */{
      * @opt {Float} duration Number of seconds to run action for
      * @opt {Float} angle Angle in degrees to rotate by
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        RotateBy.superclass.init.call(this, opts);
 
-        this.angle = opts['angle'];
+        this.angle = opts.angle;
     },
 
-    startWithTarget: function(target) {
-        @super;
+    startWithTarget: function (target) {
+        RotateBy.superclass.startWithTarget.call(this, target);
 
         this.startAngle = this.target.get('rotation');
     },
 
-    update: function(t) {
-        this.target.set('rotation', this.startAngle + this.angle *t);
+    update: function (t) {
+        this.target.set('rotation', this.startAngle + this.angle * t);
     },
 
-    reverse: function() {
+    reverse: function () {
         return RotateBy.create({duration: this.duration, angle: -this.angle});
     },
 
-    copy: function() {
+    copy: function () {
         return RotateBy.create({duration: this.duration, angle: this.angle});
     }
 });
@@ -324,33 +328,34 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
      * @opt {Float} duration Number of seconds to run action for
      * @opt {cocos.actions.Action[]} Array of actions to run in sequence
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        Sequence.superclass.init.call(this, opts);
 
-        this.actions = util.copy(opts['actions']);
+        this.actions = util.copy(opts.actions);
         this.actionSequence = {};
         
-        util.each(this.actions, util.callback(this, function(action) {
+        util.each(this.actions, util.callback(this, function (action) {
             this.duration += action.duration;
         }));
     },
 
-    startWithTarget: function(target) {
-        @super;
+    startWithTarget: function (target) {
+        Sequence.superclass.startWithTarget.call(this, target);
+
         this.currentActionIndex = 0;
         this.currentActionEndDuration = this.actions[0].get('duration');
         this.actions[0].startWithTarget(this.target);
     },
 
-    stop: function() {
-        util.each(this.actions, function(action) {
+    stop: function () {
+        util.each(this.actions, function (action) {
             action.stop();
         });
 
-        @super;
+        Sequence.superclass.stop.call(this);
     },
 
-    step: function(dt) {
+    step: function (dt) {
         if (this._firstTick) {
             this._firstTick = false;
             this.elapsed = 0;
@@ -359,10 +364,10 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
         }
 
         this.actions[this.currentActionIndex].step(dt);
-        this.update(Math.min(1, this.elapsed/this.duration));
+        this.update(Math.min(1, this.elapsed / this.duration));
     },
 
-    update: function(dt) {
+    update: function (dt) {
         // Action finished onto the next one
         if (this.elapsed > this.currentActionEndDuration) {
             var previousAction = this.actions[this.currentActionIndex];
@@ -399,38 +404,38 @@ var Animate = ActionInterval.extend(/** @lends cocos.actions.Animate# */{
      * @opt {cocos.Animation} animation Animation to run
      * @opt {Boolean} [restoreOriginalFrame=true] Return to first frame when finished
      */
-    init: function(opts) {
-        this.animation = opts['animation'];
-        this.restoreOriginalFrame = opts['restoreOriginalFrame'] !== false;
-        opts['duration'] = this.animation.frames.length * this.animation.delay;
+    init: function (opts) {
+        this.animation = opts.animation;
+        this.restoreOriginalFrame = opts.restoreOriginalFrame !== false;
+        opts.duration = this.animation.frames.length * this.animation.delay;
 
-        @super;
+        Animate.superclass.init.call(this, opts);
     },
 
-    startWithTarget: function(target) {
-        @super;
+    startWithTarget: function (target) {
+        Animate.superclass.startWithTarget.call(this, target);
 
         if (this.restoreOriginalFrame) {
             this.set('origFrame', this.target.get('displayedFrame'));
         }
     },
 
-    stop: function() {
+    stop: function () {
         if (this.target && this.restoreOriginalFrame) {
             var sprite = this.target;
             sprite.set('displayFrame', this.origFrame);
         }
 
-        @super;
+        Animate.superclass.stop.call(this);
     },
 
-    update: function(t) {
+    update: function (t) {
         var frames = this.animation.get('frames'),
             numberOfFrames = frames.length,
             idx = Math.floor(t * numberOfFrames);
 
         if (idx >= numberOfFrames) {
-            idx = numberOfFrames -1;
+            idx = numberOfFrames - 1;
         }
 
         var sprite = this.target;
@@ -439,7 +444,7 @@ var Animate = ActionInterval.extend(/** @lends cocos.actions.Animate# */{
         }
     },
 
-    copy: function() {
+    copy: function () {
         return Animate.create({animation: this.animation, restoreOriginalFrame: this.restoreOriginalFrame});
     }
 

@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray FLIP_Y_AXIS*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
 	Texture2D = require('./Texture2D').Texture2D;
 
@@ -25,11 +29,11 @@ var TextureAtlas = BObject.extend(/** @lends cocos.TextureAtlas# */{
      * @opt {Texture2D|HTMLImageElement} [data] Image data to read from
      * @opt {CanvasElement} [canvas] A canvas to use as a texture
      */
-	init: function(opts) {
-		var file = opts['file'],
-			data = opts['data'],
-			texture = opts['texture'],
-			canvas = opts['canvas'];
+	init: function (opts) {
+		var file = opts.file,
+			data = opts.data,
+			texture = opts.texture,
+			canvas = opts.canvas;
 
         if (canvas) {
             // If we've been given a canvas element then we'll use that for our image
@@ -43,28 +47,30 @@ var TextureAtlas = BObject.extend(/** @lends cocos.TextureAtlas# */{
 		this.quads = [];
 	},
 
-	insertQuad: function(opts) {
-		var quad = opts['quad'],
-			index = opts['index'] || 0;
+	insertQuad: function (opts) {
+		var quad = opts.quad,
+			index = opts.index || 0;
 
 		this.quads.splice(index, 0, quad);
 	},
-	removeQuad: function(opts) {
-		var index = opts['index'];
+	removeQuad: function (opts) {
+		var index = opts.index;
 
 		this.quads.splice(index, 1);
 	},
 
 
-	drawQuads: function(ctx) {
-		util.each(this.quads, util.callback(this, function(quad) {
-			if (!quad) return;
+	drawQuads: function (ctx) {
+		util.each(this.quads, util.callback(this, function (quad) {
+            if (!quad) {
+                return;
+            }
 
 			this.drawQuad(ctx, quad);
 		}));
 	},
 
-	drawQuad: function(ctx, quad) {
+	drawQuad: function (ctx, quad) {
         var sx = quad.textureRect.origin.x,
             sy = quad.textureRect.origin.y,
             sw = quad.textureRect.size.width, 
@@ -108,4 +114,4 @@ var TextureAtlas = BObject.extend(/** @lends cocos.TextureAtlas# */{
 	}
 });
 
-exports.TextureAtlas = TextureAtlas
+exports.TextureAtlas = TextureAtlas;

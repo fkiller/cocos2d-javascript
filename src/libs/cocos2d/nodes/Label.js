@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray FLIP_Y_AXIS*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     console = require('system').console,
     Director = require('../Director').Director,
@@ -21,10 +25,10 @@ var Label = Node.extend(/** @lends cocos.nodes.Label# */{
      * @opt {String} [fontName="Helvetica"] The name of the font to use
      * @opt {String} [fontColor="white"] The color of the text
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        Label.superclass.init.call(this, opts);
 
-        util.each('fontSize fontName fontColor string'.w(), util.callback(this, function(name) {
+        util.each('fontSize fontName fontColor string'.w(), util.callback(this, function (name) {
             // Set property on init
             if (opts[name]) {
                 this.set(name, opts[name]);
@@ -41,11 +45,11 @@ var Label = Node.extend(/** @lends cocos.nodes.Label# */{
      * @getter font
      * @type String
      */
-    get_font: function(key) {
+    get_font: function (key) {
         return this.get('fontSize') + 'px ' + this.get('fontName');
     },
 
-    draw: function(context) {
+    draw: function (context) {
         if (FLIP_Y_AXIS) {
             context.save();
 
@@ -72,7 +76,7 @@ var Label = Node.extend(/** @lends cocos.nodes.Label# */{
     /**
      * @private
      */
-    _updateLabelContentSize: function() {
+    _updateLabelContentSize: function () {
         var ctx = Director.get('sharedDirector').get('context');
         var size = {width: 0, height: this.get('fontSize')};
 

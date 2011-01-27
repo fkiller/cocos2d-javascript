@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     console = require('system').console,
     geo = require('geometry'),
@@ -26,12 +30,12 @@ var TMXTiledMap = Node.extend(/** @lends cocos.nodes.TMXTiledMap# */{
      *
      * @opt {String} file The file path of the TMX map to load
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        TMXTiledMap.superclass.init.call(this, opts);
 
         this.set('anchorPoint', ccp(0, 0));
 
-        var mapInfo = TMXMapInfo.create(opts['file']);
+        var mapInfo = TMXMapInfo.create(opts.file);
 
         this.mapSize        = mapInfo.get('mapSize');
         this.tileSize       = mapInfo.get('tileSize');
@@ -42,10 +46,10 @@ var TMXTiledMap = Node.extend(/** @lends cocos.nodes.TMXTiledMap# */{
 
         // Add layers to map
         var idx = 0;
-        util.each(mapInfo.layers, util.callback(this, function(layerInfo) {
+        util.each(mapInfo.layers, util.callback(this, function (layerInfo) {
             if (layerInfo.get('visible')) {
                 var child = this.parseLayer({layerInfo: layerInfo, mapInfo: mapInfo});
-                this.addChild({child:child, z:idx, tag:idx});
+                this.addChild({child: child, z: idx, tag: idx});
 
                 var childSize   = child.get('contentSize');
                 var currentSize = this.get('contentSize');
@@ -58,37 +62,38 @@ var TMXTiledMap = Node.extend(/** @lends cocos.nodes.TMXTiledMap# */{
         }));
     },
     
-    parseLayer: function(opts) {
+    parseLayer: function (opts) {
         var tileset = this.tilesetForLayer(opts);
-        var layer = TMXLayer.create({tilesetInfo: tileset, layerInfo: opts['layerInfo'], mapInfo: opts['mapInfo']});
+        var layer = TMXLayer.create({tilesetInfo: tileset, layerInfo: opts.layerInfo, mapInfo: opts.mapInfo});
 
         layer.setupTiles();
 
         return layer;
     },
 
-    tilesetForLayer: function(opts) {
-        var layerInfo = opts['layerInfo'],
-            mapInfo = opts['mapInfo'],
+    tilesetForLayer: function (opts) {
+        var layerInfo = opts.layerInfo,
+            mapInfo = opts.mapInfo,
             size = layerInfo.get('layerSize');
 
         // Reverse loop
-        for (var i = mapInfo.tilesets.length -1; i >= 0; i--) {
-            var tileset = mapInfo.tilesets[i];
+        var tileset;
+        for (var i = mapInfo.tilesets.length - 1; i >= 0; i--) {
+            tileset = mapInfo.tilesets[i];
 
-            for (var y=0; y < size.height; y++ ) {
-                for (var x=0; x < size.width; x++ ) {
+            for (var y = 0; y < size.height; y++) {
+                for (var x = 0; x < size.width; x++) {
                     var pos = x + size.width * y, 
                         gid = layerInfo.tiles[pos];
 
-                    if (gid != 0 && gid >= tileset.firstGID) {
+                    if (gid !== 0 && gid >= tileset.firstGID) {
                         return tileset;
                     }
                 } // for (var x
             } // for (var y
         } // for (var i
 
-        console.warn("cocos2d: Warning: TMX Layer '%s' has no tiles", layerInfo.name)
+        console.warn("cocos2d: Warning: TMX Layer '%s' has no tiles", layerInfo.name);
         return tileset;
     }
 });

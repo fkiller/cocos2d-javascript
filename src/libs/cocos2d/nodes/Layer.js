@@ -1,6 +1,10 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var Node = require('./Node').Node,
     util = require('util'),
-    event = require('event'),
+    evt = require('event'),
     Director = require('../Director').Director,
     ccp    = require('geometry').ccp,
     EventDispatcher = require('../EventDispatcher').EventDispatcher;
@@ -18,8 +22,8 @@ var Layer = Node.extend(/** @lends cocos.nodes.Layer# */{
      * @constructs
      * @extends cocos.nodes.Node
      */
-    init: function() {
-        @super;
+    init: function () {
+        Layer.superclass.init.call(this);
 
         var s = Director.get('sharedDirector').get('winSize');
 
@@ -27,10 +31,10 @@ var Layer = Node.extend(/** @lends cocos.nodes.Layer# */{
         this.anchorPoint = ccp(0.5, 0.5);
         this.set('contentSize', s);
 
-        event.addListener(this, 'ismouseenabled_changed', util.callback(this, function() {
+        evt.addListener(this, 'ismouseenabled_changed', util.callback(this, function () {
             if (this.isRunning) {
                 if (this.isMouseEnabled) {
-                    EventDispatcher.get('sharedDispatcher').addMouseDelegate({delegate: this, priority:this.get('mouseDelegatePriority')});
+                    EventDispatcher.get('sharedDispatcher').addMouseDelegate({delegate: this, priority: this.get('mouseDelegatePriority')});
                 } else {
                     EventDispatcher.get('sharedDispatcher').removeMouseDelegate({delegate: this});
                 }
@@ -38,10 +42,10 @@ var Layer = Node.extend(/** @lends cocos.nodes.Layer# */{
         }));
 
 
-        event.addListener(this, 'iskeyboardenabled_changed', util.callback(this, function() {
+        evt.addListener(this, 'iskeyboardenabled_changed', util.callback(this, function () {
             if (this.isRunning) {
                 if (this.isKeyboardEnabled) {
-                    EventDispatcher.get('sharedDispatcher').addKeyboardDelegate({delegate: this, priority:this.get('keyboardDelegatePriority')});
+                    EventDispatcher.get('sharedDispatcher').addKeyboardDelegate({delegate: this, priority: this.get('keyboardDelegatePriority')});
                 } else {
                     EventDispatcher.get('sharedDispatcher').removeKeyboardDelegate({delegate: this});
                 }
@@ -49,18 +53,18 @@ var Layer = Node.extend(/** @lends cocos.nodes.Layer# */{
         }));
     },
 
-    onEnter: function() {
+    onEnter: function () {
         if (this.isMouseEnabled) {
-            EventDispatcher.get('sharedDispatcher').addMouseDelegate({delegate: this, priority:this.get('mouseDelegatePriority')});
+            EventDispatcher.get('sharedDispatcher').addMouseDelegate({delegate: this, priority: this.get('mouseDelegatePriority')});
         }
         if (this.isKeyboardEnabled) {
-            EventDispatcher.get('sharedDispatcher').addKeyboardDelegate({delegate: this, priority:this.get('keyboardDelegatePriority')});
+            EventDispatcher.get('sharedDispatcher').addKeyboardDelegate({delegate: this, priority: this.get('keyboardDelegatePriority')});
         }
 
-        @super;
+        Layer.superclass.onEnter.call(this);
     },
 
-    onExit: function() {
+    onExit: function () {
         if (this.isMouseEnabled) {
             EventDispatcher.get('sharedDispatcher').removeMouseDelegate({delegate: this});
         }
@@ -68,7 +72,7 @@ var Layer = Node.extend(/** @lends cocos.nodes.Layer# */{
             EventDispatcher.get('sharedDispatcher').removeKeyboardDelegate({delegate: this});
         }
 
-        @super;
+        Layer.superclass.onExit.call(this);
     }
 });
 

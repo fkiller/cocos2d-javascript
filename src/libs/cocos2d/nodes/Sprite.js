@@ -1,5 +1,9 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
-    event = require('event'),
+    evt = require('event'),
     Director = require('../Director').Director,
     TextureAtlas = require('../TextureAtlas').TextureAtlas,
     Node = require('./Node').Node,
@@ -28,17 +32,17 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
      * @opt {String} file Path to image to use as sprite atlas
      * @opt {Rect} [rect] The rect in the sprite atlas image file to use as the sprite
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        Sprite.superclass.init.call(this, opts);
 
         opts = opts || {};
 
-        var file         = opts['file'],
-            textureAtlas = opts['textureAtlas'],
-            texture      = opts['texture'],
-            frame        = opts['frame'],
-            spritesheet  = opts['spritesheet'],
-            rect         = opts['rect'];
+        var file         = opts.file,
+            textureAtlas = opts.textureAtlas,
+            texture      = opts.texture,
+            frame        = opts.frame,
+            spritesheet  = opts.spritesheet,
+            rect         = opts.rect;
 
         this.set('offsetPosition', ccp(0, 0));
         this.set('unflippedOffsetPositionFromCenter', ccp(0, 0));
@@ -49,10 +53,10 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
             rect    = frame.get('rect');
         }
 
-        util.each(['scale', 'scaleX', 'scaleY', 'rect', 'flipX', 'flipY'], util.callback(this, function(key) {
-            event.addListener(this, key.toLowerCase() + '_changed', util.callback(this, this._updateQuad));
+        util.each(['scale', 'scaleX', 'scaleY', 'rect', 'flipX', 'flipY'], util.callback(this, function (key) {
+            evt.addListener(this, key.toLowerCase() + '_changed', util.callback(this, this._updateQuad));
         }));
-        event.addListener(this, 'textureatlas_changed', util.callback(this, this._updateTextureQuad));
+        evt.addListener(this, 'textureatlas_changed', util.callback(this, this._updateTextureQuad));
 
         if (file || texture) {
             textureAtlas = TextureAtlas.create({file: file, texture: texture});
@@ -64,7 +68,7 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
         }
 
         if (!rect && textureAtlas) {
-            rect = {origin: ccp(0,0), size:{width: textureAtlas.texture.size.width, height: textureAtlas.texture.size.height}};
+            rect = {origin: ccp(0, 0), size: {width: textureAtlas.texture.size.width, height: textureAtlas.texture.size.height}};
         }
 
         if (rect) {
@@ -87,9 +91,9 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
     /**
      * @private
      */
-    _updateTextureQuad: function(obj, key, texture, oldTexture) {
+    _updateTextureQuad: function (obj, key, texture, oldTexture) {
         if (oldTexture) {
-            oldTexture.removeQuad({quad: this.get('quad')})
+            oldTexture.removeQuad({quad: this.get('quad')});
         }
 
         if (texture) {
@@ -101,7 +105,7 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
      * @setter textureCoords
      * @type geometry.Rect
      */
-    set_textureCoords: function(rect) {
+    set_textureCoords: function (rect) {
         var quad = this.get('quad');
         if (!quad) {
             quad = {
@@ -119,10 +123,10 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
      * @setter textureRect
      * @type geometry.Rect
      */
-    set_textureRect: function(opts) {
-        var rect = opts['rect'],
-            rotated = !!opts['rotated'],
-            untrimmedSize = opts['untrimmedSize'] || rect.size;
+    set_textureRect: function (opts) {
+        var rect = opts.rect,
+            rotated = !!opts.rotated,
+            untrimmedSize = opts.untrimmedSize || rect.size;
 
         this.set('contentSize', untrimmedSize);
         this.set('rect', util.copy(rect));
@@ -160,7 +164,7 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
     /**
      * @private
      */
-    _updateQuad: function() {
+    _updateQuad: function () {
         if (!this.quad) {
             this.quad = {
                 drawRect: geo.rectMake(0, 0, 0, 0), 
@@ -195,9 +199,9 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
         }
     },
 
-    updateTransform: function(ctx) {
+    updateTransform: function (ctx) {
         if (!this.useSpriteSheet) {
-            throw "updateTransform is only valid when Sprite is being rendered using a SpriteSheet"
+            throw "updateTransform is only valid when Sprite is being rendered using a SpriteSheet";
         }
 
         if (!this.visible) {
@@ -210,24 +214,24 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
         this.quad.drawRect.origin = {
             x: this.position.x - this.anchorPointInPixels.x * this.scaleX,
             y: this.position.y - this.anchorPointInPixels.y * this.scaleY
-        }
+        };
         this.quad.drawRect.size = {
             width: this.rect.size.width * this.scaleX,
             height: this.rect.size.height * this.scaleY
-        }
+        };
 
         this.set('dirty', false);
         this.set('recursiveDirty', false);
     },
 
-    draw: function(ctx) {
+    draw: function (ctx) {
         if (!this.quad) {
             return;
         }
         this.get('textureAtlas').drawQuad(ctx, this.quad);
     },
 
-    isFrameDisplayed: function(frame) {
+    isFrameDisplayed: function (frame) {
         if (!this.rect || !this.textureAtlas) {
             return false;
         }
@@ -239,7 +243,7 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
      * @setter displayFrame
      * @type cocos.SpriteFrame
      */
-    set_displayFrame: function(frame) {
+    set_displayFrame: function (frame) {
         if (!frame) {
             delete this.quad;
             return;

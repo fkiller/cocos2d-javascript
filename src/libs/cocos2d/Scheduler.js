@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util');
 
 /** @ignore */
@@ -33,18 +37,18 @@ var Timer = BObject.extend(/** @lends cocos.Timer# */{
      * @opt {Function} callback The function to run at each interval
      * @opt {Float} interval Number of milliseconds to wait between each exectuion of callback
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        Timer.superclass.init(this, opts);
 
-        this.set('callback', opts['callback']);
-        this.set('interval', opts['interval'] || 0);
+        this.set('callback', opts.callback);
+        this.set('interval', opts.interval || 0);
         this.set('elapsed', -1);
     },
 
     /**
      * @private
      */
-    update: function(dt) {
+    update: function (dt) {
         if (this.elapsed == -1) {
             this.elapsed = 0;
         } else {
@@ -76,7 +80,7 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
      * @singleton
      * @private
      */
-    init: function() {
+    init: function () {
         this.updates0 = [];
         this.updatesNeg = [];
         this.updatesPos = [];
@@ -84,16 +88,16 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         this.hashForMethods = {};
     },
 
-    schedule: function(opts) {
-        var target   = opts['target'],
-            method   = opts['method'],
-            interval = opts['interval'],
-            paused   = opts['paused'] || false;
+    schedule: function (opts) {
+        var target   = opts.target,
+            method   = opts.method,
+            interval = opts.interval,
+            paused   = opts.paused || false;
 
         var element = this.hashForMethods[target.get('id')];
 
         if (!element) {
-            element = new HashMethodEntry;
+            element = new HashMethodEntry();
             this.hashForMethods[target.get('id')] = element;
             element.target = target;
             element.paused = paused;
@@ -105,16 +109,16 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         element.timers.push(timer);
     },
 
-    scheduleUpdate: function(opts) {
-        var target   = opts['target'],
-            priority = opts['priority'],
-            paused   = opts['paused'];
+    scheduleUpdate: function (opts) {
+        var target   = opts.target,
+            priority = opts.priority,
+            paused   = opts.paused;
 
         var i, len;
         var entry = {target: target, priority: priority, paused: paused};
         var added = false;
 
-        if (priority == 0) {
+        if (priority === 0) {
             this.updates0.push(entry);
         } else if (priority < 0) {
             for (i = 0, len = this.updatesNeg.length; i < len; i++) {
@@ -145,8 +149,8 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         this.hashForUpdates[target.get('id')] = entry;
     },
 
-    tick: function(dt) {
-        var i;
+    tick: function (dt) {
+        var i, len, x;
         if (this.timeScale != 1.0) {
             dt *= this.timeScale;
         }
@@ -154,33 +158,41 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         var entry;
         for (i = 0, len = this.updatesNeg.length; i < len; i++) {
             entry = this.updatesNeg[i];
-            if (!entry.paused) entry.target.update(dt);
+            if (!entry.paused) {
+                entry.target.update(dt);
+            }
         }
 
         for (i = 0, len = this.updates0.length; i < len; i++) {
             entry = this.updates0[i];
-            if (!entry.paused) entry.target.update(dt);
+            if (!entry.paused) {
+                entry.target.update(dt);
+            }
         }
 
         for (i = 0, len = this.updatesPos.length; i < len; i++) {
             entry = this.updatesPos[i];
-            if (!entry.paused) entry.target.update(dt);
+            if (!entry.paused) {
+                entry.target.update(dt);
+            }
         }
 
-        for (var x in this.hashForMethods) {
-            entry = this.hashForMethods[x];
-            for (i = 0, len = entry.timers.length; i < len; i++) {
-                var timer = entry.timers[i];
-                timer.update(dt);
+        for (x in this.hashForMethods) {
+            if (this.hashForMethods.hasOwnProperty(x)) {
+                entry = this.hashForMethods[x];
+                for (i = 0, len = entry.timers.length; i < len; i++) {
+                    var timer = entry.timers[i];
+                    timer.update(dt);
+                }
             }
         }
 
 	},
 
-    unscheduleAllSelectorsForTarget: function(target) {
+    unscheduleAllSelectorsForTarget: function (target) {
     },
 
-    pauseTarget: function(target) {
+    pauseTarget: function (target) {
         var element = this.hashForMethods[target.get('id')];
         if (element) {
             element.paused = true;
@@ -192,7 +204,7 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         }
     },
 
-	resumeTarget: function(target) {
+	resumeTarget: function (target) {
         var element = this.hashForMethods[target.get('id')];
         if (element) {
             element.paused = false;
@@ -212,7 +224,7 @@ util.extend(Scheduler, /** @lends cocos.Scheduler */{
      * @getter sharedScheduler 
      * @type cocos.Scheduler
      */
-    get_sharedScheduler: function(key) {
+    get_sharedScheduler: function (key) {
         if (!this._instance) {
             this._instance = this.create();
         }

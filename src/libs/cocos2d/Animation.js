@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util');
 
 var Animation = BObject.extend(/** @lends cocos.Animation# */{
@@ -22,11 +26,11 @@ var Animation = BObject.extend(/** @lends cocos.Animation# */{
      * var animation = cocos.Animation.create({frames: [f1, f2, f3], delay: 0.1});
      * sprite.runAction(cocos.actions.Animate.create({animation: animation}));
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        Animation.superclass.init.call(this, opts);
 
-        this.frames = opts['frames'] || [];
-        this.delay  = opts['delay']  || 0.0;
+        this.frames = opts.frames || [];
+        this.delay  = opts.delay  || 0.0;
     }
 });
 

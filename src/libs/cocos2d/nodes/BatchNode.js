@@ -1,5 +1,9 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
-    event = require('event'),
+    evt = require('event'),
     geo = require('geometry'),
     ccp = geo.ccp,
     TextureAtlas = require('../TextureAtlas').TextureAtlas,
@@ -29,12 +33,12 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
      *
      * @opt {geometry.Size} size The size of the in-memory canvas used for drawing to
      */
-	init: function(opts) {
-		@super;
+	init: function (opts) {
+		BatchNode.superclass.init.call(this, opts);
 
-        var size = opts['size'] || geo.sizeMake(1, 1);
+        var size = opts.size || geo.sizeMake(1, 1);
 
-        event.addListener(this, 'contentsize_changed', util.callback(this, this._resizeCanvas));
+        evt.addListener(this, 'contentsize_changed', util.callback(this, this._resizeCanvas));
         
 		this._dirtyRects = [];
         this.set('contentRect', geo.rectMake(0, 0, size.width, size.height));
@@ -43,11 +47,11 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
         this.addChild({child: this.renderTexture});
 	},
 
-    addChild: function(opts) {
-        @super;
+    addChild: function (opts) {
+        BatchNode.superclass.addChild.call(this, opts);
 
-        var child = opts['child'],
-            z     = opts['z'];
+        var child = opts.child,
+            z     = opts.z;
 
         if (child == this.renderTexture) {
             return;
@@ -56,21 +60,25 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
         // TODO handle texture resize
 
         // Watch for changes in child
-        event.addListener(child, 'istransformdirty_changed', util.callback(this, function() { this.set('dirty', true); }));
-        event.addListener(child, 'visible_changed', util.callback(this, function() { this.set('dirty', true); }));
+        evt.addListener(child, 'istransformdirty_changed', util.callback(this, function () {
+            this.set('dirty', true);
+        }));
+        evt.addListener(child, 'visible_changed', util.callback(this, function () {
+            this.set('dirty', true);
+        }));
 
         this.set('dirty', true);
     },
 
-    removeChild: function(opts) {
-        @super;
+    removeChild: function (opts) {
+        BatchNode.superclass.removeChild.call(this, opts);
 
         // TODO remove istransformdirty_changed and visible_changed listeners
 
         this.set('dirty', true);
     },
 
-    _resizeCanvas: function(oldSize) {
+    _resizeCanvas: function (oldSize) {
         var size = this.get('contentSize');
 
         if (geo.sizeEqualToSize(size, oldSize)) {
@@ -81,11 +89,11 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
         this.set('dirty', true);
     },
 
-    update: function() {
+    update: function () {
 
     },
 
-    visit: function(context) {
+    visit: function (context) {
         if (!this.visible) {
             return;
         }
@@ -114,7 +122,7 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
         context.restore();
 	},
 
-	draw: function(ctx) {
+	draw: function (ctx) {
     }
 });
 
@@ -132,12 +140,12 @@ var SpriteBatchNode = BatchNode.extend({
      * @opt {Texture2D} texture (Optional) Texture to use as sprite atlas
      * @opt {cocos.TextureAtlas} textureAtlas (Optional) TextureAtlas to use as sprite atlas
      */
-    init: function(opts) {
-        @super;
+    init: function (opts) {
+        SpriteBatchNode.superclass.init.call(this, opts);
 
-        var file         = opts['file'],
-            textureAtlas = opts['textureAtlas'],
-            texture      = opts['texture'];
+        var file         = opts.file,
+            textureAtlas = opts.textureAtlas,
+            texture      = opts.texture;
 
         if (file || texture) {
             textureAtlas = TextureAtlas.create({file: file, texture: texture});
@@ -150,7 +158,7 @@ var SpriteBatchNode = BatchNode.extend({
      * @getter texture
      * @type cocos.Texture2D
      */
-    get_texture: function() {
+    get_texture: function () {
 		return this.textureAtlas ? this.textureAtlas.texture : null;
 	}
 

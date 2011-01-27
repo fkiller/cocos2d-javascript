@@ -1,3 +1,7 @@
+/*globals module exports resource require BObject BArray FLIP_Y_AXIS*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     geo = require('geometry');
 
@@ -15,8 +19,8 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
      * @extends BObject
      * @singleton
      */
-    init: function() {
-        @super;
+    init: function () {
+        EventDispatcher.superclass.init.call(this);
 
         this.keyboardDelegates = [];
         this.mouseDelegates = [];
@@ -24,11 +28,11 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
         this._keysDown = {};
     },
 
-    addDelegate: function(opts) {
-        var delegate = opts['delegate'],
-            priority = opts['priority'],
-            flags    = opts['flags'],
-            list     = opts['list'];
+    addDelegate: function (opts) {
+        var delegate = opts.delegate,
+            priority = opts.priority,
+            flags    = opts.flags,
+            list     = opts.list;
 
         var listElement = {
             delegate: delegate,
@@ -53,9 +57,9 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
         }
     },
 
-    removeDelegate: function(opts) {
-        var delegate = opts['delegate'],
-            list = opts['list'];
+    removeDelegate: function (opts) {
+        var delegate = opts.delegate,
+            list = opts.list;
 
         var idx = -1,
             i;
@@ -71,15 +75,15 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
         }
         list.splice(idx, 1);
     },
-    removeAllDelegates: function(opts) {
-        var list = opts['list'];
+    removeAllDelegates: function (opts) {
+        var list = opts.list;
 
-        list.splice(0, list.length -1);
+        list.splice(0, list.length - 1);
     },
 
-    addMouseDelegate: function(opts) {
-        var delegate = opts['delegate'],
-            priority = opts['priority'];
+    addMouseDelegate: function (opts) {
+        var delegate = opts.delegate,
+            priority = opts.priority;
 
         var flags = 0;
 
@@ -88,19 +92,19 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
         this.addDelegate({delegate: delegate, priority: priority, flags: flags, list: this.mouseDelegates});
     },
 
-    removeMouseDelegate: function(opts) {
-        var delegate = opts['delegate'];
+    removeMouseDelegate: function (opts) {
+        var delegate = opts.delegate;
 
         this.removeDelegate({delegate: delegate, list: this.mouseDelegates});
     },
 
-    removeAllMouseDelegate: function() {
+    removeAllMouseDelegate: function () {
         this.removeAllDelegates({list: this.mouseDelegates});
     },
 
-    addKeyboardDelegate: function(opts) {
-        var delegate = opts['delegate'],
-            priority = opts['priority'];
+    addKeyboardDelegate: function (opts) {
+        var delegate = opts.delegate,
+            priority = opts.priority;
 
         var flags = 0;
 
@@ -109,13 +113,13 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
         this.addDelegate({delegate: delegate, priority: priority, flags: flags, list: this.keyboardDelegates});
     },
 
-    removeKeyboardDelegate: function(opts) {
-        var delegate = opts['delegate'];
+    removeKeyboardDelegate: function (opts) {
+        var delegate = opts.delegate;
 
         this.removeDelegate({delegate: delegate, list: this.keyboardDelegates});
     },
 
-    removeAllKeyboardDelegate: function() {
+    removeAllKeyboardDelegate: function () {
         this.removeAllDelegates({list: this.keyboardDelegates});
     },
 
@@ -123,7 +127,7 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
 
     // Mouse Events
 
-    mouseDown: function(evt) {
+    mouseDown: function (evt) {
         if (!this.dispatchEvents) {
             return;
         }
@@ -141,7 +145,7 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
             }
         }
     },
-    mouseMoved: function(evt) {
+    mouseMoved: function (evt) {
         if (!this.dispatchEvents) {
             return;
         }
@@ -168,7 +172,7 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
             }
         }
     },
-    mouseDragged: function(evt) {
+    mouseDragged: function (evt) {
         if (!this.dispatchEvents) {
             return;
         }
@@ -193,9 +197,9 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
                     break;
                 }
             }
-        };
+        }
     },
-    mouseUp: function(evt) {
+    mouseUp: function (evt) {
         if (!this.dispatchEvents) {
             return;
         }
@@ -212,7 +216,7 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
     },
 
     // Keyboard events
-    keyDown: function(evt) {
+    keyDown: function (evt) {
         var kc = evt.keyCode;
         if (!this.dispatchEvents || this._keysDown[kc]) {
             return;
@@ -231,7 +235,7 @@ var EventDispatcher = BObject.extend(/** @lends cocos.EventDispatcher# */{
         }
     },
 
-    keyUp: function(evt) {
+    keyUp: function (evt) {
         if (!this.dispatchEvents) {
             return;
         }
@@ -264,7 +268,7 @@ util.extend(EventDispatcher, /** @lends cocos.EventDispatcher */{
      * @getter sharedDispatcher
      * @type cocos.EventDispatcher
      */
-    get_sharedDispatcher: function(key) {
+    get_sharedDispatcher: function (key) {
         if (!this._instance) {
             this._instance = this.create();
         }
