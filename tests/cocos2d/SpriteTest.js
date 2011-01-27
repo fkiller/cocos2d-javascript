@@ -1,5 +1,5 @@
 /*globals module exports resource require*/
-/*jslint evil: true, undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
 var util = require('util'),
@@ -19,6 +19,8 @@ var transitions = [
     "SpriteZOrder",
     "AnimationCache"
 ];
+
+var tests = {};
 
 var kTagTileMap = 1,
     kTagSpriteBatchNode = 1,
@@ -41,8 +43,7 @@ function nextAction() {
     sceneIdx = sceneIdx % transitions.length;
 
     var r = transitions[sceneIdx];
-    var c = eval('(' + r + ')');
-    return c;
+    return tests[r];
 }
 function backAction() {
     sceneIdx--;
@@ -51,13 +52,11 @@ function backAction() {
     }
 
     var r = transitions[sceneIdx];
-    var c = eval('(' + r + ')');
-    return c;
+    return tests[r];
 }
 function restartAction() {
     var r = transitions[sceneIdx];
-    var c = eval('(' + r + ')');
-    return c;
+    return tests[r];
 }
 
 var SpriteDemo = nodes.Layer.extend({
@@ -128,12 +127,12 @@ var SpriteDemo = nodes.Layer.extend({
  *
  * Example Sprite 1
  */
-var Sprite1 = SpriteDemo.extend(/** @lends Sprite1.prototype# */{
+tests.Sprite1 = SpriteDemo.extend(/** @lends Sprite1.prototype# */{
     title: 'Sprite',
     subtitle: 'Click screen',
 
     init: function () {
-        Sprite1.superclass.init.call(this);
+        tests.Sprite1.superclass.init.call(this);
 
         this.set('isMouseEnabled', true);
 
@@ -190,12 +189,12 @@ var Sprite1 = SpriteDemo.extend(/** @lends Sprite1.prototype# */{
  *
  * Example SpriteBatchNode 1
  */
-var SpriteBatchNode1 = SpriteDemo.extend(/** @lends SpriteBatchNode1.prototype# */{
+tests.SpriteBatchNode1 = SpriteDemo.extend(/** @lends SpriteBatchNode1.prototype# */{
     title: 'SpriteBatchNode',
     subtitle: 'Click screen',
 
     init: function () {
-        SpriteBatchNode1.superclass.init.call(this);
+        tests.SpriteBatchNode1.superclass.init.call(this);
 
         this.set('isMouseEnabled', true);
 
@@ -255,11 +254,11 @@ var SpriteBatchNode1 = SpriteDemo.extend(/** @lends SpriteBatchNode1.prototype# 
  *
  * Example Sprite Animation and flip
  */
-var SpriteAnimationFlip = SpriteDemo.extend(/** @lends SpriteAnimationFlip.prototype# */{
+tests.SpriteAnimationFlip = SpriteDemo.extend(/** @lends SpriteAnimationFlip.prototype# */{
     title: 'Sprite Animation + Flip',
 
     init: function () {
-        SpriteAnimationFlip.superclass.init.call(this);
+        tests.SpriteAnimationFlip.superclass.init.call(this);
 
         var s = cocos.Director.get('sharedDirector').get('winSize');
 
@@ -303,11 +302,11 @@ var SpriteAnimationFlip = SpriteDemo.extend(/** @lends SpriteAnimationFlip.proto
  *
  * Example Sprite Anchor Point
  */
-var SpriteAnchorPoint = SpriteDemo.extend(/** @lends SpriteAnchorPoint.prototype# */{
+tests.SpriteAnchorPoint = SpriteDemo.extend(/** @lends SpriteAnchorPoint.prototype# */{
     title: 'Sprite Anchor Point',
 
     init: function () {
-        SpriteAnchorPoint.superclass.init.call(this);
+        tests.SpriteAnchorPoint.superclass.init.call(this);
 
         var s = cocos.Director.get('sharedDirector').get('winSize');
 
@@ -349,12 +348,12 @@ var SpriteAnchorPoint = SpriteDemo.extend(/** @lends SpriteAnchorPoint.prototype
  *
  * Example Sprite Z ORder
  */
-var SpriteZOrder = SpriteDemo.extend(/** @lends SpriteZOrder.prototype# */{
+tests.SpriteZOrder = SpriteDemo.extend(/** @lends SpriteZOrder.prototype# */{
     title: 'Sprite Z Order',
     dir: 1,
 
     init: function () {
-        SpriteZOrder.superclass.init.call(this);
+        tests.SpriteZOrder.superclass.init.call(this);
 
         var s = cocos.Director.get('sharedDirector').get('winSize');
 
@@ -403,12 +402,12 @@ var SpriteZOrder = SpriteDemo.extend(/** @lends SpriteZOrder.prototype# */{
  *
  * Example using AnimationCache and loading from a Zwoptex .plist file
  */
-var AnimationCache = SpriteDemo.extend(/** @lends AnimationCache.prototype# */{
+tests.AnimationCache = SpriteDemo.extend(/** @lends AnimationCache.prototype# */{
     title: 'AnimationCache',
     subtitle: 'Sprite should be animated',
 
     init: function () {
-        AnimationCache.superclass.init.call(this);
+        tests.AnimationCache.superclass.init.call(this);
 
         var frameCache = cocos.SpriteFrameCache.get('sharedSpriteFrameCache'),
             animCache = cocos.AnimationCache.get('sharedAnimationCache');

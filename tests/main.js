@@ -1,13 +1,15 @@
+/*globals module exports resource require window*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var params = window.location.search;
 if (params) {
-    var name = params.split('=')[1];
-    require(name);
+    var mod = params.split('=')[1];
+    require('./' + mod);
 } else {
     var c = document.getElementById('cocos2d-tests');
-    with (c.style) {
-        textAlign = 'center';
-        fontSize = '20pt';
-        lineHeight = c.clientHeight + 'px';
-    }
+    c.style.textAlign = 'center';
+    c.style.fontSize = '20pt';
+    c.style.lineHeight = c.clientHeight + 'px';
     c.appendChild(document.createTextNode('Select a test to run'));
 }

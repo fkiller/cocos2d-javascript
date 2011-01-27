@@ -1,5 +1,5 @@
 /*globals module exports resource require*/
-/*jslint evil: true, undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
 var util = require('util'),
@@ -15,6 +15,8 @@ var transitions = [
     "TMXOrthoTest2"
 ];
 
+var tests = {};
+
 
 var kTagTileMap = 1;
 
@@ -23,8 +25,7 @@ function nextAction() {
     sceneIdx = sceneIdx % transitions.length;
 
     var r = transitions[sceneIdx];
-    var c = eval('(' + r + ')');
-    return c;
+    return tests[r];
 }
 function backAction() {
     sceneIdx--;
@@ -33,13 +34,11 @@ function backAction() {
     }
 
     var r = transitions[sceneIdx];
-    var c = eval('(' + r + ')');
-    return c;
+    return tests[r];
 }
 function restartAction() {
     var r = transitions[sceneIdx];
-    var c = eval('(' + r + ')');
-    return c;
+    return tests[r];
 }
 
 var TileDemo = nodes.Layer.extend({
@@ -115,12 +114,12 @@ var TileDemo = nodes.Layer.extend({
 });
 
 
-var TMXOrthoTest2 = TileDemo.extend({
+tests.TMXOrthoTest2 = TileDemo.extend({
     title: 'Tile Map Test',
     subtitle: 'drag screen',
 
     init: function () {
-        TMXOrthoTest2.superclass.init.call(this);
+        tests.TMXOrthoTest2.superclass.init.call(this);
 
         var map = nodes.TMXTiledMap.create({file: module.dirname + "/resources/TileMaps/orthogonal-test1.tmx"});
         this.addChild({child: map, z: 0, tag: kTagTileMap});

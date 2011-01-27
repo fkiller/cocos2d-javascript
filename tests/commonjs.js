@@ -1,15 +1,19 @@
+/*globals module exports resource require window*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var container = document.getElementById('cocos2d-tests');
 container.className = 'logs';
 
 var logNum = 0;
-window.print = function(msg, tag) {
+window.print = function (msg, tag) {
     logNum++;
     var div = document.createElement('div');
     div.appendChild(document.createTextNode(logNum + '. ' + msg));
     div.className = 'log ' + tag;
     container.appendChild(div);
     container.scrollTop = container.offsetHeight;
-}
+};
 
 while (container.firstChild) {
     container.removeChild(container.firstChild);
