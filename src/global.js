@@ -261,7 +261,7 @@ BObject.extend = function() {
     }
     util.extend.apply(null, args);
 
-    newObj.superclass = this;
+    newObj.superclass = this.prototype;
     // Create new instance
     return newObj;
 };
