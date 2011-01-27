@@ -8,7 +8,7 @@ function resource(path) {
 
 (function () {
     var process = {};
-    var modulePaths = ['/', '/libs'];
+    var modulePaths = ['/libs', '/'];
 
     var path; // Will be loaded further down
 
