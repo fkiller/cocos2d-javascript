@@ -25,11 +25,10 @@ class Compiler(object):
     extensions = ['js', 'tmx', 'tms', 'plist', 'gif', 'jpg', 'jpeg', 'png']
     header = u''
     footer = u''
-    app_configs = ['cocos2d/src/libs/cocos2d/config.js', 'src/libs/cocos2d/config.js', 'libs/cocos2d/config.js', 'src/config.js']
 
     def __init__(self, config='make.js'):
         self.config = self.read_config(config)
-        print self.output
+        print "Ouputting to: ", self.output
 
     def read_config(self, config_file):
         print "Loading config:", config_file
@@ -52,7 +51,7 @@ class Compiler(object):
         code += 'var __main_module_name__ = %s;\n' % json.dumps(self.main_module)
         code += 'var __resources__ = [];\n'
         code += 'function __imageResource(data) { var img = new Image(); img.src = data; return img; };\n'
-        for key, val in self.app_config().items():
+        for key, val in self.app_config_dict().items():
             code += 'var %s = %s;\n' % (key.upper(), json.dumps(val))
 
 
@@ -83,7 +82,7 @@ class Compiler(object):
         code = ''
         files = self.scan_for_files(source_path)
         for src_file in files:
-            if src_file in self.app_configs:
+            if src_file in self.app_configs():
                 # Skip config files because they're JSON not JavaScript
                 continue
 
@@ -107,15 +106,26 @@ class Compiler(object):
 
         return path
 
-    def app_config(self):
+    def app_configs(self):
+        """
+        Returns an array of paths pointing to all the config.js files for the app
+        """
+        configs = [u'src/libs/cocos2d/config.js']
+        for source, dest in self.config['paths'].items():
+            c = os.path.join(source, 'config.js')
+            if os.path.exists(c):
+                configs.append(c)
+
+        return configs
+
+            
+
+    def app_config_dict(self):
         """
         Reads all the app's config.js files and returns a dictionary of their values
         """
         vals = {}
-        for config in self.app_configs:
-            if not os.path.exists(config):
-                continue
-
+        for config in self.app_configs():
             data = self.read_json_file(config)
             vals.update(data)
 
