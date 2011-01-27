@@ -11,5 +11,8 @@ if (params) {
     c.style.textAlign = 'center';
     c.style.fontSize = '20pt';
     c.style.lineHeight = c.clientHeight + 'px';
+    while (c.firstChild) {
+        c.removeChild(c.firstChild);
+    }
     c.appendChild(document.createTextNode('Select a test to run'));
 }

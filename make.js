@@ -9,6 +9,7 @@
         "tests/commonjs/tests/" : "/commonjs/",
         "tests/cocos2d/" : "/cocos2d/",
         "tests/commonjs.js": "/commonjs.js",
+        "tests/qunit.js": "/qunit.js",
         "tests/main.js": "/main.js"
     }
 }
