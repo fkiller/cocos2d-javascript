@@ -1,3 +1,7 @@
+/*globals module exports resource require*/
+/*jslint evil: true, undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util'),
     Texture2D = require('cocos2d/Texture2D').Texture2D,
     cocos = require('cocos2d'),
@@ -42,47 +46,47 @@ var TileDemo = nodes.Layer.extend({
     title: 'No title',
     subtitle: null,
 
-    init: function() {
-        @super;
+    init: function () {
+        TileDemo.superclass.init.call(this);
 
         this.set('isMouseEnabled', true);
 
         var s = cocos.Director.get('sharedDirector').get('winSize');
 
         var label = nodes.Label.create({string: this.get('title'), fontName: 'Arial', fontSize: 26});
-        this.addChild({child: label, z:1});
+        this.addChild({child: label, z: 1});
         label.set('position', ccp(s.width / 2, 50));
 
 
         var subtitle = this.get('subtitle');
         if (subtitle) {
-            var l = nodes.Label.create({string:subtitle, fontName: "Thonburi", fontSize: 16});
-            this.addChild({child: l, z:1});
-            l.set('position', ccp(s.width/2, 80));
+            var l = nodes.Label.create({string: subtitle, fontName: "Thonburi", fontSize: 16});
+            this.addChild({child: l, z: 1});
+            l.set('position', ccp(s.width / 2, 80));
         }
 
 
-        var item1 = nodes.MenuItemImage.create({normalImage:__dirname + "/resources/b1.png", selectedImage:__dirname + "/resources/b2.png", callback:util.callback(this, 'backCallback')});
-        var item2 = nodes.MenuItemImage.create({normalImage:__dirname + "/resources/r1.png", selectedImage:__dirname + "/resources/r2.png", callback:util.callback(this, 'restartCallback')});
-        var item3 = nodes.MenuItemImage.create({normalImage:__dirname + "/resources/f1.png", selectedImage:__dirname + "/resources/f2.png", callback:util.callback(this, 'nextCallback')});
+        var item1 = nodes.MenuItemImage.create({normalImage: module.dirname + "/resources/b1.png", selectedImage: module.dirname + "/resources/b2.png", callback: util.callback(this, 'backCallback')});
+        var item2 = nodes.MenuItemImage.create({normalImage: module.dirname + "/resources/r1.png", selectedImage: module.dirname + "/resources/r2.png", callback: util.callback(this, 'restartCallback')});
+        var item3 = nodes.MenuItemImage.create({normalImage: module.dirname + "/resources/f1.png", selectedImage: module.dirname + "/resources/f2.png", callback: util.callback(this, 'nextCallback')});
 
         var menu = nodes.Menu.create({items: [item1, item2, item3]});
 
-        menu.set('position', ccp(0,0));
-        item1.set('position', ccp(s.width /2 -100, s.height -30));
-        item2.set('position', ccp(s.width /2,      s.height -30));
-        item3.set('position', ccp(s.width /2 +100, s.height -30));
-        this.addChild({child: menu, z:1});
+        menu.set('position', ccp(0, 0));
+        item1.set('position', ccp(s.width / 2 - 100, s.height - 30));
+        item2.set('position', ccp(s.width / 2,      s.height - 30));
+        item3.set('position', ccp(s.width / 2 + 100, s.height - 30));
+        this.addChild({child: menu, z: 1});
     },
 
-    mouseDragged: function(event) {
+    mouseDragged: function (event) {
         var node = this.getChild({tag: kTagTileMap});
         var currentPos = node.get('position');
         node.set('position', geo.ccpAdd(currentPos, ccp(event.deltaX, event.deltaY)));
         return true;
     },
 
-    restartCallback: function() {
+    restartCallback: function () {
         var director = cocos.Director.get('sharedDirector');
 
         var scene = nodes.Scene.create();
@@ -91,7 +95,7 @@ var TileDemo = nodes.Layer.extend({
         director.replaceScene(scene);
     },
 
-    backCallback: function() {
+    backCallback: function () {
         var director = cocos.Director.get('sharedDirector');
 
         var scene = nodes.Scene.create();
@@ -100,7 +104,7 @@ var TileDemo = nodes.Layer.extend({
         director.replaceScene(scene);
     },
 
-    nextCallback: function() {
+    nextCallback: function () {
         var director = cocos.Director.get('sharedDirector');
 
         var scene = nodes.Scene.create();
@@ -115,10 +119,10 @@ var TMXOrthoTest2 = TileDemo.extend({
     title: 'Tile Map Test',
     subtitle: 'drag screen',
 
-    init: function() {
-        @super;
+    init: function () {
+        TMXOrthoTest2.superclass.init.call(this);
 
-        var map = nodes.TMXTiledMap.create({file: __dirname + "/resources/TileMaps/orthogonal-test1.tmx"});
+        var map = nodes.TMXTiledMap.create({file: module.dirname + "/resources/TileMaps/orthogonal-test1.tmx"});
         this.addChild({child: map, z: 0, tag: kTagTileMap});
 
         var s = cocos.Director.get('sharedDirector').get('winSize');
