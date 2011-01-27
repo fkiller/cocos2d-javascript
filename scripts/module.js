@@ -1,8 +1,12 @@
+/*globals module exports resource require window Module __main_module_name__ __resources__*/
+/*jslint evil: true, undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 function resource(path) {
     return __resources__[path].data;
 }
 
-(function() {
+(function () {
     var process = {};
     var modulePaths = ['/', '/libs'];
 
@@ -62,6 +66,13 @@ function resource(path) {
         //console.log('Loading module: ', filename);
 
         var module = new Module(filename, parent);
+
+        // Assign main module to process
+        if (request == __main_module_name__ && !process.mainModule) {
+            process.mainModule = module;
+        }
+
+        // Run all the code in the module
         module._initialize(filename);
 
         return module;
@@ -85,7 +96,7 @@ function resource(path) {
         this.dirname = null;
     }
 
-    Module.prototype._initialize = function(filename) {
+    Module.prototype._initialize = function (filename) {
         var module = this;
         function require(request) {
             return loadModule(request, module).exports;
@@ -103,30 +114,32 @@ function resource(path) {
         require.paths = modulePaths;
         require.main = process.mainModule;
 
-        __resources__[this.filename].data.apply(this.exports, [this.exports, require, this, this.filename, this.dirname])
+        __resources__[this.filename].data.apply(this.exports, [this.exports, require, this, this.filename, this.dirname]);
 
         return this;
-    }
+    };
 
     // Manually load the path module because we need it to load other modules
     path = (new Module('path'))._initialize('/path.js').exports;
 
-
-    // Populate globals
-    var globals = loadModule('global').exports;
-    for (var x in globals) {
-        window[x] = globals[x];
-    }
-
     var util = loadModule('util').exports;
-    util.ready(function() {
-        process.mainModule = loadModule(__main_module_name__);
-    });
+    util.ready(function () {
+        // Populate globals
+        var globals = loadModule('global').exports;
+        for (var x in globals) {
+            if (globals.hasOwnProperty(x)) {
+                window[x] = globals[x];
+            }
+        }
 
-    // Add a global require. Useful in the debug console.
-    window.require = function require(request, parent) {
-        return loadModule(request, parent).exports;
-    }
-    window.require.paths = modulePaths;
-    window.require.main = process.mainModule;
+        process.mainModule = loadModule(__main_module_name__);
+
+        // Add a global require. Useful in the debug console.
+        window.require = function require(request, parent) {
+            return loadModule(request, parent).exports;
+        };
+        window.require.main = process.mainModule;
+        window.require.paths = modulePaths;
+
+    });
 })();
