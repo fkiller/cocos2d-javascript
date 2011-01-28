@@ -1,3 +1,3 @@
 {
-    "FLIP_Y_AXIS": false
+    "FLIP_Y_AXIS": true
 }
