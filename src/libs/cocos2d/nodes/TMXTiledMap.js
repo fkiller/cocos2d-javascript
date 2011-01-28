@@ -3,7 +3,6 @@
 "use strict";
 
 var util = require('util'),
-    console = require('system').console,
     geo = require('geometry'),
     ccp = geo.ccp,
     Node = require('./Node').Node,
@@ -93,7 +92,7 @@ var TMXTiledMap = Node.extend(/** @lends cocos.nodes.TMXTiledMap# */{
             } // for (var y
         } // for (var i
 
-        console.warn("cocos2d: Warning: TMX Layer '%s' has no tiles", layerInfo.name);
+        //console.log("cocos2d: Warning: TMX Layer '%s' has no tiles", layerInfo.name);
         return tileset;
     }
 });

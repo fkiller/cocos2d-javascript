@@ -85,6 +85,7 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
             return; // No change
         }
 
+
         this.renderTexture.set('contentSize', size);
         this.set('dirty', true);
     },

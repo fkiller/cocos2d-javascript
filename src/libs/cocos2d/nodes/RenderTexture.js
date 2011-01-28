@@ -1,4 +1,4 @@
-/*globals module exports resource require BObject BArray*/
+/*globals module exports resource require BObject BArray FLIP_Y_AXIS*/
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
@@ -59,7 +59,6 @@ var RenderTexture = Node.extend(/** @lends cocos.nodes.RenderTexture# */{
             this.context.scale(1, -1);
             this.context.translate(0, -canvas.height);
         }
-
 
         var s = this.get('sprite');
         if (s) {

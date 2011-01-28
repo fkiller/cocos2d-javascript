@@ -64,7 +64,7 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
         var offset = this.calculateLayerOffset(layerInfo.get('offset'));
         this.set('position', offset);
 
-        this.set('contentSize', geo.sizeMake(this.layerSize.width * this.mapTileSize.width, this.layerSize.height * this.mapTileSize.height));
+        this.set('contentSize', geo.sizeMake(this.layerSize.width * this.mapTileSize.width, (this.layerSize.height * (this.mapTileSize.height - 1)) + this.tileset.tileSize.height));
     },
 
     calculateLayerOffset: function (pos) {
@@ -149,10 +149,14 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
         var mapTileSize = this.get('mapTileSize'),
             layerSize = this.get('layerSize');
 
-        return ccp(
-            mapTileSize.width  / 2 * (layerSize.width + pos.x - pos.y - 1),
-            mapTileSize.height / 2 * ((layerSize.height * 2 - pos.x - pos.y) - 2)
-        );
+        if (FLIP_Y_AXIS) {
+            return ccp(
+                mapTileSize.width  / 2 * (layerSize.width + pos.x - pos.y - 1),
+                mapTileSize.height / 2 * ((layerSize.height * 2 - pos.x - pos.y) - 2)
+            );
+        } else {
+            throw "Isometric tiles without FLIP_Y_AXIS is currently unsupported";
+        }
     },
 
 
