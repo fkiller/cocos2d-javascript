@@ -120,21 +120,18 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
         this.addChild({child: tile, z: 0, tag: z});
     },
     positionAt: function (pos) {
-        var ret = ccp(0, 0);
-
         switch (this.layerOrientation) {
         case TMXOrientationOrtho:
-            ret = this.positionForOrthoAt(pos);
-            break;
+            return this.positionForOrthoAt(pos);
         case TMXOrientationIso:
-            // TODO
-            break;
+            return this.positionForIsoAt(pos);
+        /*
         case TMXOrientationHex:
             // TODO
-            break;
+        */
+        default:
+            return ccp(0, 0);
         }
-
-        return ret;
     },
     positionForOrthoAt: function (pos) {
         var overlap = this.mapTileSize.height - this.tileset.tileSize.height;
@@ -147,6 +144,17 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
         }
         return ccp(x, y);
     },
+
+    positionForIsoAt: function (pos) {
+        var mapTileSize = this.get('mapTileSize'),
+            layerSize = this.get('layerSize');
+
+        return ccp(
+            mapTileSize.width  / 2 * (layerSize.width + pos.x - pos.y - 1),
+            mapTileSize.height / 2 * ((layerSize.height * 2 - pos.x - pos.y) - 2)
+        );
+    },
+
 
     tileGID: function (pos) {
         var tilesPerRow = this.get('layerSize').width,

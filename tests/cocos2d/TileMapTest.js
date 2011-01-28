@@ -12,7 +12,8 @@ var util = require('util'),
 
 var sceneIdx = -1;
 var transitions = [
-    "TMXOrthoTest2"
+    "TMXOrthoTest2",
+    "TMXIsoTest"
 ];
 
 var tests = {};
@@ -127,6 +128,31 @@ tests.TMXOrthoTest2 = TileDemo.extend({
         var s = cocos.Director.get('sharedDirector').get('winSize');
 
         map.runAction(actions.ScaleBy.create({duration: 2, scale: 0.5}));
+    }
+});
+
+
+tests.TMXIsoTest = TileDemo.extend({
+    title: 'TMX Isometric test 0',
+
+    init: function () {
+        tests.TMXIsoTest.superclass.init.call(this);   
+
+		/*
+        CCLayerColor *color = [CCLayerColor layerWithColor:ccc4(64,64,64,255)];
+        [self addChild:color z:-1];
+		*/
+		
+        var map = nodes.TMXTiledMap.create({file: module.dirname + "/resources/TileMaps/iso-test.tmx"});
+        this.addChild({child: map, z: 0, tag: kTagTileMap});
+		
+		// move map to the center of the screen
+        var ms = map.get('mapSize'),
+            ts = map.get('tileSize');
+
+        map.set('position', ccp(-ms.width * ts.width / 2, -ms.height * ts.height / 2));
+
+        //map.runAction(actions.MoveTo.create({duration: 1.0, position: ccp(-ms.width * ts.width / 2, -ms.height * ts.height / 2)}));
     }
 });
 
