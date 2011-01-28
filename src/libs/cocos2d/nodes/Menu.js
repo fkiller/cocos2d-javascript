@@ -68,7 +68,7 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
     },
 
     itemForMouseEvent: function (event) {
-        var location = Director.get('sharedDirector').convertEventToCanvas(event);
+        var location = event.locationInCanvas;
 
         var children = this.get('children');
         for (var i = 0, len = children.length; i < len; i++) {
@@ -110,7 +110,8 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
             return false;
         }
 
-        var selectedItem = this.set('selectedItem', this.itemForMouseEvent(event));
+        var selectedItem = this.itemForMouseEvent(event);
+        this.set('selectedItem', selectedItem);
         if (selectedItem) {
             selectedItem.set('isSelected', true);
             this.set('state', kMenuStateTrackingTouch);
