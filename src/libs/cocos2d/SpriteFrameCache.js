@@ -1,4 +1,4 @@
-/*globals module exports resource require BObject BArray*/
+/*globals module exports resource require BObject BArray FLIP_Y_AXIS*/
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
@@ -88,6 +88,10 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
                         //console.log("cocos2d: WARNING: originalWidth/Height not found on the CCSpriteFrame. AnchorPoint won't work as expected. Regenerate the .plist");
                     }
 
+                    if (FLIP_Y_AXIS) {
+                        oy *= -1;
+                    }
+
                     // abs ow/oh
                     ow = Math.abs(ow);
                     oh = Math.abs(oh);
@@ -107,6 +111,10 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
                         offset     = geo.pointFromString(frameDict.offset),
                         sourceSize = geo.sizeFromString(frameDict.sourceSize);
 
+                    if (FLIP_Y_AXIS) {
+                        offset.y *= -1;
+                    }
+
 
                     // create frame
                     spriteFrame = SpriteFrame.create({texture: texture,
@@ -123,6 +131,11 @@ var SpriteFrameCache = BObject.extend(/** @lends cocos.SpriteFrameCache# */{
                         textureRect      = geo.rectFromString(frameDict.textureRect),
                         textureRotated   = frameDict.textureRotated;
                     
+
+                    if (FLIP_Y_AXIS) {
+                        spriteOffset.y *= -1;
+                    }
+
                     // get aliases
                     var aliases = frameDict.aliases;
                     for (var i = 0, len = aliases.length; i < len; i++) {
