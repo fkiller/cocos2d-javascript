@@ -1,7 +1,11 @@
+/*globals module exports resource require BObject BArray*/
+/*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
+"use strict";
+
 var util = require('util');
 
-var RE_PAIR = /{\s*([\d.-]+)\s*,\s*([\d.-]+)\s*}/,
-    RE_DOUBLE_PAIR = /{\s*({[\s\d,.-]+})\s*,\s*({[\s\d,.-]+})\s*}/;
+var RE_PAIR = /\{\s*([\d.\-]+)\s*,\s*([\d.\-]+)\s*\}/,
+    RE_DOUBLE_PAIR = /\{\s*(\{[\s\d,.\-]+\})\s*,\s*(\{[\s\d,.\-]+\})\s*\}/;
 
 /** @namespace */
 var geometry = {
@@ -12,7 +16,7 @@ var geometry = {
      * @param {Float} x X value
      * @param {Float} y Y value
      */
-    Point: function(x, y) {
+    Point: function (x, y) {
         /**
          * X coordinate
          * @type Float
@@ -33,7 +37,7 @@ var geometry = {
      * @param {Float} w Width
      * @param {Float} h Height
      */
-    Size: function(w, h) {
+    Size: function (w, h) {
         /**
          * Width
          * @type Float
@@ -56,7 +60,7 @@ var geometry = {
      * @param {Float} w Width
      * @param {Float} h Height
      */
-    Rect: function(x, y, w, h) {
+    Rect: function (x, y, w, h) {
         /**
          * Coordinate in 2D space
          * @type {geometry.Point}
@@ -71,13 +75,25 @@ var geometry = {
     },
 
     /**
+     * Transform matrix
+     */
+    TransformMatrix: function (a, b, c, d, tx, ty) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+        this.tx = tx;
+        this.ty = ty;
+    },
+
+    /**
      * Creates a geometry.Point instance
      *
      * @param {Float} x X coordinate
      * @param {Float} y Y coordinate
      * @returns {geometry.Point} 
      */
-    ccp: function(x, y) {
+    ccp: function (x, y) {
         return module.exports.pointMake(x, y);
     },
 
@@ -88,7 +104,7 @@ var geometry = {
      * @param {geometry.Point} p2 Second point
      * @returns {geometry.Point} New point
      */
-    ccpAdd: function(p1, p2) {
+    ccpAdd: function (p1, p2) {
         return geometry.ccp(p1.x + p2.x, p1.y + p2.y);
     },
 
@@ -99,7 +115,7 @@ var geometry = {
      * @param {geometry.Point} p2 Second point
      * @returns {geometry.Point} New point
      */
-    ccpSub: function(p1, p2) {
+    ccpSub: function (p1, p2) {
         return geometry.ccp(p1.x - p2.x, p1.y - p2.y);
     },
 
@@ -110,7 +126,7 @@ var geometry = {
      * @param {geometry.Point} p2 Second point
      * @returns {geometry.Point} New point
      */
-    ccpMult: function(p1, p2) {
+    ccpMult: function (p1, p2) {
         return geometry.ccp(p1.x * p2.x, p1.y * p2.y);
     },
 
@@ -121,7 +137,7 @@ var geometry = {
      * @param {geometry.Point} p Point to invert
      * @returns {geometry.Point} New point
      */
-    ccpNeg: function(p) {
+    ccpNeg: function (p) {
         return geometry.ccp(-p.x, -p.y);
     },
 
@@ -131,7 +147,7 @@ var geometry = {
      * @param {geometry.Point} p Point to round
      * @returns {geometry.Point} New point
      */
-    ccpRound: function(p) {
+    ccpRound: function (p) {
         return geometry.ccp(Math.round(p.x), Math.round(p.y));
     },
 
@@ -141,7 +157,7 @@ var geometry = {
      * @param {geometry.Point} p Point to round
      * @returns {geometry.Point} New point
      */
-    ccpCeil: function(p) {
+    ccpCeil: function (p) {
         return geometry.ccp(Math.ceil(p.x), Math.ceil(p.y));
     },
 
@@ -151,7 +167,7 @@ var geometry = {
      * @param {geometry.Point} p Point to round
      * @returns {geometry.Point} New point
      */
-    ccpFloor: function(p) {
+    ccpFloor: function (p) {
         return geometry.ccp(Math.floor(p.x), Math.floor(p.y));
     },
 
@@ -160,21 +176,21 @@ var geometry = {
      *
      * @returns {geometry.Point} New point at 0x0
      */
-    PointZero: function() {
-        return geometry.ccp(0,0);
+    PointZero: function () {
+        return geometry.ccp(0, 0);
     },
 
     /**
      * @returns {geometry.Rect}
      */
-    rectMake: function(x, y, w, h) {
+    rectMake: function (x, y, w, h) {
         return new geometry.Rect(x, y, w, h);
     },
 
     /**
      * @returns {geometry.Rect}
      */
-    rectFromString: function(str) {
+    rectFromString: function (str) {
         var matches = str.match(RE_DOUBLE_PAIR),
             p = geometry.pointFromString(matches[1]),
             s = geometry.sizeFromString(matches[2]);
@@ -185,14 +201,14 @@ var geometry = {
     /**
      * @returns {geometry.Size}
      */
-    sizeMake: function(w, h) {
+    sizeMake: function (w, h) {
         return new geometry.Size(w, h);
     },
 
     /**
      * @returns {geometry.Size}
      */
-    sizeFromString: function(str) {
+    sizeFromString: function (str) {
         var matches = str.match(RE_PAIR),
             w = parseFloat(matches[1]),
             h = parseFloat(matches[2]);
@@ -203,14 +219,14 @@ var geometry = {
     /**
      * @returns {geometry.Point}
      */
-    pointMake: function(x, y) {
+    pointMake: function (x, y) {
         return new geometry.Point(x, y);
     },
 
     /**
      * @returns {geometry.Point}
      */
-    pointFromString: function(str) {
+    pointFromString: function (str) {
         var matches = str.match(RE_PAIR),
             x = parseFloat(matches[1]),
             y = parseFloat(matches[2]);
@@ -221,101 +237,147 @@ var geometry = {
     /**
      * @returns {Boolean}
      */
-    rectContainsPoint: function(r, p) {
-        return ((p.x >= r.origin.x && p.x <= r.origin.x + r.size.width)
-                && (p.y >= r.origin.y && p.y <= r.origin.y + r.size.height));
+    rectContainsPoint: function (r, p) {
+        return ((p.x >= r.origin.x && p.x <= r.origin.x + r.size.width) &&
+                (p.y >= r.origin.y && p.y <= r.origin.y + r.size.height));
+    },
+
+    /**
+     * Returns the smallest rectangle that contains the two source rectangles.
+     *
+     * @param {geometry.Rect} r1
+     * @param {geometry.Rect} r2
+     * @returns {geometry.Rect}
+     */
+    rectUnion: function (r1, r2) {
+        var rect = new geometry.Rect(0, 0, 0, 0);
+
+        rect.origin.x = Math.min(r1.origin.x, r2.origin.x);
+        rect.origin.y = Math.min(r1.origin.y, r2.origin.y);
+        rect.size.width = Math.max(r1.origin.x + r1.size.width, r2.origin.x + r2.size.width) - rect.origin.x;
+        rect.size.height = Math.max(r1.origin.y + r1.size.height, r2.origin.y + r2.size.height) - rect.origin.y;
+
+        return rect;
     },
 
     /**
      * @returns {Boolean}
      */
-    rectOverlapsRect: function(r1, r2) {
-        if (r1.origin.x + r1.size.width < r2.origin.x)
-            return false
-        if (r2.origin.x + r2.size.width < r1.origin.x)
-            return false
-        if (r1.origin.y + r1.size.height < r2.origin.y)
-            return false
-        if (r2.origin.y + r2.size.height < r1.origin.y)
-            return false
+    rectOverlapsRect: function (r1, r2) {
+        if (r1.origin.x + r1.size.width < r2.origin.x) {
+            return false;
+        }
+        if (r2.origin.x + r2.size.width < r1.origin.x) {
+            return false;
+        }
+        if (r1.origin.y + r1.size.height < r2.origin.y) {
+            return false;
+        }
+        if (r2.origin.y + r2.size.height < r1.origin.y) {
+            return false;
+        }
 
         return true;
     },
 
     /**
+     * Returns the overlapping portion of 2 rectangles
+     */
+    rectIntersection: function (lhsRect, rhsRect) {
+
+        var intersection = new geometry.Rect(
+            Math.max(geometry.rectGetMinX(lhsRect), geometry.rectGetMinX(rhsRect)),
+            Math.max(geometry.rectGetMinY(lhsRect), geometry.rectGetMinY(rhsRect)),
+            0,
+            0
+        );
+
+        intersection.size.width = Math.min(geometry.rectGetMaxX(lhsRect), geometry.rectGetMaxX(rhsRect)) - geometry.rectGetMinX(intersection);
+        intersection.size.height = Math.min(geometry.rectGetMaxY(lhsRect), geometry.rectGetMaxY(rhsRect)) - geometry.rectGetMinY(intersection);
+
+        return intersection;
+    },
+
+    /**
      * @returns {Boolean}
      */
-    pointEqualToPoint: function(point1, point2) {
+    pointEqualToPoint: function (point1, point2) {
         return (point1.x == point2.x && point1.y == point2.y);
     },
 
     /**
      * @returns {Boolean}
      */
-    sizeEqualToSize: function(size1, size2) {
+    sizeEqualToSize: function (size1, size2) {
         return (size1.width == size2.width && size1.height == size2.height);
     },
 
     /**
      * @returns {Boolean}
      */
-    rectEqualToRect: function(rect1, rect2) {
+    rectEqualToRect: function (rect1, rect2) {
         return (module.exports.sizeEqualToSize(rect1.size, rect2.size) && module.exports.pointEqualToPoint(rect1.origin, rect2.origin));
     },
 
     /**
      * @returns {Float}
      */
-    rectGetMinX: function(rect) {
+    rectGetMinX: function (rect) {
         return rect.origin.x;
     },
 
     /**
      * @returns {Float}
      */
-    rectGetMinY: function(rect) {
+    rectGetMinY: function (rect) {
         return rect.origin.y;
     },
 
     /**
      * @returns {Float}
      */
-    rectGetMaxX: function(rect) {
+    rectGetMaxX: function (rect) {
         return rect.origin.x + rect.size.width;
     },
 
     /**
      * @returns {Float}
      */
-    rectGetMaxY: function(rect) {
+    rectGetMaxY: function (rect) {
         return rect.origin.y + rect.size.height;
     },
 
-    boundingRectMake: function(p1, p2, p3, p4) {
-        var minX = Math.min(p1.x, Math.min(p2.x, Math.min(p3.x, p4.x)));
-        var minY = Math.min(p1.y, Math.min(p2.y, Math.min(p3.y, p4.y)));
-        var maxX = Math.max(p1.x, Math.max(p2.x, Math.max(p3.x, p4.x)));
-        var maxY = Math.max(p1.y, Math.max(p2.y, Math.max(p3.y, p4.y)));
+    boundingRectMake: function (p1, p2, p3, p4) {
+        var minX = Math.min(p1.x, p2.x, p3.x, p4.x);
+        var minY = Math.min(p1.y, p2.y, p3.y, p4.y);
+        var maxX = Math.max(p1.x, p2.x, p3.x, p4.x);
+        var maxY = Math.max(p1.y, p2.y, p3.y, p4.y);
 
-        return geometry.rectMake(minX, minY, (maxX - minX), (maxY - minY));
+        return new geometry.Rect(minX, minY, (maxX - minX), (maxY - minY));
     },
 
     /**
      * @returns {geometry.Point}
      */
-    pointApplyAffineTransform: function(p, trans) {
-        var newPoint = geometry.ccp(0, 0);
-        
-        newPoint.x = p.x * trans[0][0] + p.y * trans[1][0] + trans[2][0];
-        newPoint.y = p.x * trans[0][1] + p.y * trans[1][1] + trans[2][1];
+    pointApplyAffineTransform: function (point, t) {
 
-        return newPoint;
+        /*
+        aPoint.x * aTransform.a + aPoint.y * aTransform.c + aTransform.tx,
+        aPoint.x * aTransform.b + aPoint.y * aTransform.d + aTransform.ty
+        */
+
+        return new geometry.Point(t.a * point.x + t.c * point.y + t.tx, t.b * point.x + t.d * point.y + t.ty);
+
     },
 
     /**
-     * @returns {geometry.Rect}
+     * Apply a transform matrix to a rectangle
+     *
+     * @param {geometry.Rect} rect Rectangle to transform
+     * @param {geometry.TransformMatrix} trans TransformMatrix to apply to rectangle
+     * @returns {geometry.Rect} A new transformed rectangle
      */
-    rectApplyAffineTransform: function(rect, trans) {
+    rectApplyAffineTransform: function (rect, trans) {
 
         var p1 = geometry.ccp(geometry.rectGetMinX(rect), geometry.rectGetMinY(rect));
         var p2 = geometry.ccp(geometry.rectGetMaxX(rect), geometry.rectGetMinY(rect));
@@ -331,169 +393,112 @@ var geometry = {
     },
 
     /**
-     * @returns {Float}
+     * Inverts a transform matrix
+     *
+     * @param {geometry.TransformMatrix} trans TransformMatrix to invert
+     * @returns {geometry.TransformMatrix} New transform matrix
      */
-    affineTransformDeterminant: function(trans) {
-        var det = 1,
-            t = util.copy(trans);
+    affineTransformInvert: function (trans) {
+        var determinant = 1 / (trans.a * trans.d - trans.b * trans.c);
 
-        var k, i, j, q, tkk;
-        for (k = 0; k < 3; k++) {
-            tkk = t[k][k];
-
-            if (tkk == 0) {
-                i = k;
-                while (t[i][k] == 0) {
-                    if (i++ > 3) {
-                        return 0;
-                    }
-                }
-
-                // Swap t[i] and t[k]
-                t[i] = t[i] + t[k]; t[k] = t[i] - t[k]; t[i] = t[i] - t[k];
-
-                tkk = t[k][k];
-
-                det *= -1;
-            }
-
-            for (i = k+1; i < 3; i++) {
-                q = t[i][k] / tkk;
-                for (j = k+1; j < 3; j++) {
-                    t[i][j] -= t[k][j] * q
-                }
-            }
-
-            det *= tkk;
-        }
-
-        return det;
+        return new geometry.TransformMatrix(
+            determinant * trans.d,
+            -determinant * trans.b,
+            -determinant * trans.c,
+            determinant * trans.a,
+            determinant * (trans.c * trans.ty - trans.d * trans.tx),
+            determinant * (trans.b * trans.tx - trans.a * trans.ty)
+        );
     },
 
     /**
-     * @returns {Float[]}
+     * Multiply 2 transform matrices together
+     * @param {geometry.TransformMatrix} lhs Left matrix
+     * @param {geometry.TransformMatrix} rhs Right matrix
+     * @returns {geometry.TransformMatrix} New transform matrix
      */
-    affineTransformInvert: function(trans) {
-        var newTrans = module.exports.affineTransformIdentity();
-
-        var t = util.copy(trans);
-
-        var k, i, j, q, tkk;
-        for (k = 0; k < 3; k++) {
-            tkk = t[k][k];
-
-            if (tkk == 0) {
-                i = k;
-                do {
-                    if (i++ > 3) {
-                        throw "Matrix not regular size";
-                    }
-                } while (t[i][k] == 0);
-
-                // Swap t[i] and t[k]
-                t[i] = t[i] + t[k];
-                t[k] = t[i] - t[k];
-                t[i] = t[i] - t[k];
-                newTrans[i] = newTrans[i] + newTrans[k];
-                newTrans[k] = newTrans[i] - newTrans[k];
-                newTrans[i] = newTrans[i] - newTrans[k];
-
-                tkk = t[k][k];
-            }
-
-            for (i = 0; i < 3; i++) {
-                if (i == k) {
-                    continue
-                }
-
-                q = t[i][k] / tkk;
-                t[i][k] = 0;
-
-                for (j = k+1; j < 3; j++) {
-                    t[i][j] -= t[k][j] * q;
-                }
-                for (j = 0; j < 3; j++) {
-                    newTrans[i][j] -= newTrans[k][j] * q;
-                }
-            }
-
-            for (j = k+1; j < 3; j++) {
-                t[k][j] /= tkk;
-            }
-            for (j = 0; j < 3; j++) {
-                newTrans[k][j] /= tkk;
-            }
-
-        }
-
-        return newTrans;
-       
-    },
-
-    /**
-     * Multiply 2 transform (3x3) matrices together
-     * @returns {Float[]} New transform matrix
-     */
-    affineTransformConcat: function(trans1, trans2) {
-        var newTrans = module.exports.affineTransformIdentity();
-
-        var x, y, i;
-        for (x = 0; x < 3; x++) {
-            for (y = 0; y < 3; y++) {
-                newTrans[y][x] = 0;
-                for (i = 0; i < 3; i++) {
-                    newTrans[y][x] += trans1[y][i] * trans2[i][x];
-                }
-            }
-        }
-
-        return newTrans;
+    affineTransformConcat: function (lhs, rhs) {
+        return new geometry.TransformMatrix(
+            lhs.a * rhs.a + lhs.b * rhs.c,
+            lhs.a * rhs.b + lhs.b * rhs.d,
+            lhs.c * rhs.a + lhs.d * rhs.c,
+            lhs.c * rhs.b + lhs.d * rhs.d,
+            lhs.tx * rhs.a + lhs.ty * rhs.c + rhs.tx,
+            lhs.tx * rhs.b + lhs.ty * rhs.d + rhs.ty
+        );
     },
 
     /**
      * @returns {Float}
      */
-    degreesToRadians: function(angle) {
+    degreesToRadians: function (angle) {
         return angle / 180.0 * Math.PI;
     },
 
     /**
      * @returns {Float}
      */
-    radiansToDegrees: function(angle) {
+    radiansToDegrees: function (angle) {
         return angle * (180.0 / Math.PI);
     },
 
     /**
-     * @returns {Float[]}
+     * Translate (move) a transform matrix
+     *
+     * @param {geometry.TransformMatrix} trans TransformMatrix to translate
+     * @param {Float} tx Amount to translate along X axis
+     * @param {Float} ty Amount to translate along Y axis
+     * @returns {geometry.TransformMatrix} A new TransformMatrix
      */
-    affineTransformTranslate: function(trans, x, y) {
-        // tx = 6, ty = 7
-
+    affineTransformTranslate: function (trans, tx, ty) {
         var newTrans = util.copy(trans);
-        newTrans[2][0] += x;
-        newTrans[2][1] += y;
-
+        newTrans.tx = trans.tx + trans.a * tx + trans.c * ty;
+        newTrans.ty = trans.ty + trans.b * tx + trans.d * ty;
         return newTrans;
     },
 
-    affineTransformRotate: function(trans, angle) {
-        // TODO
-        return trans;
-    },
+    /**
+     * Rotate a transform matrix
+     *
+     * @param {geometry.TransformMatrix} trans TransformMatrix to rotate
+     * @param {Float} angle Angle in radians
+     * @returns {geometry.TransformMatrix} A new TransformMatrix
+     */
+    affineTransformRotate: function (trans, angle) {
+        var sin = Math.sin(angle),
+            cos = Math.cos(angle);
 
-    affineTransformScale: function(trans, scale) {
-        // TODO
-        return trans;
+        return new geometry.TransformMatrix(
+            trans.a * cos + trans.c * sin,
+            trans.b * cos + trans.d * sin,
+            trans.c * cos - trans.a * sin,
+            trans.d * cos - trans.b * sin,
+            trans.tx,
+            trans.ty
+        );
     },
 
     /**
-     * @returns {Float[]} 3x3 identity matrix
+     * Scale a transform matrix
+     *
+     * @param {geometry.TransformMatrix} trans TransformMatrix to scale
+     * @param {Float} sx X scale factor
+     * @param {Float} [sy=sx] Y scale factor
+     * @returns {geometry.TransformMatrix} A new TransformMatrix
      */
-    affineTransformIdentity: function() {
-        return [[1, 0, 0],
-                [0, 1, 0],
-                [0, 0, 1]];
+    affineTransformScale: function (trans, sx, sy) {
+        if (sy === undefined) {
+            sy = sx;
+        }
+
+        return new geometry.TransformMatrix(trans.a * sx, trans.b * sx, trans.c * sy, trans.d * sy, trans.tx, trans.ty);
+    },
+
+    /**
+     * @returns {geometry.TransformMatrix} identity matrix
+     */
+    affineTransformIdentity: function () {
+        return new geometry.TransformMatrix(1, 0, 0, 1, 0, 0);
     }
 };
 
