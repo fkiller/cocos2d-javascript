@@ -6,7 +6,7 @@ var util = require('util'),
     evt = require('event'),
     Scheduler = require('../Scheduler').Scheduler,
     ActionManager = require('../ActionManager').ActionManager,
-    geom = require('geometry'), ccp = geom.ccp;
+    geo = require('geometry'), ccp = geo.ccp;
 
 var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     isCocosNode: true,
@@ -193,7 +193,15 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         }
     },
 
-    draw: function (context) {
+    /**
+     * Draws the node. Override to do custom drawing. If it's less efficient to
+     * draw only the area inside the rect then don't both. The result will be
+     * clipped to that area anyway.
+     *
+     * @param {CanvasRenderingContext2D|WebGLRenderingContext} context Canvas rendering context
+     * @param {geometry.Rect} rect Rectangular region that needs redrawing. Limit drawing to this area only if it's more efficient to do so.
+     */
+    draw: function (context, rect) {
         // All draw code goes here
     },
 
@@ -276,7 +284,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         ActionManager.get('sharedManager').removeAllActionsFromTarget(this);
     },
 
-    visit: function (context) {
+    visit: function (context, rect) {
         if (!this.visible) {
             return;
         }
@@ -285,19 +293,25 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
         this.transform(context);
 
+        // Adjust redraw region by nodes position
+        if (rect) {
+            var pos = this.get('position');
+            rect = new geo.Rect(rect.origin.x - pos.x, rect.origin.y - pos.y, rect.size.width, rect.size.height);
+        }
+
         // Draw background nodes
         util.each(this.children, function (child, i) {
             if (child.zOrder < 0) {
-                child.visit(context);
+                child.visit(context, rect);
             }
         });
 
-        this.draw(context);
+        this.draw(context, rect);
 
         // Draw foreground nodes
         util.each(this.children, function (child, i) {
             if (child.zOrder >= 0) {
-                child.visit(context);
+                child.visit(context, rect);
             }
         });
 
@@ -316,7 +330,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         }
 
         // Rotate
-        context.rotate(geom.degreesToRadians(this.get('rotation')));
+        context.rotate(geo.degreesToRadians(this.get('rotation')));
 
         // Scale
         context.scale(this.scaleX, this.scaleY);
@@ -332,25 +346,25 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
     nodeToParentTransform: function () {
         if (this.isTransformDirty) {
-            this.transformMatrix = geom.affineTransformIdentity();
+            this.transformMatrix = geo.affineTransformIdentity();
 
-            if (!this.isRelativeAnchorPoint && !geom.pointEqualToPoint(this.anchorPointInPixels, ccp(0, 0))) {
-                this.transformMatrix = geom.affineTransformTranslate(this.transformMatrix, this.anchorPointInPixels.x, this.anchorPointInPixels.y);
+            if (!this.isRelativeAnchorPoint && !geo.pointEqualToPoint(this.anchorPointInPixels, ccp(0, 0))) {
+                this.transformMatrix = geo.affineTransformTranslate(this.transformMatrix, this.anchorPointInPixels.x, this.anchorPointInPixels.y);
             }
             
-            if (!geom.pointEqualToPoint(this.position, ccp(0, 0))) {
-                this.transformMatrix = geom.affineTransformTranslate(this.transformMatrix, this.position.x, this.position.y);
+            if (!geo.pointEqualToPoint(this.position, ccp(0, 0))) {
+                this.transformMatrix = geo.affineTransformTranslate(this.transformMatrix, this.position.x, this.position.y);
             }
 
             if (this.rotation !== 0) {
-                this.transformMatrix = geom.affineTransformRotate(this.transformMatrix, -geom.degreesToRadians(this.rotation));
+                this.transformMatrix = geo.affineTransformRotate(this.transformMatrix, -geo.degreesToRadians(this.rotation));
             }
             if (!(this.scaleX == 1 && this.scaleY == 1)) {
-                this.transformMatrix = geom.affineTransformScale(this.transformMatrix, this.scaleX, this.scaleY);
+                this.transformMatrix = geo.affineTransformScale(this.transformMatrix, this.scaleX, this.scaleY);
             }
             
-            if (!geom.pointEqualToPoint(this.anchorPointInPixels, ccp(0, 0))) {
-                this.transformMatrix = geom.affineTransformTranslate(this.transformMatrix, -this.anchorPointInPixels.x, -this.anchorPointInPixels.y);
+            if (!geo.pointEqualToPoint(this.anchorPointInPixels, ccp(0, 0))) {
+                this.transformMatrix = geo.affineTransformTranslate(this.transformMatrix, -this.anchorPointInPixels.x, -this.anchorPointInPixels.y);
             }
             
             this.set('isTransformDirty', false);
@@ -369,18 +383,18 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
         var p;
         for (p = this.get('parent'); p; p = p.get('parent')) {
-            t = geom.affineTransformConcat(t, p.nodeToParentTransform());
+            t = geo.affineTransformConcat(t, p.nodeToParentTransform());
         }
 
         return t;
     },
 
     worldToNodeTransform: function () {
-        return geom.affineTransformInvert(this.nodeToWorldTransform());
+        return geo.affineTransformInvert(this.nodeToWorldTransform());
     },
 
     convertToNodeSpace: function (worldPoint) {
-        return geom.pointApplyAffineTransform(worldPoint, this.worldToNodeTransform());
+        return geo.pointApplyAffineTransform(worldPoint, this.worldToNodeTransform());
     },
 
     /**
@@ -413,8 +427,38 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
      */
     get_boundingBox: function () {
         var cs = this.get('contentSize');
-        var rect = geom.rectMake(0, 0, cs.width, cs.height);
-        return geom.rectApplyAffineTransform(rect, this.nodeToParentTransform());
+        var rect = geo.rectMake(0, 0, cs.width, cs.height);
+        rect = geo.rectApplyAffineTransform(rect, this.nodeToParentTransform());
+        return rect;
+    },
+
+    /**
+     * @getter worldBoundingBox
+     * @type geometry.Rect
+     */
+    get_worldBoundingBox: function () {
+        var cs = this.get('contentSize');
+
+        var rect = geo.rectMake(0, 0, cs.width, cs.height);
+        rect = geo.rectApplyAffineTransform(rect, this.nodeToWorldTransform());
+        return rect;
+    },
+
+    /**
+     * The area of the node currently visible on screen. Returns an rect even
+     * if visible is false.
+     *
+     * @getter visibleRect
+     * @type geometry.Rect
+     */
+    get_visibleRect: function () {
+        var s = require('../Director').Director.get('sharedDirector').get('winSize');
+        var rect = new geo.Rect(
+            0, 0,
+            s.width, s.height
+        );
+
+        return geo.rectApplyAffineTransform(rect, this.worldToNodeTransform());
     },
 
     /**

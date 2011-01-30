@@ -69,11 +69,15 @@ var RenderTexture = Node.extend(/** @lends cocos.nodes.RenderTexture# */{
     /**
      * Clear the canvas
      */
-    clear: function () {
-        this.canvas.width = this.canvas.width;
-        if (FLIP_Y_AXIS) {
-            this.context.scale(1, -1);
-            this.context.translate(0, -this.canvas.height);
+    clear: function (rect) {
+        if (rect) {
+            this.context.clearRect(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+        } else {
+            this.canvas.width = this.canvas.width;
+            if (FLIP_Y_AXIS) {
+                this.context.scale(1, -1);
+                this.context.translate(0, -this.canvas.height);
+            }
         }
     }
 });

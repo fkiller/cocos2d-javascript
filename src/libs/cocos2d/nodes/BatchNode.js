@@ -1,4 +1,4 @@
-/*globals module exports resource require BObject BArray*/
+/*globals module exports resource require BObject BArray SHOW_REDRAW_REGIONS*/
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
@@ -14,6 +14,7 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
     contentRect: null,
     renderTexture: null,
     dirty: true,
+    dirtyRegion: null,
     dynamicResize: false,
 
     /** @private
@@ -61,13 +62,13 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
 
         // Watch for changes in child
         evt.addListener(child, 'istransformdirty_changed', util.callback(this, function () {
-            this.set('dirty', true);
+            this.addDirtyRegion(child.get('boundingBox'));
         }));
         evt.addListener(child, 'visible_changed', util.callback(this, function () {
-            this.set('dirty', true);
+            this.addDirtyRegion(child.get('boundingBox'));
         }));
 
-        this.set('dirty', true);
+        this.addDirtyRegion(child.get('boundingBox'));
     },
 
     removeChild: function (opts) {
@@ -75,6 +76,18 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
 
         // TODO remove istransformdirty_changed and visible_changed listeners
 
+        this.set('dirty', true);
+    },
+
+    addDirtyRegion: function (rect) {
+        var region = this.get('dirtyRegion');
+        if (!region) {
+            region = util.copy(rect);
+        } else {
+            region = geo.rectUnion(region, rect);
+        }
+
+        this.set('dirtyRegion', region);
         this.set('dirty', true);
     },
 
@@ -103,27 +116,75 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
 
         this.transform(context);
 
+        var rect = this.get('dirtyRegion');
         // Only redraw if something changed
         if (this.dirty) {
-            this.renderTexture.clear();
+
+            if (rect) {
+                // Clip region to visible area
+                var s = require('../Director').Director.get('sharedDirector').get('winSize'),
+                    p = this.get('position');
+                var r = new geo.Rect(
+                    0, 0,
+                    s.width, s.height
+                );
+                r = geo.rectApplyAffineTransform(r, this.worldToNodeTransform());
+                rect = geo.rectIntersection(r, rect);
+
+                this.renderTexture.clear(rect);
+
+                this.renderTexture.context.save();
+                this.renderTexture.context.beginPath();
+                this.renderTexture.context.rect(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+                this.renderTexture.context.clip();
+                this.renderTexture.context.closePath();
+            } else {
+                this.renderTexture.clear();
+            }
+
             for (var i = 0, childLen = this.children.length; i < childLen; i++) {
                 var c = this.children[i];
                 if (c == this.renderTexture) {
                     continue;
                 }
-                c.visit(this.renderTexture.context);
+
+                // Draw children inside rect
+                if (!rect || geo.rectOverlapsRect(c.get('boundingBox'), rect)) {
+                    c.visit(this.renderTexture.context, rect);
+                }
             }
+
+            if (SHOW_REDRAW_REGIONS) {
+                if (rect) {
+                    this.renderTexture.context.beginPath();
+                    this.renderTexture.context.rect(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+                    this.renderTexture.context.fillStyle = "rgba(0, 0, 255, 0.5)";
+                    this.renderTexture.context.fill();
+                    this.renderTexture.context.closePath();
+                }
+            }
+
+            if (rect) {
+                this.renderTexture.context.restore();
+            }
+
             this.set('dirty', false);
+            this.set('dirtyRegion', null);
         }
 
         this.renderTexture.visit(context);
-
-        this.draw(context);
 
         context.restore();
 	},
 
 	draw: function (ctx) {
+    },
+
+    onEnter: function () {
+        evt.addListener(this.get('parent'), 'istransformdirty_changed', util.callback(this, function () {
+            var box = this.get('visibleRect');
+            this.addDirtyRegion(box);
+        }));
     }
 });
 

@@ -3,5 +3,7 @@
     "FLIP_Y_AXIS": false,
     
     // No implemented yet
-    "ENABLE_WEB_GL": false
+    "ENABLE_WEB_GL": false,
+
+    "SHOW_REDRAW_REGIONS": false
 }

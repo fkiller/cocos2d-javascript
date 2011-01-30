@@ -1,4 +1,4 @@
-/*globals module exports resource require BObject BArray FLIP_Y_AXIS*/
+/*globals module exports resource require BObject BArray FLIP_Y_AXIS SHOW_REDRAW_REGIONS*/
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
@@ -248,7 +248,26 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
             this.setNextScene();
         }
 
-        this._runningScene.visit(context);
+        var rect = new geo.Rect(0, 0, this.winSize.width, this.winSize.height);
+
+        if (rect) {
+            context.beginPath();
+            context.rect(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+            context.clip();
+            context.closePath();
+        }
+
+        this._runningScene.visit(context, rect);
+
+        if (SHOW_REDRAW_REGIONS) {
+            if (rect) {
+                context.beginPath();
+                context.rect(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+                context.fillStyle = "rgba(255, 0, 0, 0.5)";
+                //context.fill();
+                context.closePath();
+            }
+        }
 
         if (this.get('displayFPS')) {
             this.showFPS();
