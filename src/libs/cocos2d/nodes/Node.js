@@ -453,30 +453,6 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     },
 
     /**
-     * @getter acceptsFirstResponder
-     * @type Boolean
-     */
-    get_acceptsFirstResponder: function () {
-        return false;
-    },
-
-    /**
-     * @getter becomeFirstResponder
-     * @type Boolean
-     */
-    get_becomeFirstResponder: function () {
-        return true;
-    },
-
-    /**
-     * @getter resignFirstResponder
-     * @type Boolean
-     */
-    get_resignFirstResponder: function () {
-        return true;
-    },
-
-    /**
      * @getter boundingBox
      * @type geometry.Rect
      */
