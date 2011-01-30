@@ -10,16 +10,71 @@ var util = require('util'),
 
 var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     isCocosNode: true,
+
+    /**
+     * Is the node visible
+     * @type boolean
+     */
     visible: true,
+
+    /**
+     * Position relative to parent node
+     * @type geometry.Point
+     */
     position: null,
+
+    /**
+     * Parent node
+     * @type cocos.nodes.Node
+     */
     parent: null,
+
+    /**
+     * Unique tag to identify the node
+     * @type *
+     */
     tag: null,
+
+    /**
+     * Size of the node
+     * @type geometry.Size
+     */
     contentSize: null,
+
+    /**
+     * Nodes Z index. i.e. draw order
+     * @type Integer
+     */
     zOrder: 0,
+
+    /**
+     * Anchor point for scaling and rotation. 0x0 is top left and 1x1 is bottom right
+     * @type geometry.Point
+     */
     anchorPoint: null,
+
+    /**
+     * Anchor point for scaling and rotation in pixels from top left
+     * @type geometry.Point
+     */
     anchorPointInPixels: null,
+
+    /**
+     * Rotation angle in degrees
+     * @type Float
+     */
     rotation: 0,
+
+    /**
+     * X scale factor
+     * @type Float
+     */
     scaleX: 1,
+
+    /**
+     * Y scale factor
+     * @type Float
+     */
     scaleY: 1,
     isRunning: false,
     isRelativeAnchorPoint: true,
@@ -31,15 +86,15 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
     /**
      * The child Nodes
-     * @type {cocos.nodes.Node[]}
+     * @type cocos.nodes.Node[]
      */
     children: null,
 
     /**
-     * The base class all visual elements extend from
      * @memberOf cocos.nodes
-     * @constructs
+     * @class The base class all visual elements extend from
      * @extends BObject
+     * @constructs
      */
     init: function () {
         Node.superclass.init.call(this);

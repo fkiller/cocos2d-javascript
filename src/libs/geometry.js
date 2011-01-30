@@ -75,7 +75,15 @@ var geometry = {
     },
 
     /**
+     * @class
      * Transform matrix
+     *
+     * @param {Float} a
+     * @param {Float} b
+     * @param {Float} c
+     * @param {Float} d
+     * @param {Float} tx
+     * @param {Float} ty
      */
     TransformMatrix: function (a, b, c, d, tx, ty) {
         this.a = a;
@@ -282,6 +290,10 @@ var geometry = {
 
     /**
      * Returns the overlapping portion of 2 rectangles
+     *
+     * @param {geometry.Rect} lhsRect First rectangle
+     * @param {geometry.Rect} rhsRect Second rectangle
+     * @returns {geometry.Rect} The overlapping portion of the 2 rectangles
      */
     rectIntersection: function (lhsRect, rhsRect) {
 
