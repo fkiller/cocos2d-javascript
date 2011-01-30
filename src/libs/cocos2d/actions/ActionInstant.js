@@ -8,11 +8,10 @@ var util = require('util'),
 
 var ActionInstant = act.FiniteTimeAction.extend(/** @lends cocos.actions.ActionInstant */{
     /**
-     * Base class for actions that triggers instantly. They have no duration.
-     *
      * @memberOf cocos.actions
-     * @constructs
+     * @class Base class for actions that triggers instantly. They have no duration.
      * @extends cocos.actions.FiniteTimeAction
+     * @constructs
      */
     init: function (opts) {
         ActionInstant.superclass.init.call(this, opts);
@@ -37,11 +36,10 @@ var FlipX = ActionInstant.extend(/** @lends cocos.actions.FlipX# */{
     flipX: false,
 
     /**
-     * Flips a sprite horizontally
-     *
      * @memberOf cocos.actions
-     * @constructs
+     * @class Flips a sprite horizontally
      * @extends cocos.actions.ActionInstant
+     * @constructs
      *
      * @opt {Boolean} flipX Should the sprite be flipped
      */
@@ -67,11 +65,10 @@ var FlipY = ActionInstant.extend(/** @lends cocos.actions.FlipY# */{
     flipY: false,
 
     /**
-     * Flips a sprite vertically
-     *
      * @memberOf cocos.actions
-     * @constructs
+     * @class Flips a sprite vertically
      * @extends cocos.actions.ActionInstant
+     * @constructs
      *
      * @opt {Boolean} flipY Should the sprite be flipped
      */

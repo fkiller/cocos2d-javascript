@@ -13,7 +13,7 @@ var util = require('util'),
  */
 var Action = BObject.extend(/** @lends cocos.actions.Action# */{
     /**
-     * The cocos.Node the action is being performed on
+     * The Node the action is being performed on
      * @type cocos.nodes.Node
      */
     target: null,
@@ -48,8 +48,8 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
 
     /**
      * Called after the action has finished. It will set the 'target' to nil.
-     * <strong>Important</strong>: You should never call cocos.Action#stop manually.
-     * Instead, use cocos.Node#stopAction(action)
+     * <strong>Important</strong>: You should never call cocos.actions.Action#stop manually.
+     * Instead, use cocos.nodes.Node#stopAction(action)
      */
     stop: function () {
         this.target = null;
@@ -73,19 +73,16 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
     }
 });
 
-/** 
- *
- * Repeats an action forever. To repeat the an action for a limited number of
- * times use the cocos.Repeat action.
- */
 var RepeatForever = Action.extend(/** @lends cocos.actions.RepeatForever# */{
     other: null,
 
     /**
      * @memberOf cocos.actions
+     * @class Repeats an action forever. To repeat the an action for a limited
+     * number of times use the cocos.Repeat action.
      * @extends cocos.actions.Action
-     * @constructs
      * @param {cocos.actions.Action} action An action to repeat forever
+     * @constructs
      */
     init: function (action) {
         RepeatForever.superclass.init(this, action);

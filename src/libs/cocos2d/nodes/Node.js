@@ -250,7 +250,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
     /**
      * Draws the node. Override to do custom drawing. If it's less efficient to
-     * draw only the area inside the rect then don't both. The result will be
+     * draw only the area inside the rect then don't bother. The result will be
      * clipped to that area anyway.
      *
      * @param {CanvasRenderingContext2D|WebGLRenderingContext} context Canvas rendering context

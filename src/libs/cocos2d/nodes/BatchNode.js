@@ -188,15 +188,14 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
     }
 });
 
-var SpriteBatchNode = BatchNode.extend({
+var SpriteBatchNode = BatchNode.extend(/** @lends cocos.nodes.SpriteBatchNode# */{
     textureAtlas: null,
 
     /**
-     * A BatchNode that accepts only Sprite using the same texture
-     *
      * @memberOf cocos.nodes
-     * @constructs
+     * @class A BatchNode that accepts only Sprite using the same texture
      * @extends cocos.nodes.BatchNode
+     * @constructs
      *
      * @opt {String} file (Optional) Path to image to use as sprite atlas
      * @opt {Texture2D} texture (Optional) Texture to use as sprite atlas
