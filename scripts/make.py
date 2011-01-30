@@ -110,7 +110,7 @@ class Compiler(object):
         """
         Returns an array of paths pointing to all the config.js files for the app
         """
-        configs = [u'src/libs/cocos2d/config.js']
+        configs = [u'src/libs/cocos2d/config.js', u'cocos2d/src/libs/cocos2d/config.js']
         for source, dest in self.config['paths'].items():
             c = os.path.join(source, 'config.js')
             if os.path.exists(c):
@@ -126,8 +126,9 @@ class Compiler(object):
         """
         vals = {}
         for config in self.app_configs():
-            data = self.read_json_file(config)
-            vals.update(data)
+            if os.path.exists(config):
+                data = self.read_json_file(config)
+                vals.update(data)
 
 
         return vals
