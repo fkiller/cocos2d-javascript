@@ -82,7 +82,7 @@ class Compiler(object):
         code = ''
         files = self.scan_for_files(source_path)
         for src_file in files:
-            if src_file in self.app_configs():
+            if src_file.replace(os.sep, '/') in self.app_configs():
                 # Skip config files because they're JSON not JavaScript
                 continue
 
@@ -100,6 +100,7 @@ class Compiler(object):
         return code
 
     def dst_for_src(self, path):
+        path = path.replace(os.sep, '/')
         for source, dest in self.config['paths'].items():
             if path.startswith(source):
                 return re.sub('\/+', '/', re.sub(r'^' + source.replace('/', '\\/'), dest, path))
