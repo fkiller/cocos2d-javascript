@@ -11,9 +11,15 @@ var util = require('util'),
 	Node = require('./Node').Node;
 
 var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
+    partialDraw: false,
     contentRect: null,
     renderTexture: null,
     dirty: true,
+
+    /**
+     * Region to redraw
+     * @type geometry.Rect
+     */
     dirtyRegion: null,
     dynamicResize: false,
 
@@ -33,11 +39,13 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
      * @extends cocos.nodes.Node
      *
      * @opt {geometry.Size} size The size of the in-memory canvas used for drawing to
+     * @opt {Boolean} [partialDraw=false] Draw only the area visible on screen. Small maps may be slower in some browsers if this is true.
      */
 	init: function (opts) {
 		BatchNode.superclass.init.call(this, opts);
 
         var size = opts.size || geo.sizeMake(1, 1);
+        this.set('partialDraw', opts.partialDraw);
 
         evt.addListener(this, 'contentsize_changed', util.callback(this, this._resizeCanvas));
         
@@ -121,15 +129,17 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
         if (this.dirty) {
 
             if (rect) {
-                // Clip region to visible area
-                var s = require('../Director').Director.get('sharedDirector').get('winSize'),
-                    p = this.get('position');
-                var r = new geo.Rect(
-                    0, 0,
-                    s.width, s.height
-                );
-                r = geo.rectApplyAffineTransform(r, this.worldToNodeTransform());
-                rect = geo.rectIntersection(r, rect);
+                if (this.get('partialDraw')) {
+                    // Clip region to visible area
+                    var s = require('../Director').Director.get('sharedDirector').get('winSize'),
+                        p = this.get('position');
+                    var r = new geo.Rect(
+                        0, 0,
+                        s.width, s.height
+                    );
+                    r = geo.rectApplyAffineTransform(r, this.worldToNodeTransform());
+                    rect = geo.rectIntersection(r, rect);
+                }
 
                 this.renderTexture.clear(rect);
 
@@ -181,10 +191,12 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
     },
 
     onEnter: function () {
-        evt.addListener(this.get('parent'), 'istransformdirty_changed', util.callback(this, function () {
-            var box = this.get('visibleRect');
-            this.addDirtyRegion(box);
-        }));
+        if (this.get('partialDraw')) {
+            evt.addListener(this.get('parent'), 'istransformdirty_changed', util.callback(this, function () {
+                var box = this.get('visibleRect');
+                this.addDirtyRegion(box);
+            }));
+        }
     }
 });
 
