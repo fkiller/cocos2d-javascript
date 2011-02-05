@@ -199,10 +199,20 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
             }
 
             // Unpack the tilemap data
-            if (data.getAttribute('compression') == 'gzip') {
+            var compression = data.getAttribute('compression');
+            switch (compression) {
+            case 'gzip':
                 layer.set('tiles', gzip.unzipBase64AsArray(nodeValue, 4));
-            } else {
+                break;
+                
+            // Uncompressed
+            case null:
+            case '': 
                 layer.set('tiles', base64.decodeAsArray(nodeValue, 4));
+                break;
+
+            default: 
+                throw "Unsupported TMX Tile Map compression: " + compression;
             }
 
             this.layers.push(layer);
