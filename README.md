@@ -1,4 +1,4 @@
-Check the LICENSE file licensing details.
+Cocos2d-javascript is released under the MIT license.
 
 This is in the early stages of development and could break backwards compatibility at any time.
 
