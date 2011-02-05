@@ -1,3 +1,6 @@
 [submodule "tests/commonjs"]
 	path = tests/commonjs
 	url = https://github.com/commonjs/commonjs.git
+[submodule "support/node-builds"]
+	path = support/node-builds
+	url = https://github.com/ajaxorg/node-builds.git

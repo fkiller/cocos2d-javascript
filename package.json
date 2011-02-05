@@ -1,0 +1,21 @@
+{
+  "name": "cocos2d",
+  "description": "Port of cocos2d-iphone for the Web",
+  "version": "0.0.1",
+  "homepage": "http://cocos2d-javascript.org",
+  "engines": {
+    "node": ">= 0.2.0"
+  },
+  "author": "Ryan Williams <ryan@cocos2d-javascript.org>",
+  "main": "bin/cocos",
+  "repository": "https://github.com/ryanwilliams/cocos2d-javascript.git",
+  "bin": {
+    "cocos": "./bin/cocos-npm.js"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/ryanwilliams/cocos2d-javascript/blob/master/LICENSE"
+    }
+  ]
+}
