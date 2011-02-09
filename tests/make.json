@@ -2,18 +2,8 @@
     // Where to write the final file to
     "output":     "public/tests.js",
 
-    // Filetypes to embed into the javascript
-    "extensions": ["js", "gif", "jpeg", "jpg", "png", "tmx", "tsx", "plist"],
-
-    // Files to skip
-    "ignore":     null,
-
-    // Module that run at startup
-    "main_module": "main",
-
     // Paths to the code that should be included in the application
     "paths": {
-        "../src" : "/",
         "src/commonjs/tests/" : "/commonjs/",
         "src/" : "/"
     }
