@@ -4,23 +4,23 @@
 DIR=`dirname $0`
 
 case `uname -a` in
-Linux*x86_64*)  echo "Linux 64 bit"   
+Linux*x86_64*)
     "$DIR/../support/node-builds/lin64/node" "$DIR/cocos.js" "$@" 
 	;;
 
-Linux*i686*)  echo "Linux 32 bit"   
+Linux*i686*)
 	"$DIR/../support/node-builds/lin32/node" "$DIR/cocos.js" "$@"
 	;;
     
-Darwin*)  echo  "OSX"
+Darwin*)
     "$DIR/../support/node-builds/osx64/node" "$DIR/cocos.js" "$@"
     ;;
 
-CYGWIN*)  echo  "Cygwin"
+CYGWIN*)
     "$DIR/../support/node-builds/win32/node.exe" "$DIR/cocos.js" "$@"
     ;;
 
-MING*)  echo  "MingW"
+MING*)
     "$DIR/../support/node-builds/win32/node.exe" "$DIR/cocos.js" "$@"
     ;;    
 
