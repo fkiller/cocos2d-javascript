@@ -13,11 +13,8 @@
 
     // Paths to the code that should be included in the application
     "paths": {
-        "src" : "/",
-        "tests/commonjs/tests/" : "/commonjs/",
-        "tests/cocos2d/" : "/cocos2d/",
-        "tests/commonjs.js": "/commonjs.js",
-        "tests/qunit.js": "/qunit.js",
-        "tests/main.js": "/main.js"
+        "../src" : "/",
+        "src/commonjs/tests/" : "/commonjs/",
+        "src/" : "/"
     }
 }

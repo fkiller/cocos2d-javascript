@@ -10,7 +10,7 @@
   "main": "bin/cocos",
   "repository": "https://github.com/ryanwilliams/cocos2d-javascript.git",
   "bin": {
-    "cocos": "./bin/cocos-npm.js"
+    "cocos": "./bin/cocos.js"
   },
   "licenses": [
     {
