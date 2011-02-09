@@ -1,7 +1,11 @@
 #!/bin/sh -e
 # lets check if we have the submodules initialized
 
-DIR=`dirname $0`
+if [ -h $0 ]; then
+    DIR=$(dirname $(readlink $0))
+else
+    DIR=$(dirname $0)
+fi
 
 case `uname -a` in
 Linux*x86_64*)
