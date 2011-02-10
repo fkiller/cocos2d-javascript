@@ -1,6 +1,6 @@
 {
   "name": "cocos2d",
-  "description": "Port of cocos2d-iphone for the Web",
+  "description": "Port of cocos2d for the Web",
   "version": "0.0.1",
   "homepage": "http://cocos2d-javascript.org",
   "engines": {
