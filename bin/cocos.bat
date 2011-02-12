@@ -30,4 +30,4 @@ set UNIX_COCOS_DIR=%UNIX_COCOS_DIR:X:=/cygdrive/x%
 set UNIX_COCOS_DIR=%UNIX_COCOS_DIR:Y:=/cygdrive/y%
 set UNIX_COCOS_DIR=%UNIX_COCOS_DIR:Z:=/cygdrive/z%
 
-%COCOS_DIR%\support\node-builds\win32\node %UNIX_COCOS_DIR%/bin/cocos.js %1 %2 %3 %4 %5 %6 %7 %8 %9
+"%COCOS_DIR%\support\node-builds\win32\node" "%UNIX_COCOS_DIR%/bin/cocos.js" %1 %2 %3 %4 %5 %6 %7 %8 %9
