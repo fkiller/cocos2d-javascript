@@ -7,7 +7,7 @@ RequestExecutionLevel admin
 !define PRODUCT_NAME "Cocos2D JavaScript"
 !define PRODUCT_VERSION "v0.0.1"
 !define PRODUCT_WEB_SITE "http://cocos2d-javascript.org/"
-!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\New Project.exe"
+!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Create project.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
@@ -49,13 +49,13 @@ ShowUnInstDetails show
 Section "MainSection" SEC01
   SetOutPath "$INSTDIR\bin"
   SetOverwrite ifnewer
-  File "${ROOT_PATH}\bin\New Project.exe"
+  File "${ROOT_PATH}\bin\Create project.exe"
   CreateDirectory "$SMPROGRAMS\Cocos2D JavaScript"
-  CreateShortCut "$SMPROGRAMS\Cocos2D JavaScript\Create new project.lnk" "$INSTDIR\bin\New Project.exe"
-  File "${ROOT_PATH}\bin\Compile Project.exe"
-  CreateShortCut "$SMPROGRAMS\Cocos2D JavaScript\Compile project.lnk" "$INSTDIR\bin\Compile Project.exe"
-  File "${ROOT_PATH}\bin\Serve Project.exe"
-  CreateShortCut "$SMPROGRAMS\Cocos2D JavaScript\Serve project.lnk" "$INSTDIR\bin\Serve Project.exe"
+  CreateShortCut "$SMPROGRAMS\Cocos2D JavaScript\Create new project.lnk" "$INSTDIR\bin\Create project.exe"
+  File "${ROOT_PATH}\bin\Compile project.exe"
+  CreateShortCut "$SMPROGRAMS\Cocos2D JavaScript\Compile project.lnk" "$INSTDIR\bin\Compile project.exe"
+  File "${ROOT_PATH}\bin\Serve project.exe"
+  CreateShortCut "$SMPROGRAMS\Cocos2D JavaScript\Serve project.lnk" "$INSTDIR\bin\Serve project.exe"
   SetOverwrite try
   File "${ROOT_PATH}\bin\cocos.bat"
   File "${ROOT_PATH}\bin\cocos.js"
@@ -332,10 +332,10 @@ SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\bin\New Project.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\bin\Create project.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\New Project.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\Create project.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
 SectionEnd
@@ -556,9 +556,9 @@ Section Uninstall
   Delete "$INSTDIR\bin\cocos.sh"
   Delete "$INSTDIR\bin\cocos.js"
   Delete "$INSTDIR\bin\cocos.bat"
-  Delete "$INSTDIR\bin\Serve Project.exe"
-  Delete "$INSTDIR\bin\Compile Project.exe"
-  Delete "$INSTDIR\bin\New Project.exe"
+  Delete "$INSTDIR\bin\Serve project.exe"
+  Delete "$INSTDIR\bin\Compile project.exe"
+  Delete "$INSTDIR\bin\Create project.exe"
   Delete "$SMPROGRAMS\Cocos2D JavaScript\Uninstall.lnk"
   Delete "$SMPROGRAMS\Cocos2D JavaScript\Website.lnk"
   Delete "$SMPROGRAMS\Cocos2D JavaScript\Serve project.lnk"
