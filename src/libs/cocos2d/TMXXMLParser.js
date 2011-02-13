@@ -299,10 +299,10 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
             for(j = 0; j < objects.length; j++) {
                 var object = objects[j];
                 var objectValue = {
-                    x       : object.getAttribute('x'),
-                    y       : object.getAttribute('y'),
-                    width   : object.getAttribute('width'),
-                    height  : object.getAttribute('height')
+                    x       : parseInt(object.getAttribute('x'), 10),
+                    y       : parseInt(object.getAttribute('y'), 10),
+                    width   : parseInt(object.getAttribute('width'), 10),
+                    height  : parseInt(object.getAttribute('height'), 10)
                 };
                 if(object.getAttribute('name')) {
                     objectValue.name = object.getAttribute('name');
