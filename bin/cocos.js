@@ -15,4 +15,4 @@ var version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).versio
 
 sys.puts('cocos2d-javascript version ' + version);
 
-require('cocos').main();
+require('cocos2d').main();
