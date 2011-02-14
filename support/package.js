@@ -31,6 +31,16 @@ function generateNSISScript(files, callback) {
         removeFileList  = '',
         removeDirList   = '';
 
+    files = files.filter(function(file) {
+        // Ignore node-builds for other platforms
+        if (~file.indexOf('node-builds') && !~file.indexOf('win32')) {
+            return;
+        }
+
+        return file;
+    });
+
+
     // Generate the install and remove lists
     var prevDirname, i, len;
     for (i = 0, len = files.length; i < len; i++) {
@@ -103,7 +113,7 @@ function findFilesToPackage(dir, callback) {
         process.chdir(cwd);
 
         // Convert \n separated list of filenames into a sorted array
-        var fileList = (mainFileList.trim() + subFileList.trim()).split('\n').filter(function(file) {
+        var fileList = (mainFileList.trim() + '\n' + subFileList.trim()).split('\n').filter(function(file) {
             // Ignore entering submodule messages
             if (file.indexOf('Entering ') === 0) {
                 return;
@@ -113,12 +123,6 @@ function findFilesToPackage(dir, callback) {
             if (file.split('/').pop()[0] == '.' || file[file.length - 1] == '~') {
                 return;
             }
-
-            // Ignore node-builds for other platforms
-            if (~file.indexOf('node-builds') && !~file.indexOf('win32')) {
-                return;
-            }
-
 
             // Submodules appear in ls-files but aren't files. Skip them
             if (fs.statSync(path.join(dir, file)).isDirectory()) {
