@@ -1,3 +1,11 @@
 support/
-*~
 .*
+*.swp
+*.pyc
+*~
+jsdocs/
+docs/
+public/cocos2d.js
+public/tests.js
+Cocos2D\ JavaScript*Setup.exe
+Cocos2D-JavaScript*.tar.gz
