@@ -23,27 +23,28 @@ fi
 
 echo "Installing to: $install_to"
 
-mkdir -p $install_to
+mkdir -p "$install_to"
 
 cd $DIR
 
+IFS=$'\n'
 for file in `find * \( ! -regex '.*/\..*' \) -type f`
 do
     dst="$install_to/$file"
-    dst_dir=`dirname $dst`
-    if [ ! -d $dst_dir ]
+    dst_dir=`dirname "$dst"`
+    if [ ! -d "$dst_dir" ]
     then
-        mkdir -p $dst_dir
+        mkdir -p "$dst_dir"
     fi
 
-    cp $file $dst
+    cp "$file" "$dst"
 done
 
 cd -
 
 echo "All files copied."
 
-ln -s $install_to/bin/cocos.sh /usr/local/bin/cocos
+ln -s "$install_to/bin/cocos.sh" "/usr/local/bin/cocos"
 
 echo "Symlinked 'cocos' executable to /usr/local/bin/cocos\n"
 
