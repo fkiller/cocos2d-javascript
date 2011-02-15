@@ -39,7 +39,7 @@ RequestExecutionLevel admin
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "${ROOT_PATH}\cocos2d-javascript-${PRODUCT_VERSION}-windows.exe"
+OutFile "${ROOT_PATH}\cocos2d-javascript-${PRODUCT_VERSION}-windows-installer.exe"
 InstallDir "$PROGRAMFILES\${PRODUCT_NAME}"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
