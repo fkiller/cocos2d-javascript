@@ -1,8 +1,7 @@
-* Twitter: [@cocos2djs](http://twitter.com/cocos2djs)
-* Website: <http://cocos2d-javascript.org/>
-* Documentation: <http://cocos2d-javascript.org/documentation>
-* Forum: <http://cocos2d-javascript.org/forum>
-* Email: <ryan@cocos2d-javascript.org>
+Overview
+========
+
+Cocos2D JavaScript is an HTML5 port of the popular iPhone 2D graphics engine Cocos2D. It allows rapid development of 2D games and graphical applications which can run in any modern Web browser.
 
 Installation
 ============
@@ -133,6 +132,16 @@ License
 Cocos2D JavaScript is released under the MIT license. See LICENSE for more details.
 
 © 2010-2011 Ryan Williams <ryan@cocos2d-javascript.org>
+
+Links
+=====
+
+* Twitter: [@cocos2djs](http://twitter.com/cocos2djs)
+* Website: <http://cocos2d-javascript.org/>
+* Documentation: <http://cocos2d-javascript.org/documentation>
+* Forum: <http://cocos2d-javascript.org/forum>
+* Email: <ryan@cocos2d-javascript.org>
+
 
 [nodejs]: http://nodejs.org
 [npm]: http://npmjs.org
