@@ -25,6 +25,10 @@ else
     Darwin*)
         "$DIR/../support/node-builds/osx64/node" "$DIR/cocos.js" "$@"
         ;;
+        
+    SunOS*)
+        "$DIR/../support/node-builds/sol32/node" "$DIR/cocos.js" "$@"
+        ;;
 
     CYGWIN*)
         "$DIR/../support/node-builds/win32/node.exe" "$DIR/cocos.js" "$@"
