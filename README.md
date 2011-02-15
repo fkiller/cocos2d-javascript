@@ -15,7 +15,7 @@ Windows
 
 Download and launch the installer.
 
-<http://cocos2d-javascript.org/files/cocos2d-windows-latest.exe>
+<http://cocos2d-javascript.org/downloads>
 
 Linux or Mac OS X using npm
 ---------------------------
@@ -31,13 +31,7 @@ Linux or Mac OS X using ZIP archive
 If you don't have, or don't want to use npm, you can install by downloading the
 latest ZIP.
 
-<http://cocos2d-javascript.org/files/cocos2d-with-node-latest.zip>
-
-The above file is a few megabytes because it includes precompiled builds
-of Node.js for every platform. If you have Node installed and want a smaller
-download use this link.
-
-<http://cocos2d-javascript.org/files/cocos2d-latest.zip>
+<http://cocos2d-javascript.org/downloads>
 
 Then from your terminal run `sudo ./install.sh`. The script will copy Cocos2D
 JavaScript to a global location of your choice and symlink the executable to
