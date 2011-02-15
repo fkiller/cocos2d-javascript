@@ -1,8 +1,8 @@
 {
     "name": "cocos2d",
     "author": "Ryan Williams <ryan@cocos2d-javascript.org>",
-    "description": "Port of the cocos2d game engine for the Web",
-    "version": "0.0.1",
+    "description": "Port of the Cocos2D graphics engine to HTML5",
+    "version": "0.1.0",
     "homepage": "http://cocos2d-javascript.org/",
 
     "engines": {
