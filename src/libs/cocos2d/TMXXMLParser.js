@@ -69,6 +69,59 @@ var TMXLayerInfo = BObject.extend(/** @lends cocos.TMXLayerInfo# */{
     }
 });
 
+var TMXObjectGroup = BObject.extend(/** @lends cocos.TMXObjectGroup# */{
+    name: '',
+    properties: null,
+    offset: null,
+    objects: null,
+
+    /**
+     * @memberOf cocos
+     * @constructs
+     * @extends BObject
+     */
+    init: function () {
+        TMXObjectGroup.superclass.init.call(this);
+
+        this.properties = {};
+        this.objects = {};
+        this.offset = ccp(0, 0);
+    },
+
+    /**
+     * return the value for the specific property name
+     *
+     * @opt {String} name Property name
+     * @returns {String} Property value
+     */
+    propertyNamed: function(opts) {
+        var propertyName = opts.name
+        return this.properties[propertyName];
+    },
+
+    /**
+     * Return the object for the specific object name. It will return the 1st
+     * object found on the array for the given name.
+     *
+     * @opt {String} name Object name
+     * @returns {Object} Object
+     */
+    objectNamed: function(opts) {
+        var objectName = opts.name;
+        var object = null;
+        
+        this.objects.forEach(function(item) {
+         
+            if(item.name == objectName) {
+                object = item;
+            }
+        });
+        if(object != null) {
+            return object;
+        }
+    }
+});
+
 var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
     filename: '',
     orientation: 0,
@@ -220,9 +273,60 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
 
         // TODO PARSE <tile>
 
+        // PARSE <objectgroup>
+        var objectgroups = map.getElementsByTagName('objectgroup');
+        for (i = 0, len = objectgroups.length; i < len; i++) {
+            var g = objectgroups[i],
+                objectGroup = TMXObjectGroup.create();
+
+            objectGroup.set('name', g.getAttribute('name'));
+            
+            var properties = g.querySelectorAll('objectgroup > properties property'),
+                propertiesValue = {};
+            
+            for(j = 0; j < properties.length; j++) {
+                var property = properties[j];
+                if(property.getAttribute('name')) {
+                    propertiesValue[property.getAttribute('name')] = property.getAttribute('value');
+                }
+            }
+           
+            objectGroup.set('properties', propertiesValue);
+
+            var objectsArray = [],
+                objects = g.querySelectorAll('object');
+
+            for(j = 0; j < objects.length; j++) {
+                var object = objects[j];
+                var objectValue = {
+                    x       : parseInt(object.getAttribute('x'), 10),
+                    y       : parseInt(object.getAttribute('y'), 10),
+                    width   : parseInt(object.getAttribute('width'), 10),
+                    height  : parseInt(object.getAttribute('height'), 10)
+                };
+                if(object.getAttribute('name')) {
+                    objectValue.name = object.getAttribute('name');
+                }
+                if(object.getAttribute('type')) {
+                    objectValue.name = object.getAttribute('type');
+                }
+                properties = object.querySelectorAll('property');
+                for(var k = 0; k < properties.length; k++) {
+                    property = properties[k];
+                    if(property.getAttribute('name')) {
+                        objectValue[property.getAttribute('name')] = property.getAttribute('value');
+                    }
+                }
+                objectsArray.push(objectValue);
+
+            }
+            objectGroup.set('objects', objectsArray);
+            this.objectGroups.push(objectGroup);
+        }
     }
 });
 
 exports.TMXMapInfo = TMXMapInfo;
 exports.TMXLayerInfo = TMXLayerInfo;
 exports.TMXTilesetInfo = TMXTilesetInfo;
+exports.TMXObjectGroup = TMXObjectGroup;
