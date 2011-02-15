@@ -33,7 +33,7 @@ function generateNSISScript(files, callback) {
 
     files = files.filter(function(file) {
         // Ignore node-builds for other platforms
-        if (~file.indexOf('node-builds') && !~file.indexOf('win32')) {
+        if (~file.indexOf('node-builds') && !~file.indexOf('win')) {
             return;
         }
 
@@ -139,19 +139,38 @@ function findFilesToPackage(dir, callback) {
 }
 
 function generateZip(files, zipName) {
-    sys.puts('Generating .tar.gz archive : ' + zipName);
+    zipName += '.zip';
+
+    sys.puts('Generating .zip archive : ' + zipName);
     if (path.exists(zipName)) {
         fs.unlink(zipName);
     }
 
-    var tar = spawn('tar', ['-czf', zipName + '.tar.gz'].concat(files));
+    var tar = spawn('zip', ['-9', zipName].concat(files));
 
     tar.stderr.on('data', function(data) {
         sys.print(data);
     });
     
     tar.on('exit', function() {
-        sys.puts('Generated .tar.gz archive');
+        sys.puts('Generated ' + zipName + ' archive');
+    });
+}
+function generateGZip(files, zipName) {
+    zipName += '.tar.gz';
+    sys.puts('Generating .tar.gz archive : ' + zipName);
+    if (path.exists(zipName)) {
+        fs.unlink(zipName);
+    }
+
+    var tar = spawn('tar', ['-czf', zipName].concat(files));
+
+    tar.stderr.on('data', function(data) {
+        sys.print(data);
+    });
+    
+    tar.on('exit', function() {
+        sys.puts('Generated ' + zipName + ' archive');
     });
 }
 
@@ -179,8 +198,31 @@ function generateZip(files, zipName) {
 
                 var cwd = process.cwd();
                 process.chdir(dir);
-                // Generate zip archive
-                generateZip(filesToPackage, 'Cocos2D-JavaScript-v' + VERSION);
+
+                // Generate zip archives for all platforms
+                generateGZip(filesToPackage, 'cocos2d-javascript-v' + VERSION + '-all');
+
+                function removeNodeBuilds(files, platform) {
+                    return files.filter(function(file) {
+                        if (~file.indexOf('node-builds') && !~file.indexOf(platform) && !~file.indexOf('tmp') && !~file.indexOf('etc')) {
+                            return;
+                        }
+
+                        return file;
+                    });
+                }
+
+                // Mac OS X
+                generateGZip(removeNodeBuilds(filesToPackage, 'osx'), 'cocos2d-javascript-v' + VERSION + '-mac');
+
+                // Linux
+                generateGZip(removeNodeBuilds(filesToPackage, 'lin'), 'cocos2d-javascript-v' + VERSION + '-linux');
+
+                // Windows
+                generateZip(removeNodeBuilds(filesToPackage, 'win'), 'cocos2d-javascript-v' + VERSION + '-windows');
+
+                // Solaris
+                generateGZip(removeNodeBuilds(filesToPackage, 'sol'), 'cocos2d-javascript-v' + VERSION + '-solaris');
             });
         });
     });

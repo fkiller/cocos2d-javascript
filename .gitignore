@@ -5,5 +5,6 @@ jsdocs/
 docs/
 public/cocos2d.js
 public/tests.js
-Cocos2D\ JavaScript*Setup.exe
-Cocos2D-JavaScript*.tar.gz
+cocos2d-*.exe
+cocos2d-*.gz
+cocos2d-*.zip
