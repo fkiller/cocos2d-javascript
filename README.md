@@ -1,87 +1,144 @@
-Cocos2d-javascript is released under the MIT license.
-
-This is in the early stages of development and could break backwards compatibility at any time.
-
-* You can find me on Twitter: @cocos2djs
-* Email: <ryan@cocos2d-javascript.org>
+* Twitter: [@cocos2djs](http://twitter.com/cocos2djs)
 * Website: <http://cocos2d-javascript.org/>
 * Documentation: <http://cocos2d-javascript.org/documentation>
 * Forum: <http://cocos2d-javascript.org/forum>
+* Email: <ryan@cocos2d-javascript.org>
 
-Creating a new project
-----------------------
+Installation
+============
 
-To create a new project you first need to get a copy of cocos2d-javascript. Grab the latest using git
+Follow the instructions for your given platform or skip ahead to 'manual
+installation' if you want to install from git.
 
-    git clone git://github.com/ryanwilliams/cocos2d-javascript.git
+Windows
+-------
 
-To create your initial project simply navigate to the cocos2d-javascript directory and run
+Download and launch the installer.
 
-    ./cocos new ~/Projects/MyApp
+<http://cocos2d-javascript.org/files/cocos2d-windows-latest.exe>
 
-This will create a new directory at that path with everything you need to
-get started. It will also add cocos2d-javascript as a git submodule. If you
-prefer to just copy the cocos2d-javascript code instead of using a git
-submodule then use
+Linux or Mac OS X using npm
+---------------------------
 
-    ./cocos new ~/Projects/MyApp -g
+If you have [Node.js][nodejs] and [npm][npm] installed you can install Cocos2D
+JavaScript as a package.
 
-Getting things running
-----------------------
+    npm install cocos2d
 
-To get your project running simply navigate to the newly created directory run
-the development web server
+Linux or Mac OS X using ZIP archive
+-----------------------------------
 
-    ./cocos server
+If you don't have, or don't want to use npm, you can install by downloading the
+latest ZIP.
 
-And visit <http://localhost:4000/>. There you will see a simple application
-outputting your application name.
+<http://cocos2d-javascript.org/files/cocos2d-with-node-latest.zip>
+
+The above file is a few megabytes because it includes precompiled builds
+of Node.js for every platform. If you have Node installed and want a smaller
+download use this link.
+
+<http://cocos2d-javascript.org/files/cocos2d-latest.zip>
+
+Then from your terminal run `sudo ./install.sh`. This script will copy Cocos2D
+JavaScript to a global location of your choice and symlink the executable to
+/usr/local/bin/cocos
+
+Manual Installation (all platforms)
+-----------------------------------
+
+You don't need to use the installer if you don't want to. You can download the
+latest ZIP or checkout the latest version from github. 
+
+If you checkout from github and don't have Node.js installed, be sure to also
+get the submodules as they include precompiled Node.js binaries.
+
+    git submodule update --init
+
+With all the code read you can copy it to any place you want and from there use
+the 'cocos.sh', 'cocos.bat' or .EXEs in _bin/_ as you would normally.
+
+Creating your first project
+===========================
+
+On Windows use the 'Create project' shortcut from your start menu to create and
+select a location for your new project.
+
+On Linux and Mac OS X open your terminal and run:
+
+    cocos new ~/my_first_project
+
+This will create a barebones project which simply draws the project name in the
+centre of the screen.
+
+To test that it's working, on Windows double click the 'Serve project' shortcut
+in your project's folder.
+
+On Linux and Mac OS X from your terminal run:
+
+    cd ~/my_first_project
+    cocos server
+
+Now visit http://localhost:4000 and with a bit of luck you'll have something showing.
 
 Developing
-----------
+==========
 
 Everything you write will be in separate JavaScript files. These will be
 compiled into a single file which also includes all your other resources
 including images, sound files, map files, etc.
 
-The entry point for the code is path defined as "main.js" inside the in "make.js" file.
+The entry point for the code is the file _src/main.js_ which has an
+`exports.main` function that is called on startup.
 
-In the public/index.html you will see &lt;script src="appname.js"&gt; tag to include the code.
-
-The web server will compile your code each time it is requested. This makes
-development a lot easier.
-
-Run ./cocos server -h for help.
+The HTML for your page is in _public/index.html_.
 
 Compiling your application
---------------------------
+==========================
 
-To compile your code you run ./cocos make. Which reads the make.js file
-to work out what you want to build.
+You should never use the development server in production. It's very slow and
+insecure. Instead you will compile your application into a single JavaScript
+file. This file includes everything, you don't need to worry about hosting any
+external resources such as images and tilemaps.
 
-When built the resulting .js file will contain all your code aswell as all your
-images and map files. This means you only need to update a single file and only
-a single HTTP request is needed to serve everything.
+To do this, on Windows double click the 'Compile project' shortcut in your
+project's folder.
 
-Run ./cocos make -h for help.
+On Linux and Mac OS X in your terminal run:
+
+    cd ~/my_first_project
+    cocos make
+
+The file will be written to _build/_. You can run this through a JavaScript
+minifier if you so choose. You will get a very good reduction in size if your
+Web server is configured to gzip JavaScript files.
 
 Browser Support
----------------
+===============
 
-I intend for this to work in Firefox, Chrome, Safari, Opera and IE9. I
-mostly develop using Chrome so that's likely to have the best compatibility
-until I get close to a proper release.
+Everything should work in Firefox 3, Chrome, Safari, Opera and IE9. If that is
+not the case then please file a bug report.
 
 Documentation
--------------
+=============
+
+Documentation can be viewed online at http://cocos2d-javascript.org/documentation
+
+If you wish to generate the documentation yourself you need to follow these steps.
 
 Download JsDoc 2.3 (or 2.4) from <http://code.google.com/p/jsdoc-toolkit/>.
 
 Copy that to /usr/local/jsdoc-toolkit or wherever you like and then run:
     
-    JSDOC_HOME=/usr/local/jsdoc-toolkit ./jsdoc
+    JSDOC_HOME=/usr/local/jsdoc-toolkit ./bin/jsdoc
 
 The documentation will appear in the 'docs' directory.
 
-© 2010 Ryan Williams <ryan@cocos2d-javascript.org>
+License
+=======
 
+Cocos2D JavaScript is released under the MIT license. See LICENSE for more details.
+
+© 2010-2011 Ryan Williams <ryan@cocos2d-javascript.org>
+
+[nodejs]: http://nodejs.org
+[npm]: http://npmjs.org
