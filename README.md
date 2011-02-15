@@ -39,7 +39,7 @@ download use this link.
 
 <http://cocos2d-javascript.org/files/cocos2d-latest.zip>
 
-Then from your terminal run `sudo ./install.sh`. This script will copy Cocos2D
+Then from your terminal run `sudo ./install.sh`. The script will copy Cocos2D
 JavaScript to a global location of your choice and symlink the executable to
 /usr/local/bin/cocos
 
@@ -121,7 +121,7 @@ not the case then please file a bug report.
 Documentation
 =============
 
-Documentation can be viewed online at http://cocos2d-javascript.org/documentation
+Documentation can be viewed online at <http://cocos2d-javascript.org/documentation>
 
 If you wish to generate the documentation yourself you need to follow these steps.
 
