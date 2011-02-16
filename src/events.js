@@ -1,12 +1,11 @@
 /*global module exports require*/
 /*jslint white: true, undef: true, nomen: true, bitwise: true, regexp: true, newcap: true*/
 
-
 /**
  * @namespace
  * Support for listening for and triggering events
  */
-var event = {};
+var events = {};
 
 /**
  * @private
@@ -39,7 +38,7 @@ var eventID = 0;
 /**
  * @class
  * Represents an event being listened to. You should not create instances of
- * this directly, it is instead returned by event.addListener
+ * this directly, it is instead returned by events.addListener
  *
  * @extends Object
  * 
@@ -47,7 +46,7 @@ var eventID = 0;
  * @param {String} eventName Name of the event to listen for
  * @param {Function} handler Callback to fire when the event triggers
  */
-event.EventListener = function (source, eventName, handler) {
+events.EventListener = function (source, eventName, handler) {
     /**
      * Object to listen to for an event
      * @type Object 
@@ -82,10 +81,10 @@ event.EventListener = function (source, eventName, handler) {
  * @param {String} eventName Name of the event to listen for
  * @param {Function} handler Callback to fire when the event triggers
  *
- * @returns {event.EventListener} The event listener. Pass to removeListener to destroy it.
+ * @returns {events.EventListener} The event listener. Pass to removeListener to destroy it.
  */
-event.addListener = function (source, eventName, handler) {
-    return new event.EventListener(source, eventName, handler);
+events.addListener = function (source, eventName, handler) {
+    return new events.EventListener(source, eventName, handler);
 };
 
 /**
@@ -94,7 +93,7 @@ event.addListener = function (source, eventName, handler) {
  * @param {Object} source Object to trigger the event on
  * @param {String} eventName Name of the event to trigger
  */
-event.trigger = function (source, eventName) {
+events.trigger = function (source, eventName) {
     var listeners = getListeners(source, eventName),
         args = Array.prototype.slice.call(arguments, 2),
         eventID,
@@ -113,9 +112,9 @@ event.trigger = function (source, eventName) {
 /**
  * Remove a previously registered event listener
  *
- * @param {event.EventListener} listener EventListener to remove, as returned by event.addListener
+ * @param {events.EventListener} listener EventListener to remove, as returned by events.addListener
  */
-event.removeListener = function (listener) {
+events.removeListener = function (listener) {
     delete getListeners(listener.source, listener.eventName)[listener.eventID];
 };
 
@@ -125,7 +124,7 @@ event.removeListener = function (listener) {
  * @param {Object} source Object to remove listeners from
  * @param {String} eventName Name of event to remove listeners from
  */
-event.clearListeners = function (source, eventName) {
+events.clearListeners = function (source, eventName) {
     var listeners = getListeners(source, eventName),
         eventID;
 
@@ -134,7 +133,7 @@ event.clearListeners = function (source, eventName) {
         if (listeners.hasOwnProperty(eventID)) {
             var l = listeners[eventID];
             if (l) {
-                event.removeListener(l);
+                events.removeListener(l);
             }
         }
     }
@@ -145,18 +144,18 @@ event.clearListeners = function (source, eventName) {
  *
  * @param {Object} source Object to remove listeners from
  */
-event.clearInstanceListeners = function (source, eventName) {
+events.clearInstanceListeners = function (source) {
     var listeners = getListeners(source),
         eventID;
 
-    for (eventName in listeners) {
+    for (var eventName in listeners) {
         if (listeners.hasOwnProperty(eventName)) {
             var el = listeners[eventName];
             for (eventID in el) {
                 if (el.hasOwnProperty(eventID)) {
                     var l = el[eventID];
                     if (l) {
-                        event.removeListener(l);
+                        events.removeListener(l);
                     }
                 }
             }
@@ -164,4 +163,4 @@ event.clearInstanceListeners = function (source, eventName) {
     }
 };
 
-module.exports = event;
+module.exports = events;

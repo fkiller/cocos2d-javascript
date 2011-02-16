@@ -3,7 +3,7 @@
 "use strict";
 
 var util = require('util'),
-    evt = require('event'),
+    evt = require('events'),
     Node = require('./Node').Node,
     geo = require('geometry'),
     Sprite = require('./Sprite').Sprite,

@@ -4,7 +4,7 @@
 
 var Node = require('./Node').Node,
     util = require('util'),
-    evt = require('event'),
+    evt = require('events'),
     Director = require('../Director').Director,
     ccp    = require('geometry').ccp,
     EventDispatcher = require('../EventDispatcher').EventDispatcher;

@@ -3,7 +3,7 @@
 "use strict";
 
 var util = require('util'),
-    evt = require('event'),
+    evt = require('events'),
     geo = require('geometry'),
     ccp = geo.ccp,
     TextureAtlas = require('../TextureAtlas').TextureAtlas,

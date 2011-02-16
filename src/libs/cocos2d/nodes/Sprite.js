@@ -3,7 +3,7 @@
 "use strict";
 
 var util = require('util'),
-    evt = require('event'),
+    evt = require('events'),
     Director = require('../Director').Director,
     TextureAtlas = require('../TextureAtlas').TextureAtlas,
     Node = require('./Node').Node,

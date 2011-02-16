@@ -1,9 +1,9 @@
-/*globals module exports resource require BObject BArray*/
+/*globals module exports resource require*/
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
 var util = require('util'),
-    evt = require('event');
+    events = require('events');
 
 
 /**
@@ -150,8 +150,8 @@ BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
     /**
      * @private
      */
-    triggerChanged: function(key, oldVal) {
-        evt.trigger(this, key.toLowerCase() + '_changed', oldVal);
+    triggerChanged: function (key, oldVal) {
+        events.trigger(this, key.toLowerCase() + '_changed', oldVal);
     },
 
     /**
@@ -172,7 +172,7 @@ BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
         var oldVal = this.get(key);
 
         // When bound property changes, trigger a 'changed' event on this one too
-        getBindings(this)[key] = evt.addListener(target, targetKey.toLowerCase() + '_changed', function (oldVal) {
+        getBindings(this)[key] = events.addListener(target, targetKey.toLowerCase() + '_changed', function (oldVal) {
             self.triggerChanged(key, oldVal);
         });
 
@@ -191,7 +191,7 @@ BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
         }
 
         delete getBindings(this)[key];
-        evt.removeListener(binding);
+        events.removeListener(binding);
         // Grab current value from bound property
         var val = this.get(key);
         delete getAccessors(this)[key];
@@ -217,7 +217,7 @@ BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
      * @getter id
      * @type Integer
      */
-    get_id: function() {
+    get_id: function () {
         if (!this._id) {
             this._id = ++objectID;
         }
@@ -231,7 +231,7 @@ BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
  * Create a new instance of this object
  * @returns {BObject} New instance of this object
  */
-BObject.create = function() {
+BObject.create = function () {
     var ret = new this();
     ret.init.apply(ret, arguments);
     return ret;
@@ -324,7 +324,7 @@ var BArray = BObject.extend(/** @lends BArray# */{
         var oldVal = this.array[i];
         this.array[i] = value;
 
-        evt.trigger(this, 'set_at', i, oldVal);
+        events.trigger(this, 'set_at', i, oldVal);
     },
 
     /**
@@ -336,7 +336,7 @@ var BArray = BObject.extend(/** @lends BArray# */{
     insertAt: function (i, value) {
         this.array.splice(i, 0, value);
         this.set('length', this.array.length);
-        evt.trigger(this, 'insert_at', i);
+        events.trigger(this, 'insert_at', i);
     },
 
     /**
@@ -349,7 +349,7 @@ var BArray = BObject.extend(/** @lends BArray# */{
         var oldVal = this.array[i];
         this.array.splice(i, 1);
         this.set('length', this.array.length);
-        evt.trigger(this, 'remove_at', i, oldVal);
+        events.trigger(this, 'remove_at', i, oldVal);
 
         return oldVal;
     },

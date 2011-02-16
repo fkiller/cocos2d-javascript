@@ -3,7 +3,7 @@
 "use strict";
 
 var util = require('util'),
-    evt = require('event'),
+    evt = require('events'),
     Scheduler = require('../Scheduler').Scheduler,
     ActionManager = require('../ActionManager').ActionManager,
     geo = require('geometry'), ccp = geo.ccp;
