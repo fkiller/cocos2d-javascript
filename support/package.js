@@ -33,7 +33,7 @@ function generateNSISScript(files, callback) {
 
     files = files.filter(function(file) {
         // Ignore node-builds for other platforms
-        if (~file.indexOf('node-builds') && !~file.indexOf('win')) {
+        if (~file.indexOf('node-builds') && !~file.indexOf('win') && !~file.indexOf('tmp') && !~file.indexOf('etc')) {
             return;
         }
 
