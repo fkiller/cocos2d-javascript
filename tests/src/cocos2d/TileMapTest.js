@@ -1,4 +1,4 @@
-/*globals module exports resource require*/
+/*globals module exports resource require FLIP_Y_AXIS console*/
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
@@ -13,6 +13,7 @@ var util = require('util'),
 var sceneIdx = -1;
 var transitions = [
     "TMXOrthoTest2",
+    "TMXOrthoObjectsTest",
     "TMXIsoTest"
 ];
 
@@ -153,6 +154,68 @@ tests.TMXIsoTest = TileDemo.extend({
         map.set('position', ccp(-ms.width * ts.width / 2, -ms.height * ts.height / 2));
 
         //map.runAction(actions.MoveTo.create({duration: 1.0, position: ccp(-ms.width * ts.width / 2, -ms.height * ts.height / 2)}));
+    }
+});
+
+tests.TMXOrthoObjectsTest = TileDemo.extend({
+    title: 'TMX Ortho object test',
+    subtitle: 'You should see a white box around the 3 platforms',
+
+    init: function () {
+        tests.TMXOrthoObjectsTest.superclass.init.call(this);
+
+        var map = nodes.TMXTiledMap.create({file: module.dirname + "/resources/TileMaps/ortho-objects.tmx"});
+        this.addChild({child: map, z: -1, tag: kTagTileMap});
+		
+		var s = map.get('contentSize');
+
+		console.log("ContentSize: %f, %f", s.width, s.height);
+		console.log("----> Iterating over all the group objects");
+
+        var group = map.getObjectGroup({name: 'Object Group 1'}),
+            objs  = group.get('objects');
+        for (var i = 0, len = objs.length; i < len; i++) {
+            var obj = objs[i];
+            console.log("Object: ", obj);
+        }
+
+		console.log("----> Fetching 1 object by name");
+		var platform = group.getObject({name: "platform"});
+		console.log("platform: ", platform);
+    },
+
+    draw: function (ctx) {
+        var map = this.getChild({tag: kTagTileMap}),
+            group = map.getObjectGroup({name: 'Object Group 1'}),
+            objs = group.get('objects');
+
+        ctx.save();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+
+        if (FLIP_Y_AXIS) {
+            ctx.scale(1, -1);
+            ctx.translate(0, -1024);
+        }
+
+        for (var i = 0, len = objs.length; i < len; i++) {
+            var obj = objs[i];
+
+            var x = obj.x,
+                y = obj.y,
+                width = obj.width,
+                height = obj.height;
+
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + width, y);
+            ctx.lineTo(x + width, y + height);
+            ctx.lineTo(x, y + height);
+            ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
     }
 });
 
