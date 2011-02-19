@@ -159,9 +159,9 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
     pauseTarget: function (target) {
     },
 
-	resumeTarget: function (target) {
-		// TODO
-	}
+    resumeTarget: function (target) {
+        // TODO
+    }
 });
 
 util.extend(ActionManager, /** @lends cocos.ActionManager */{

@@ -15,14 +15,14 @@ var kMenuStateWaiting = 0;
 /** @private
  * @constant */
 var kMenuStateTrackingTouch = 1;
-	
+    
 
 var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
-	mouseDelegatePriority: (-Number.MAX_VALUE + 1),
-	state: kMenuStateWaiting,
-	selectedItem: null,
-	opacuty: 255,
-	color: null,
+    mouseDelegatePriority: (-Number.MAX_VALUE + 1),
+    state: kMenuStateWaiting,
+    selectedItem: null,
+    opacuty: 255,
+    color: null,
 
     /**
      * A fullscreen node used to render a selection of menu options
@@ -33,36 +33,36 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
      *
      * @opt {cocos.nodes.MenuItem[]} items An array of MenuItems to draw on the menu
      */
-	init: function (opts) {
-		Menu.superclass.init.call(this, opts);
+    init: function (opts) {
+        Menu.superclass.init.call(this, opts);
 
-		var items = opts.items;
+        var items = opts.items;
 
-		this.set('isMouseEnabled', true);
-		
+        this.set('isMouseEnabled', true);
+        
         var s = Director.get('sharedDirector').get('winSize');
 
-		this.set('isRelativeAnchorPoint', false);
-		this.anchorPoint = ccp(0.5, 0.5);
-		this.set('contentSize', s);
+        this.set('isRelativeAnchorPoint', false);
+        this.anchorPoint = ccp(0.5, 0.5);
+        this.set('contentSize', s);
 
-		this.set('position', ccp(s.width / 2, s.height / 2));
+        this.set('position', ccp(s.width / 2, s.height / 2));
 
 
-		if (items) {
-			var z = 0;
-			util.each(items, util.callback(this, function (item) {
-				this.addChild({child: item, z: z++});
-			}));
-		}
+        if (items) {
+            var z = 0;
+            util.each(items, util.callback(this, function (item) {
+                this.addChild({child: item, z: z++});
+            }));
+        }
 
         
-	},
+    },
 
-	addChild: function (opts) {
-		if (!opts.child instanceof MenuItem) {
-			throw "Menu only supports MenuItem objects as children";
-		}
+    addChild: function (opts) {
+        if (!opts.child instanceof MenuItem) {
+            throw "Menu only supports MenuItem objects as children";
+        }
 
         Menu.superclass.addChild.call(this, opts);
     },

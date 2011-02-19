@@ -8,7 +8,7 @@ var util = require('util'),
     ccp = geo.ccp,
     TextureAtlas = require('../TextureAtlas').TextureAtlas,
     RenderTexture = require('./RenderTexture').RenderTexture,
-	Node = require('./Node').Node;
+    Node = require('./Node').Node;
 
 var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
     partialDraw: false,
@@ -41,20 +41,20 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
      * @opt {geometry.Size} size The size of the in-memory canvas used for drawing to
      * @opt {Boolean} [partialDraw=false] Draw only the area visible on screen. Small maps may be slower in some browsers if this is true.
      */
-	init: function (opts) {
-		BatchNode.superclass.init.call(this, opts);
+    init: function (opts) {
+        BatchNode.superclass.init.call(this, opts);
 
         var size = opts.size || geo.sizeMake(1, 1);
         this.set('partialDraw', opts.partialDraw);
 
         evt.addListener(this, 'contentsize_changed', util.callback(this, this._resizeCanvas));
         
-		this._dirtyRects = [];
+        this._dirtyRects = [];
         this.set('contentRect', geo.rectMake(0, 0, size.width, size.height));
         this.renderTexture = RenderTexture.create(size);
         this.renderTexture.sprite.set('isRelativeAnchorPoint', false);
         this.addChild({child: this.renderTexture});
-	},
+    },
 
     addChild: function (opts) {
         BatchNode.superclass.addChild.call(this, opts);
@@ -185,9 +185,9 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
         this.renderTexture.visit(context);
 
         context.restore();
-	},
+    },
 
-	draw: function (ctx) {
+    draw: function (ctx) {
     },
 
     onEnter: function () {
@@ -232,8 +232,8 @@ var SpriteBatchNode = BatchNode.extend(/** @lends cocos.nodes.SpriteBatchNode# *
      * @type cocos.Texture2D
      */
     get_texture: function () {
-		return this.textureAtlas ? this.textureAtlas.texture : null;
-	}
+        return this.textureAtlas ? this.textureAtlas.texture : null;
+    }
 
 });
 

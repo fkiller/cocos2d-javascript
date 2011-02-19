@@ -11,19 +11,19 @@ var TMXOrientation = /** @lends cocos.TMXOrientation */{
      * Orthogonal orientation
      * @constant
      */
-	TMXOrientationOrtho: 1,
+    TMXOrientationOrtho: 1,
 
     /**
      * Hexagonal orientation
      * @constant
      */
-	TMXOrientationHex: 2,
+    TMXOrientationHex: 2,
 
     /**
      * Isometric orientation
      * @constant
      */
-	TMXOrientationIso: 3
+    TMXOrientationIso: 3
 };
 
 module.exports = TMXOrientation;

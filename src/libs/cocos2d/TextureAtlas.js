@@ -3,20 +3,20 @@
 "use strict";
 
 var util = require('util'),
-	Texture2D = require('./Texture2D').Texture2D;
+    Texture2D = require('./Texture2D').Texture2D;
 
 
 /* QUAD STRUCTURE
  quad = {
-	 drawRect: <rect>, // Where the quad is drawn to
-	 textureRect: <rect>  // The slice of the texture to draw in drawRect
+     drawRect: <rect>, // Where the quad is drawn to
+     textureRect: <rect>  // The slice of the texture to draw in drawRect
  }
 */
 
 var TextureAtlas = BObject.extend(/** @lends cocos.TextureAtlas# */{
-	quads: null,
-	imgElement: null,
-	texture: null,
+    quads: null,
+    imgElement: null,
+    texture: null,
 
     /**
      * A single texture that can represent lots of smaller images
@@ -29,48 +29,48 @@ var TextureAtlas = BObject.extend(/** @lends cocos.TextureAtlas# */{
      * @opt {Texture2D|HTMLImageElement} [data] Image data to read from
      * @opt {CanvasElement} [canvas] A canvas to use as a texture
      */
-	init: function (opts) {
-		var file = opts.file,
-			data = opts.data,
-			texture = opts.texture,
-			canvas = opts.canvas;
+    init: function (opts) {
+        var file = opts.file,
+            data = opts.data,
+            texture = opts.texture,
+            canvas = opts.canvas;
 
         if (canvas) {
             // If we've been given a canvas element then we'll use that for our image
             this.imgElement = canvas;
         } else {
             texture = Texture2D.create({texture: texture, file: file, data: data});
-			this.set('texture', texture);
-			this.imgElement = texture.get('imgElement');
+            this.set('texture', texture);
+            this.imgElement = texture.get('imgElement');
         }
 
-		this.quads = [];
-	},
+        this.quads = [];
+    },
 
-	insertQuad: function (opts) {
-		var quad = opts.quad,
-			index = opts.index || 0;
+    insertQuad: function (opts) {
+        var quad = opts.quad,
+            index = opts.index || 0;
 
-		this.quads.splice(index, 0, quad);
-	},
-	removeQuad: function (opts) {
-		var index = opts.index;
+        this.quads.splice(index, 0, quad);
+    },
+    removeQuad: function (opts) {
+        var index = opts.index;
 
-		this.quads.splice(index, 1);
-	},
+        this.quads.splice(index, 1);
+    },
 
 
-	drawQuads: function (ctx) {
-		util.each(this.quads, util.callback(this, function (quad) {
+    drawQuads: function (ctx) {
+        util.each(this.quads, util.callback(this, function (quad) {
             if (!quad) {
                 return;
             }
 
-			this.drawQuad(ctx, quad);
-		}));
-	},
+            this.drawQuad(ctx, quad);
+        }));
+    },
 
-	drawQuad: function (ctx, quad) {
+    drawQuad: function (ctx, quad) {
         var sx = quad.textureRect.origin.x,
             sy = quad.textureRect.origin.y,
             sw = quad.textureRect.size.width, 
@@ -104,14 +104,14 @@ var TextureAtlas = BObject.extend(/** @lends cocos.TextureAtlas# */{
         ctx.scale(scaleX, scaleY);
 
         var img = this.get('imgElement');
-		ctx.drawImage(img, 
-			sx, sy, // Draw slice from x,y
-			sw, sh, // Draw slice size
-			dx, dy, // Draw at 0, 0
-			dw, dh  // Draw size
-		);
+        ctx.drawImage(img, 
+            sx, sy, // Draw slice from x,y
+            sw, sh, // Draw slice size
+            dx, dy, // Draw at 0, 0
+            dw, dh  // Draw size
+        );
         ctx.scale(1, 1);
-	}
+    }
 });
 
 exports.TextureAtlas = TextureAtlas;

@@ -187,7 +187,7 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
             }
         }
 
-	},
+    },
 
     unscheduleAllSelectorsForTarget: function (target) {
     },
@@ -204,7 +204,7 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         }
     },
 
-	resumeTarget: function (target) {
+    resumeTarget: function (target) {
         var element = this.hashForMethods[target.get('id')];
         if (element) {
             element.paused = false;
@@ -215,7 +215,7 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         if (elementUpdate) {
             elementUpdate.paused = false;
         }
-	}
+    }
 });
 
 util.extend(Scheduler, /** @lends cocos.Scheduler */{

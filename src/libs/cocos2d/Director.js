@@ -333,7 +333,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
 
             this._fpsLabel.set('string', 'FPS: ' + (Math.round(frameRate * 100) / 100).toString());
         }
-		
+
 
         var s = this.get('winSize');
         this._fpsLabel.set('position', ccp(10, s.height - 10));
