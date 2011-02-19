@@ -1,4 +1,4 @@
-/*globals module exports resource require BObject BArray*/
+/*globals module exports resource require BObject BArray console*/
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
@@ -102,19 +102,26 @@ var TMXTiledMap = Node.extend(/** @lends cocos.nodes.TMXTiledMap# */{
      * @opt {String} name The object group name
      * @returns {cocos.TMXObjectGroup} The object group
      */
-    objectGroupNamed: function(opts) {
+    getObjectGroup: function (opts) {
         var objectGroupName = opts.name,
             objectGroup = null;
 
-        this.objectGroups.forEach(function(item) {
-
-            if(item.name == objectGroupName) {
+        this.objectGroups.forEach(function (item) {
+            if (item.name == objectGroupName) {
                 objectGroup = item;
             }
         });
-        if(objectGroup != null) {
+        if (objectGroup !== null) {
             return objectGroup;
         }
+    },
+
+    /**
+     * @deprected Since v0.2. You should now use cocos.TMXTiledMap#getObjectGroup.
+     */
+    objectGroupNamed: function (opts) {
+        console.warn('TMXTiledMap#objectGroupNamed is deprected. Use TMXTiledMap#getObjectGroup instread');
+        return this.getObjectGroup(opts);
     }
 });
 

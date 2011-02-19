@@ -47,7 +47,7 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
 
         TMXLayer.superclass.init.call(this, {file: tex});
 
-		this.set('anchorPoint', ccp(0, 0));
+        this.set('anchorPoint', ccp(0, 0));
 
         this.layerName = layerInfo.get('name');
         this.layerSize = layerInfo.get('layerSize');

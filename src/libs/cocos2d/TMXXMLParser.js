@@ -1,4 +1,4 @@
-/*globals module exports resource require BObject BArray DOMParser*/
+/*globals module exports resource require BObject BArray DOMParser console*/
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
@@ -89,36 +89,51 @@ var TMXObjectGroup = BObject.extend(/** @lends cocos.TMXObjectGroup# */{
     },
 
     /**
-     * return the value for the specific property name
+     * Get the value for the specific property name
      *
      * @opt {String} name Property name
      * @returns {String} Property value
      */
-    propertyNamed: function(opts) {
-        var propertyName = opts.name
+    getProperty: function (opts) {
+        var propertyName = opts.name;
         return this.properties[propertyName];
     },
 
     /**
-     * Return the object for the specific object name. It will return the 1st
+     * @deprected Since v0.2. You should now use cocos.TMXObjectGroup#getProperty
+     */
+    propertyNamed: function (opts) {
+        console.warn('TMXObjectGroup#propertyNamed is deprected. Use TMXTiledMap#getProperty instread');
+        return this.getProperty(opts);
+    },
+
+    /**
+     * Get the object for the specific object name. It will return the 1st
      * object found on the array for the given name.
      *
      * @opt {String} name Object name
      * @returns {Object} Object
      */
-    objectNamed: function(opts) {
+    getObject: function (opts) {
         var objectName = opts.name;
         var object = null;
         
-        this.objects.forEach(function(item) {
-         
-            if(item.name == objectName) {
+        this.objects.forEach(function (item) {
+            if (item.name == objectName) {
                 object = item;
             }
         });
-        if(object != null) {
+        if (object !== null) {
             return object;
         }
+    },
+
+    /**
+     * @deprected Since v0.2. You should now use cocos.TMXObjectGroup#getProperty
+     */
+    objectNamed: function (opts) {
+        console.warn('TMXObjectGroup#objectNamed is deprected. Use TMXObjectGroup#getObject instread');
+        return this.getObject(opts);
     }
 });
 
@@ -180,7 +195,7 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
 
         // PARSE <tilesets>
         var tilesets = map.getElementsByTagName('tileset');
-        var i, len, s;
+        var i, j, len, jen, s;
         for (i = 0, len = tilesets.length; i < len; i++) {
             var t = tilesets[i];
 
@@ -247,7 +262,7 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
             // nodes up into multiple nodes. So, we'll stitch them back
             // together.
             var nodeValue = '';
-            for (var j = 0, jen = data.childNodes.length; j < jen; j++) {
+            for (j = 0, jen = data.childNodes.length; j < jen; j++) {
                 nodeValue += data.childNodes[j].nodeValue;
             }
 
@@ -282,11 +297,12 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
             objectGroup.set('name', g.getAttribute('name'));
             
             var properties = g.querySelectorAll('objectgroup > properties property'),
-                propertiesValue = {};
+                propertiesValue = {},
+                property;
             
-            for(j = 0; j < properties.length; j++) {
-                var property = properties[j];
-                if(property.getAttribute('name')) {
+            for (j = 0; j < properties.length; j++) {
+                property = properties[j];
+                if (property.getAttribute('name')) {
                     propertiesValue[property.getAttribute('name')] = property.getAttribute('value');
                 }
             }
@@ -296,7 +312,7 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
             var objectsArray = [],
                 objects = g.querySelectorAll('object');
 
-            for(j = 0; j < objects.length; j++) {
+            for (j = 0; j < objects.length; j++) {
                 var object = objects[j];
                 var objectValue = {
                     x       : parseInt(object.getAttribute('x'), 10),
@@ -304,16 +320,16 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
                     width   : parseInt(object.getAttribute('width'), 10),
                     height  : parseInt(object.getAttribute('height'), 10)
                 };
-                if(object.getAttribute('name')) {
+                if (object.getAttribute('name')) {
                     objectValue.name = object.getAttribute('name');
                 }
-                if(object.getAttribute('type')) {
+                if (object.getAttribute('type')) {
                     objectValue.name = object.getAttribute('type');
                 }
                 properties = object.querySelectorAll('property');
-                for(var k = 0; k < properties.length; k++) {
+                for (var k = 0; k < properties.length; k++) {
                     property = properties[k];
-                    if(property.getAttribute('name')) {
+                    if (property.getAttribute('name')) {
                         objectValue[property.getAttribute('name')] = property.getAttribute('value');
                     }
                 }
