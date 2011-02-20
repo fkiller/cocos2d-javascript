@@ -100,9 +100,14 @@ BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
     set: function (key, value) {
         var accessor = getAccessors(this)[key],
             oldVal = this.get(key);
+
+
+        this.triggerBeforeChanged(key, oldVal);
+
         if (accessor) {
             accessor.target.set(accessor.key, value);
         } else {
+
             if (this['set_' + key]) {
                 this['set_' + key](value);
             } else {
@@ -145,6 +150,13 @@ BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
         if (accessor) {
             accessor.target.notify(accessor.key, oldVal);
         }
+    },
+
+    /**
+     * @private
+     */
+    triggerBeforeChanged: function (key, oldVal) {
+        events.trigger(this, key.toLowerCase() + '_before_changed', oldVal);
     },
 
     /**
