@@ -159,6 +159,32 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
         }
     },
 
+    /**
+     * Get the tile at a specifix tile coordinate
+     *
+     * @param {geometry.Point} pos Position of tile to get in tile coordinates (not pixels)
+     * @returns {cocos.nodes.Sprite} The tile
+     */
+    tileAt: function (pos) {
+        var layerSize = this.get('layerSize'),
+            tiles = this.get('tiles');
+
+        if (pos.x < 0 || pos.y < 0 || pos.x >= layerSize.width || pos.y >= layerSize.height) {
+            throw "TMX Layer: Invalid position";
+        }
+
+        var tile,
+            gid = this.tileGIDAt(pos);
+
+        // if GID is 0 then no tile exists at that point
+        if (gid) {
+            var z = pos.x + pos.y * layerSize.width;
+            tile = this.getChild({tag: z});
+        }
+
+        return tile;
+    },
+
 
     tileGID: function (pos) {
         var tilesPerRow = this.get('layerSize').width,
@@ -166,6 +192,10 @@ var TMXLayer = SpriteBatchNode.extend(/** @lends cocos.nodes.TMXLayer# */{
 
         return this.tiles[tilePos];
     },
+    tileGIDAt: function (pos) {
+        return this.tileGID(pos);
+    },
+
     removeTile: function (pos) {
         var gid = this.tileGID(pos);
         if (gid === 0) {
