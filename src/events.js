@@ -78,13 +78,21 @@ events.EventListener = function (source, eventName, handler) {
  * Register an event listener
  *
  * @param {Object} source Object to listen to for an event
- * @param {String} eventName Name of the event to listen for
+ * @param {String|Stringp[} eventName Name or Array of names of the event(s) to listen for
  * @param {Function} handler Callback to fire when the event triggers
  *
- * @returns {events.EventListener} The event listener. Pass to removeListener to destroy it.
+ * @returns {events.EventListener|events.EventListener[]} The event listener(s). Pass to removeListener to destroy it.
  */
 events.addListener = function (source, eventName, handler) {
-    return new events.EventListener(source, eventName, handler);
+    if (eventName instanceof Array) {
+        var listeners = [];
+        for (var i = 0, len = eventName.length; i < len; i++) {
+            listeners.push(new events.EventListener(source, eventName[i], handler));
+        }
+        return listeners;
+    } else {
+        return new events.EventListener(source, eventName, handler);
+    }
 };
 
 /**
