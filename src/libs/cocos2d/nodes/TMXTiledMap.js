@@ -95,6 +95,26 @@ var TMXTiledMap = Node.extend(/** @lends cocos.nodes.TMXTiledMap# */{
         //console.log("cocos2d: Warning: TMX Layer '%s' has no tiles", layerInfo.name);
         return tileset;
     },
+
+    /**
+     * Get a layer
+     *
+     * @opt {String} name The name of the layer to get
+     * @returns {cocos.nodes.TMXLayer} The layer requested
+     */
+    getLayer: function (opts) {
+        var layerName = opts.name,
+            layer = null;
+
+        this.get('children').forEach(function (item) {
+            if (item instanceof TMXLayer && item.layerName == layerName) {
+                layer = item;
+            }
+        });
+        if (layer !== null) {
+            return layer;
+        }
+    },
     
     /**
      * Return the ObjectGroup for the secific group
