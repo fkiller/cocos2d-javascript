@@ -69,10 +69,14 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
         // TODO handle texture resize
 
         // Watch for changes in child
-        evt.addListener(child, 'istransformdirty_changed', util.callback(this, function () {
-            this.addDirtyRegion(child.get('boundingBox'));
-        }));
-        evt.addListener(child, 'visible_changed', util.callback(this, function () {
+        var watchEvents = ['position_before_changed',
+                           'scalex_before_changed',
+                           'scaley_before_changed',
+                           'rotation_before_changed',
+                           'anchorpoint_before_changed',
+                           'opacity_before_changed',
+                           'visible_before_changed'];
+        evt.addListener(child, watchEvents, util.callback(this, function () {
             this.addDirtyRegion(child.get('boundingBox'));
         }));
 

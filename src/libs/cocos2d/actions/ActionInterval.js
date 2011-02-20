@@ -4,7 +4,8 @@
 
 var util = require('util'),
     act = require('./Action'),
-    ccp = require('geometry').ccp;
+    geo = require('geometry'),
+    ccp = geo.ccp;
 
 var ActionInterval = act.FiniteTimeAction.extend(/** @lends cocos.actions.ActionInterval# */{
     /**
@@ -214,7 +215,7 @@ var RotateTo = ActionInterval.extend(/** @lends cocos.actions.RotateTo# */{
     diffAngle: 0,
 
     /**
-     * Rotates a cocos.Node object to a certain angle by modifying its rotation
+     * @class Rotates a cocos.Node object to a certain angle by modifying its rotation
      * attribute. The direction will be decided by the shortest angle.
      * 
      * @memberOf cocos.actions
@@ -294,6 +295,65 @@ var RotateBy = RotateTo.extend(/** @lends cocos.actions.RotateBy# */{
 
     copy: function () {
         return RotateBy.create({duration: this.duration, angle: this.angle});
+    }
+});
+
+var MoveTo = ActionInterval.extend(/** @lends cocos.actions.MoveTo# */{
+    delta: null,
+    startPosition: null,
+    endPosition: null,
+
+    /**
+     * @class Animates moving a cocos.nodes.Node object to a another point.
+     * 
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInterval
+     *
+     * @opt {Float} duration Number of seconds to run action for
+     * @opt {geometry.Point} position Destination poisition
+     */
+    init: function (opts) {
+        MoveTo.superclass.init.call(this, opts);
+
+        this.set('endPosition', util.copy(opts.position));
+    },
+
+    startWithTarget: function (target) {
+        MoveTo.superclass.startWithTarget.call(this, target);
+        
+        this.set('startPosition', util.copy(target.get('position')));
+        this.set('delta', geo.ccpSub(this.get('endPosition'), this.get('startPosition')));
+    },
+
+    update: function (t) {
+        var startPosition = this.get('startPosition'),
+            delta = this.get('delta');
+        this.target.set('position', ccp(startPosition.x + delta.x * t, startPosition.y + delta.y * t));
+    }
+});
+
+var MoveBy = MoveTo.extend(/** @lends cocos.actions.MoveBy# */{
+    /**
+     * Animates moving a cocos.node.Node object by a given number of pixels
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.MoveTo
+     *
+     * @opt {Float} duration Number of seconds to run action for
+     * @opt {geometry.Point} position Number of pixels to move by
+     */
+    init: function (opts) {
+        MoveBy.superclass.init.call(this, opts);
+
+        this.set('delta', util.copy(opts.position));
+    },
+
+    startWithTarget: function (target) {
+        var dTmp = this.get('delta');
+        MoveBy.superclass.startWithTarget.call(this, target);
+        this.set('delta', dTmp);
     }
 });
 
@@ -384,6 +444,10 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
                 this.currentActionEndDuration += currentAction.duration;
             }
         }
+    },
+
+    copy: function () {
+        return Sequence.create({actions: this.get('actions')});
     }
 });
 
@@ -455,5 +519,7 @@ exports.ScaleTo = ScaleTo;
 exports.ScaleBy = ScaleBy;
 exports.RotateTo = RotateTo;
 exports.RotateBy = RotateBy;
+exports.MoveTo = MoveTo;
+exports.MoveBy = MoveBy;
 exports.Sequence = Sequence;
 exports.Animate = Animate;
