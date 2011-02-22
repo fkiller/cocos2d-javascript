@@ -12,6 +12,7 @@ var util = require('util'),
 
 var sceneIdx = -1;
 var transitions = [
+    "TMXReadWriteTest",
     "TMXOrthoTest2",
     "TMXOrthoObjectsTest",
     "TMXIsoTest"
@@ -216,6 +217,46 @@ tests.TMXOrthoObjectsTest = TileDemo.extend({
         ctx.closePath();
         ctx.stroke();
         ctx.restore();
+    }
+});
+
+tests.TMXReadWriteTest = TileDemo.extend({
+    title: 'TMX Read/Write test',
+
+    init: function () {
+        tests.TMXReadWriteTest.superclass.init.call(this);
+
+        var map = nodes.TMXTiledMap.create({file: module.dirname + "/resources/TileMaps/orthogonal-test2.tmx"});
+        this.addChild({child: map, z: 0, tag: kTagTileMap});
+
+
+		var s = map.get('contentSize');
+		console.log("ContentSize: %f, %f", s.width, s.height);
+
+
+		var layer = map.getLayer({name: "Layer 0"});
+		var tile0 = layer.tileAt(ccp(1, 63)),
+            tile1 = layer.tileAt(ccp(2, 63)),
+            tile2 = layer.tileAt(ccp(2, 62));
+
+
+        tile0.set('anchorPoint', ccp(0.5, 0.5));
+        tile1.set('anchorPoint', ccp(0.5, 0.5));
+        tile2.set('anchorPoint', ccp(0.5, 0.5));
+
+        var move = actions.MoveBy.create({duration: 0.5, position: ccp(0, 160)}),
+            rotate = actions.RotateBy.create({duration: 2.0, angle: 360}),
+            scale = actions.ScaleBy.create({duration: 2.0, scale: 5});
+
+
+        var seq0 = actions.Sequence.create({actions: [move, rotate, scale]}), /*, scale, opacity, fadein, scaleback, finish, nil];*/
+            seq1 = seq0.copy(),
+            seq2 = seq0.copy();
+
+        tile0.runAction(seq0);
+        tile1.runAction(seq1);
+        tile2.runAction(seq2);
+
     }
 });
 
