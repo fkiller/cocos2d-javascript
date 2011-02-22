@@ -92,9 +92,16 @@ var BatchNode = Node.extend(/** @lends cocos.nodes.BatchNode# */{
     },
 
     addDirtyRegion: function (rect) {
+        // Increase rect slightly to compensate for subpixel artifacts
+        rect = util.copy(rect);
+        rect.origin.x -= 2;
+        rect.origin.y -= 2;
+        rect.size.width += 4;
+        rect.size.height += 4;
+
         var region = this.get('dirtyRegion');
         if (!region) {
-            region = util.copy(rect);
+            region = rect;
         } else {
             region = geo.rectUnion(region, rect);
         }
