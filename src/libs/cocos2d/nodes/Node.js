@@ -374,11 +374,11 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     },
     transform: function (context) {
         // Translate
-        if (this.isRelativeAnchorPoint && (this.anchorPointInPixels.x !== 0 || this.anchorPointInPixels !== 0)) {
+        if (this.isRelativeAnchorPoint && (this.anchorPointInPixels.x !== 0 || this.anchorPointInPixels.y !== 0)) {
             context.translate(Math.round(-this.anchorPointInPixels.x), Math.round(-this.anchorPointInPixels.y));
         }
 
-        if (this.anchorPointInPixels.x !== 0 || this.anchorPointInPixels !== 0) {
+        if (this.anchorPointInPixels.x !== 0 || this.anchorPointInPixels.y !== 0) {
             context.translate(Math.round(this.position.x + this.anchorPointInPixels.x), Math.round(this.position.y + this.anchorPointInPixels.y));
         } else {
             context.translate(Math.round(this.position.x), Math.round(this.position.y));
@@ -390,7 +390,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         // Scale
         context.scale(this.scaleX, this.scaleY);
  
-        if (this.anchorPointInPixels.x !== 0 || this.anchorPointInPixels !== 0) {
+        if (this.anchorPointInPixels.x !== 0 || this.anchorPointInPixels.y !== 0) {
             context.translate(Math.round(-this.anchorPointInPixels.x), Math.round(-this.anchorPointInPixels.y));
         }
     },
