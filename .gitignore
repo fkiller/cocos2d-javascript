@@ -8,3 +8,5 @@ public/tests.js
 cocos2d-*.exe
 cocos2d-*.gz
 cocos2d-*.zip
+.DS_Store
+nbproject
