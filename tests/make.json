@@ -2,6 +2,8 @@
     // Where to write the final file to
     "output":     "public/tests.js",
 
+    "pack_images": false,
+
     // Paths to the code that should be included in the application
     "paths": {
         "src/commonjs/tests/" : "/commonjs/",

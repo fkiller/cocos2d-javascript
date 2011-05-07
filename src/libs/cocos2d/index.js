@@ -5,7 +5,7 @@
 var util = require('util'),
     path = require('path');
 
-var modules = 'SpriteFrame SpriteFrameCache Director Animation AnimationCache Scheduler ActionManager TMXXMLParser'.w();
+var modules = 'RemoteImage SpriteFrame SpriteFrameCache Director Animation AnimationCache Scheduler ActionManager TMXXMLParser'.w();
 
 /**
  * @namespace All cocos2d objects live in this namespace
