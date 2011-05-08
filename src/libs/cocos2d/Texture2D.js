@@ -4,7 +4,7 @@
 
 var util = require('util'),
     events = require('events'),
-    RemoteImage = require('./RemoteImage').RemoteImage;
+    RemoteResource = require('./RemoteResource').RemoteResource;
 
 var Texture2D = BObject.extend(/** @lends cocos.Texture2D# */{
     imgElement: null,
@@ -35,9 +35,9 @@ var Texture2D = BObject.extend(/** @lends cocos.Texture2D# */{
 
         this.size = {width: 0, height: 0};
 
-        if (data instanceof RemoteImage) {
+        if (data instanceof RemoteResource) {
             events.addListener(data, 'load', util.callback(this, this.dataDidLoad));
-            this.set('imgElement', data.loadImage());
+            this.set('imgElement', data.load());
         } else {
             this.set('imgElement', data);
             this.dataDidLoad(data);
@@ -47,6 +47,7 @@ var Texture2D = BObject.extend(/** @lends cocos.Texture2D# */{
     dataDidLoad: function (data) {
         this.isLoaded = true;
         this.set('size', {width: this.imgElement.width, height: this.imgElement.height});
+        events.trigger(self, 'load', self);
     },
 
     drawAtPoint: function (ctx, point) {
