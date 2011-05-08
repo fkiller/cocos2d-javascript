@@ -49,92 +49,158 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      *
      * @param {HTMLElement} view Any HTML element to add the application to
      */
-    attachInView: function (view) {
-        if (!view.tagName) {
-            throw "Director.attachInView must be given a HTML DOM Node";
-        }
+		attachInView: function (view) {
+			if (!view.tagName) {
+				throw "Director.attachInView must be given a HTML DOM Node";
+			}
 
-        while (view.firstChild) {
-            view.removeChild(view.firstChild);
-        }
+			while (view.firstChild) {
+				view.removeChild(view.firstChild);
+			}
 
-        var canvas = document.createElement('canvas');
-        this.set('canvas', canvas);
-        canvas.setAttribute('width', view.clientWidth);
-        canvas.setAttribute('height', view.clientHeight);
+			var canvas = document.createElement('canvas');
+			this.set('canvas', canvas);
+			canvas.setAttribute('width', view.clientWidth);
+			canvas.setAttribute('height', view.clientHeight);
 
-        var context = canvas.getContext('2d');
-        this.set('context', context);
+			var context = canvas.getContext('2d');
+			this.set('context', context);
 
-        if (FLIP_Y_AXIS) {
-            context.translate(0, view.clientHeight);
-            context.scale(1, -1);
-        }
+			if (FLIP_Y_AXIS) {
+				context.translate(0, view.clientHeight);
+				context.scale(1, -1);
+			}
 
-        view.appendChild(canvas);
+			view.appendChild(canvas);
 
-        this.set('winSize', {width: view.clientWidth, height: view.clientHeight});
-
-
-        // Setup event handling
-
-        // Mouse events
-        var eventDispatcher = EventDispatcher.get('sharedDispatcher');
-        var self = this;
-        function mouseDown(evt) {
-            evt.locationInWindow = ccp(evt.clientX, evt.clientY);
-            evt.locationInCanvas = self.convertEventToCanvas(evt);
-
-            function mouseDragged(evt) {
-                evt.locationInWindow = ccp(evt.clientX, evt.clientY);
-                evt.locationInCanvas = self.convertEventToCanvas(evt);
-
-                eventDispatcher.mouseDragged(evt);
-            }
-            function mouseUp(evt) {
-                evt.locationInWindow = ccp(evt.clientX, evt.clientY);
-                evt.locationInCanvas = self.convertEventToCanvas(evt);
-
-                document.body.removeEventListener('mousemove', mouseDragged, false);
-                document.body.removeEventListener('mouseup',   mouseUp,   false);
+			this.set('winSize', {width: view.clientWidth, height: view.clientHeight});
 
 
-                eventDispatcher.mouseUp(evt);
-            }
+			// Setup event handling
 
-            document.body.addEventListener('mousemove', mouseDragged, false);
-            document.body.addEventListener('mouseup',   mouseUp,   false);
+			// Mouse events
+			var eventDispatcher = EventDispatcher.get('sharedDispatcher');
+			var self = this;
+			function mouseDown(evt) {
+				evt.locationInWindow = ccp(evt.clientX, evt.clientY);
+				evt.locationInCanvas = self.convertEventToCanvas(evt);
 
-            eventDispatcher.mouseDown(evt);
-        }
-        function mouseMoved(evt) {
-            evt.locationInWindow = ccp(evt.clientX, evt.clientY);
-            evt.locationInCanvas = self.convertEventToCanvas(evt);
+				function mouseDragged(evt) {
+					evt.locationInWindow = ccp(evt.clientX, evt.clientY);
+					evt.locationInCanvas = self.convertEventToCanvas(evt);
 
-            eventDispatcher.mouseMoved(evt);
-        }
-        canvas.addEventListener('mousedown', mouseDown, false);
-        canvas.addEventListener('mousemove', mouseMoved, false);
+					eventDispatcher.mouseDragged(evt);
+				}
+				function mouseUp(evt) {
+					evt.locationInWindow = ccp(evt.clientX, evt.clientY);
+					evt.locationInCanvas = self.convertEventToCanvas(evt);
 
-        // Keyboard events
-        function keyDown(evt) {
-            this._keysDown = this._keysDown || {};
-            eventDispatcher.keyDown(evt);
-        }
-        function keyUp(evt) {
-            eventDispatcher.keyUp(evt);
-        }
-        /*
-        function keyPress(evt) {
-            eventDispatcher.keyPress(evt)
-        }
-        */
-        document.documentElement.addEventListener('keydown', keyDown, false);
-        document.documentElement.addEventListener('keyup', keyUp, false);
-        /*
-        document.documentElement.addEventListener('keypress', keyPress, false);
-        */
-    },
+					document.body.removeEventListener('mousemove', mouseDragged, false);
+					document.body.removeEventListener('mouseup',   mouseUp,   false);
+
+					eventDispatcher.mouseUp(evt);
+				}
+
+				document.body.addEventListener('mousemove', mouseDragged, false);
+				document.body.addEventListener('mouseup',   mouseUp,   false);
+
+				eventDispatcher.mouseDown(evt);
+			}
+			function mouseMoved(evt) {
+				evt.locationInWindow = ccp(evt.clientX, evt.clientY);
+				evt.locationInCanvas = self.convertEventToCanvas(evt);
+
+				eventDispatcher.mouseMoved(evt);
+			}
+
+			canvas.addEventListener('mousedown', mouseDown, false);
+			canvas.addEventListener('mousemove', mouseMoved, false);
+
+			// Add handlers for touch events.
+
+			// for touchcancel event - can be fired anytime so must be defined outside 
+			// touchStart()
+			function touchEnd(evt) {
+				if (!evt) evt = event;
+				evt.preventDefault();
+
+				// evt.changedTouches should have the last touch point
+				if (evt.changedTouches.length == 1) {
+					evt.locationInWindow = ccp(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
+					evt.locationInCanvas = self.convertEventToCanvas(evt);
+				}
+				eventDispatcher.mouseUp(evt);
+			}
+
+			function touchStart(evt) {
+				if (!evt) evt = event;
+
+				if (evt.touches.length == 1) {
+					evt.locationInWindow = ccp(evt.touches[0].pageX, evt.touches[0].pageY);
+					evt.locationInCanvas = self.convertEventToCanvas(evt);
+				} else {
+					// TODO: multitouch support??
+				}
+
+				function touchMoved(evt) {
+					if (!evt) evt = event;
+					evt.preventDefault();
+
+					if (evt.touches.length == 1) {
+						evt.locationInWindow = ccp(evt.touches[0].pageX, evt.touches[0].pageY);
+						evt.locationInCanvas = self.convertEventToCanvas(evt);
+
+						eventDispatcher.mouseDragged(evt);
+					} else {
+						// TODO: multitouch support??
+					}
+				}
+
+				function touchUp(evt) {
+					if (!evt) evt = event;
+					evt.preventDefault();
+
+					// evt.changedTouches should have the last touch point
+					if (evt.changedTouches.length == 1) {
+						evt.locationInWindow = ccp(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
+						evt.locationInCanvas = self.convertEventToCanvas(evt);
+
+						canvas.removeEventListener('touchmove', touchMoved, false);
+						canvas.removeEventListener('touchend', touchUp, false);
+
+						eventDispatcher.mouseUp(evt);
+					}
+				}
+
+				canvas.addEventListener('touchmove', touchMoved, false);
+				canvas.addEventListener('touchend', touchUp, false);
+
+				eventDispatcher.mouseDown(evt);
+			}
+
+			canvas.addEventListener('touchstart', touchStart, false);
+			// touchcancel must be bound to the body
+			document.body.addEventListener('touchcancel', touchEnd, false);
+
+			// Keyboard events
+			function keyDown(evt) {
+				this._keysDown = this._keysDown || {};
+				eventDispatcher.keyDown(evt);
+			}
+			function keyUp(evt) {
+				eventDispatcher.keyUp(evt);
+			}
+			/*
+			function keyPress(evt) {
+			eventDispatcher.keyPress(evt)
+			}
+			*/
+			document.documentElement.addEventListener('keydown', keyDown, false);
+			document.documentElement.addEventListener('keyup', keyUp, false);
+			/*
+			document.documentElement.addEventListener('keypress', keyPress, false);
+			*/
+		},
 
     /**
      * Enters the Director's main loop with the given Scene. Call it to run

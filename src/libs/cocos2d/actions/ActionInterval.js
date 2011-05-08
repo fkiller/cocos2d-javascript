@@ -422,9 +422,11 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
         } else {
             this.elapsed += dt;
         }
-
-        this.actions[this.currentActionIndex].step(dt);
-        this.update(Math.min(1, this.elapsed / this.duration));
+				// Required to prevent array bounds index errors
+				if (this.currentActionIndex < this.actions.length) {
+        	this.actions[this.currentActionIndex].step(dt);
+					this.update(Math.min(1, this.elapsed / this.duration));
+				}
     },
 
     update: function (dt) {

@@ -110,7 +110,7 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
         }
 
         // Delete everything in array but don't replace it incase something else has a reference
-        element.actions.splice(0, element.actions.length - 1);
+        element.actions.splice(0, element.actions.length);
     },
 
     /**

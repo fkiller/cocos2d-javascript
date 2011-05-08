@@ -60,7 +60,7 @@ var Layer = Node.extend(/** @lends cocos.nodes.Layer# */{
         if (this.isKeyboardEnabled) {
             EventDispatcher.get('sharedDispatcher').addKeyboardDelegate({delegate: this, priority: this.get('keyboardDelegatePriority')});
         }
-
+				
         Layer.superclass.onEnter.call(this);
     },
 
