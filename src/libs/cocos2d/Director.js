@@ -9,6 +9,22 @@ var util = require('util'),
     EventDispatcher = require('./EventDispatcher').EventDispatcher,
     Scene = require('./nodes/Scene').Scene;
 
+
+/**
+ * requestAnimationFrame for smart animating
+ * @see http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+ */
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       || 
+		  window.webkitRequestAnimationFrame || 
+		  window.mozRequestAnimationFrame    || 
+		  window.oRequestAnimationFrame      || 
+		  window.msRequestAnimationFrame     || 
+		  function(callback){
+			window.setTimeout(callback, 1000 / 30);
+		  };
+})();
+
 var Director = BObject.extend(/** @lends cocos.Director# */{
     backgroundColor: 'rgb(0, 0, 0)',
     canvas: null,
@@ -263,10 +279,16 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      * cocos.Directory#stopAnimation was called earlier.
      */
     startAnimation: function () {
-        var animationInterval = 1.0 / this.get('maxFrameRate');
-        this._animationTimer = setInterval(util.callback(this, 'drawScene'), animationInterval * 1000);
-    },
+        //var animationInterval = 1.0 / this.get('maxFrameRate');
+        //this._animationTimer = setInterval(util.callback(this, 'drawScene'), animationInterval * 1000);
+		this.animate();
 
+    },
+	animate: function() {
+		window.requestAnimFrame(util.callback(this, 'animate'));
+		this.drawScene();
+
+	},
     /**
      * Stops the animation. Nothing will be drawn. The main loop won't be
      * triggered anymore. If you want to pause your animation call
@@ -298,7 +320,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      */
     drawScene: function () {
         this.calculateDeltaTime();
-
+		
         if (!this.isPaused) {
             Scheduler.get('sharedScheduler').tick(this.dt);
         }

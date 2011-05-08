@@ -324,7 +324,7 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
                     objectValue.name = object.getAttribute('name');
                 }
                 if (object.getAttribute('type')) {
-                    objectValue.name = object.getAttribute('type');
+                    objectValue.type = object.getAttribute('type');
                 }
                 properties = object.querySelectorAll('property');
                 for (var k = 0; k < properties.length; k++) {
