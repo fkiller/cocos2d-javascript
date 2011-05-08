@@ -3,34 +3,38 @@
 "use strict";
 
 var util = require('util'),
-    events = require('events');
+    events = require('events'),
+    RemoteResource = require('./RemoteResource').RemoteResource;
 
-var RemoteImage = BObject.extend(/** @lends RemoteImage# */{
-    url: null,
-
+var RemoteImage = RemoteResource.extend(/** @lends cocos.RemoteImage# */{
     /**
-     * @extends BObject
+     * @memberOf cocos
+     * @extends RemoteResource
      * @constructs
      */
     init: function (opts) {
-        RemoteImage.superclass.init.call(this);
-        this.set('url', opts.url);
+        RemoteImage.superclass.init.call(this, opts);
     },
 
-    loadImage: function () {
+    /**
+     * Load a remote image
+     * @returns Image
+     */
+    load: function () {
         var img = new Image();
         var self = this;
         img.onload = function () {
-            var url = self.get('url');
+            var path = self.get('path');
 
-            var r = __remote_resources__[url];
-            __resources__[url] = util.copy(r);
-            __resources__[url].data = img;
+            var r = __remote_resources__[path];
+            __resources__[path] = util.copy(r);
+            __resources__[path].data = img;
+            __resources__[path].meta.remote = true;
 
             events.trigger(self, 'load', self);
         };
         
-        img.src = 'resources' + this.url;
+        img.src = this.get('url');
 
         return img;
     }
