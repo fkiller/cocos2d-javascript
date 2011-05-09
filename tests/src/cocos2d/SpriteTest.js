@@ -485,24 +485,18 @@ tests.AnimationCache = SpriteDemo.extend(/** @lends AnimationCache.prototype# */
 });
                 
         
+// Initialise test
+var director = cocos.Director.get('sharedDirector');
 
-var preloader = cocos.Preloader.create();
-events.addListener(preloader, 'load', function (uri, preloader) {
-    var loaded = preloader.get('loaded'),
-        count = preloader.get('count');
-    console.log("Loaded: %d%% -- %d of %d -- %s", (loaded / count) * 100, loaded, count, uri);
-});
+director.attachInView(document.getElementById('cocos2d-tests'));
+director.set('displayFPS', true);
+
+var preloader = nodes.PreloadScene.create();
+director.runWithScene(preloader);
+
 events.addListener(preloader, 'complete', function (preloader) {
-    // Initialise test
-    var director = cocos.Director.get('sharedDirector');
-
-    director.attachInView(document.getElementById('cocos2d-tests'));
-    director.set('displayFPS', true);
-
     var scene = nodes.Scene.create();
     scene.addChild({child: nextAction().create()});
 
-    director.runWithScene(scene);
+    director.replaceScene(scene);
 });
-preloader.load();
-
