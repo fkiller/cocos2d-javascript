@@ -487,6 +487,11 @@ tests.AnimationCache = SpriteDemo.extend(/** @lends AnimationCache.prototype# */
         
 
 var preloader = cocos.Preloader.create();
+events.addListener(preloader, 'load', function (uri, preloader) {
+    var loaded = preloader.get('loaded'),
+        count = preloader.get('count');
+    console.log("Loaded: %d%% -- %d of %d -- %s", (loaded / count) * 100, loaded, count, uri);
+});
 events.addListener(preloader, 'complete', function (preloader) {
     // Initialise test
     var director = cocos.Director.get('sharedDirector');
