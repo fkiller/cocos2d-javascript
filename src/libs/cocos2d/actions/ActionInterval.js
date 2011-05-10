@@ -357,7 +357,23 @@ var MoveBy = MoveTo.extend(/** @lends cocos.actions.MoveBy# */{
     }
 });
 
+var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
+	/* Fades out an object 
+	 */	
+	update: function(t) {
+		if (!this.target) return;
+		this.target.set('opacity', 1-t);
+	}
+});
 
+var FadeIn = ActionInterval.extend(/** @lends cocos.actions.FadeIn# */{
+	/* Fades in an object 
+	 */
+	update: function(t) {
+		if (!this.target) return;
+		this.target.set('opacity', t);
+	}
+});
 
 var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     /**
@@ -521,5 +537,7 @@ exports.RotateTo = RotateTo;
 exports.RotateBy = RotateBy;
 exports.MoveTo = MoveTo;
 exports.MoveBy = MoveBy;
+exports.FadeIn = FadeIn;
+exports.FadeOut = FadeOut;
 exports.Sequence = Sequence;
 exports.Animate = Animate;
