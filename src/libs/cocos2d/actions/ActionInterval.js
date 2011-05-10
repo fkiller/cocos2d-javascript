@@ -361,8 +361,9 @@ var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
 	/* Fades out an object 
 	 */	
 	update: function(t) {
-		if (!this.target) return;
-		this.target.set('opacity', 1-t);
+		var target = this.get('target');
+		if (!target) return;
+		target.set('opacity', 1-t);
 	}
 });
 
@@ -370,8 +371,40 @@ var FadeIn = ActionInterval.extend(/** @lends cocos.actions.FadeIn# */{
 	/* Fades in an object 
 	 */
 	update: function(t) {
-		if (!this.target) return;
-		this.target.set('opacity', t);
+		var target = this.get('target');
+		if (!target) return;
+		target.set('opacity', t);
+	}
+});
+
+var FadeTo = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
+	/* Fades an object to some opacity */
+	
+	/* The final opacity
+	 * @type Float
+	 */
+	toOpacity: null,
+	
+	/* The initial opacity
+	 * @type Float
+	 */
+	fromOpacity: null,
+	
+	init: function(opts) {
+		FadeTo.superclass.init.call(this, opts);
+		this.set('toOpacity', opts.toOpacity);
+	},
+	
+	startWithTarget: function(target) {
+		FadeTo.superclass.startWithTarget.call(this, target);
+		this.set('fromOpacity', target.get('opacity'));
+	},
+	
+	update: function(t) {
+		var target = this.get('target');
+		if (!target) return;
+		
+		target.set('opacity', this.fromOpacity + ( this.toOpacity - this.fromOpacity ) * t);
 	}
 });
 
@@ -541,5 +574,6 @@ exports.MoveTo = MoveTo;
 exports.MoveBy = MoveBy;
 exports.FadeIn = FadeIn;
 exports.FadeOut = FadeOut;
+exports.FadeTo = FadeTo;
 exports.Sequence = Sequence;
 exports.Animate = Animate;
