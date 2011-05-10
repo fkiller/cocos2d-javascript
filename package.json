@@ -6,7 +6,7 @@
     "homepage": "http://cocos2d-javascript.org/",
 
     "engines": {
-        "node": ">= 0.2.0"
+        "node": ">= 0.4.0"
     },
 
     "repository": {
