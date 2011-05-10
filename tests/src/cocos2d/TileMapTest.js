@@ -2,13 +2,14 @@
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
-var util = require('util'),
+var util      = require('util'),
     Texture2D = require('cocos2d/Texture2D').Texture2D,
-    cocos = require('cocos2d'),
-    nodes = cocos.nodes,
-    actions = cocos.actions,
-    geo = require('geometry'),
-    ccp = geo.ccp;
+    cocos     = require('cocos2d'),
+    nodes     = cocos.nodes,
+    events    = require('events'),
+    actions   = cocos.actions,
+    geo       = require('geometry'),
+    ccp       = geo.ccp;
 
 var sceneIdx = -1;
 var transitions = [
@@ -260,13 +261,21 @@ tests.TMXReadWriteTest = TileDemo.extend({
     }
 });
 
-// Initialise test
-var director = cocos.Director.get('sharedDirector');
 
-director.attachInView(document.getElementById('cocos2d-tests'));
-director.set('displayFPS', true);
+exports.main = function () {
+	// Initialise test
+	var director = cocos.Director.get('sharedDirector');
 
-var scene = nodes.Scene.create();
-scene.addChild({child: nextAction().create()});
+	director.attachInView(document.getElementById('cocos2d-tests'));
+	director.set('displayFPS', true);
 
-director.runWithScene(scene);
+    var preloader = nodes.PreloadScene.create();
+    director.runWithScene(preloader);
+
+    events.addListener(preloader, 'complete', function (preloader) {
+		var scene = nodes.Scene.create();
+		scene.addChild({child: nextAction().create()});
+
+		director.replaceScene(scene);
+	});
+};

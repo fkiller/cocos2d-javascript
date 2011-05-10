@@ -484,19 +484,21 @@ tests.AnimationCache = SpriteDemo.extend(/** @lends AnimationCache.prototype# */
     }
 });
                 
-        
-// Initialise test
-var director = cocos.Director.get('sharedDirector');
 
-director.attachInView(document.getElementById('cocos2d-tests'));
-director.set('displayFPS', true);
+exports.main = function () {
+    // Initialise test
+    var director = cocos.Director.get('sharedDirector');
 
-var preloader = nodes.PreloadScene.create();
-director.runWithScene(preloader);
+    director.attachInView(document.getElementById('cocos2d-tests'));
+    director.set('displayFPS', true);
 
-events.addListener(preloader, 'complete', function (preloader) {
-    var scene = nodes.Scene.create();
-    scene.addChild({child: nextAction().create()});
+    var preloader = nodes.PreloadScene.create();
+    director.runWithScene(preloader);
 
-    director.replaceScene(scene);
-});
+    events.addListener(preloader, 'complete', function (preloader) {
+        var scene = nodes.Scene.create();
+        scene.addChild({child: nextAction().create()});
+
+        director.replaceScene(scene);
+    });
+};
