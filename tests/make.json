@@ -1,6 +1,9 @@
 {
-    // Where to write the final file to
-    "output":     "public/tests.js",
+    // Where to write the files to
+    "output": {
+        "script": "tests.js",
+        "resources": "resources/"
+    },
 
     "pack_resources": false,
 
