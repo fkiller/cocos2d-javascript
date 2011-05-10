@@ -77,6 +77,13 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
      * @type Float
      */
     scaleY: 1,
+
+		/**
+		 * Global alpha value [0-1] 0 = fully transparent, 1 = opaque
+		 * @type Float
+		 */
+		opacity: 1,
+		
     isRunning: false,
     isRelativeAnchorPoint: true,
 
@@ -281,7 +288,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         this.set('scaleX', val);
         this.set('scaleY', val);
     },
-
+		
     scheduleUpdate: function (opts) {
         opts = opts || {};
         var priority = opts.priority || 0;
@@ -349,6 +356,9 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
         this.transform(context);
 
+				// set alpha value (global only for now)
+				context.globalAlpha = this.opacity;
+				
         // Adjust redraw region by nodes position
         if (rect) {
             var pos = this.get('position');
@@ -499,6 +509,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     _dirtyTransform: function () {
         this.set('isTransformDirty', true);
     }
+
 });
 
 module.exports.Node = Node;
