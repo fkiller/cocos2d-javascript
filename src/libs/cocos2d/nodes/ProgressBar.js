@@ -5,11 +5,14 @@
 var Node   = require('./Node').Node,
     util   = require('util'),
     geo    = require('geometry'),
-    events = require('events');
+    events = require('events'),
+    Sprite = require('./Sprite').Sprite;
 
 var ProgressBar = Node.extend(/** @lends cocos.nodes.ProgressBar# */{
+    emptySprite: null,
+    fullSprite: null,
     maxValue: 100,
-    value: 0,
+    value: 50,
 
     /**
      * @memberOf cocos.nodes
@@ -18,21 +21,53 @@ var ProgressBar = Node.extend(/** @lends cocos.nodes.ProgressBar# */{
      */
     init: function (opts) {
         ProgressBar.superclass.init.call(this, opts);
+        var size = new geo.Size(272, 32);
+        this.set('contentSize', size);
+
+        var s;
+        if (opts.emptyImage) {
+            s = Sprite.create({file: opts.emptyImage, rect: new geo.Rect(0, 0, size.width, size.height)});
+            s.set('anchorPoint', new geo.Point(0, 0));
+            this.set('emptySprite', s);
+            this.addChild({child: s});
+        }
+        if (opts.fullImage) {
+            s = Sprite.create({file: opts.fullImage, rect: new geo.Rect(0, 0, 0, size.height)});
+            s.set('anchorPoint', new geo.Point(0, 0));
+            this.set('fullSprite', s);
+            this.addChild({child: s});
+        }
+    },
+
+    updateImages: function () {
+        var empty = this.get('emptySprite'),
+            full  = this.get('fullSprite'),
+            value = this.get('value'),
+            size  = this.get('contentSize'),
+            maxValue = this.get('maxValue'),
+            ratio = (value / maxValue);
+
+        var diff = size.width * ratio;
+        if (diff === 0) {
+            full.set('visible', false);
+        } else {
+            full.set('visible', true);
+            full.set('rect', new geo.Rect(0, 0, diff, size.height));
+            full.set('contentSize', new geo.Size(diff, size.height));
+        }
+
+        if ((size.width - diff) === 0) {
+            empty.set('visible', false);
+        } else {
+            empty.set('visible', true);
+            empty.set('rect', new geo.Rect(diff, 0, size.width - diff, size.height));
+            empty.set('position', new geo.Point(diff, 0));
+            empty.set('contentSize', new geo.Size(size.width - diff, size.height));
+        }
     },
 
     draw: function (ctx) {
-        var size = this.get('contentSize'),
-            value = this.get('value'),
-            maxValue = this.get('maxValue');
-
-
-        // Outline
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, size.width, size.height);
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(3, 3, size.width - 6, size.height - 6);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(6, 6, (size.width - 12) * (value / maxValue), size.height - 12);
+        this.updateImages();
     }
 });
 

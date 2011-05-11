@@ -56,6 +56,7 @@ var Preloader = BObject.extend(/** @lends cocos.Preloader# */{
             }
         }
     },
+    
     didLoadResource: function(uri) {
         this.set('loaded', this.get('loaded') +1);
         events.removeListener(this._listeners[uri]);
