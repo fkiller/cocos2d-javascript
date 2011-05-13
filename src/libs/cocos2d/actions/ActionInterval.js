@@ -17,7 +17,7 @@ var ActionInterval = act.FiniteTimeAction.extend(/** @lends cocos.actions.Action
     _firstTick: true,
 
     /**
-     * Base class actions that do have a finite time duration. 
+     * Base class actions that do have a finite time duration.
      *
      * Possible actions:
      *
@@ -159,7 +159,7 @@ var ScaleTo = ActionInterval.extend(/** @lends cocos.actions.ScaleTo# */{
         if (!this.target) {
             return;
         }
-        
+
         this.target.set('scaleX', this.startScaleX + this.deltaX * t);
         this.target.set('scaleY', this.startScaleY + this.deltaY * t);
     }
@@ -217,7 +217,7 @@ var RotateTo = ActionInterval.extend(/** @lends cocos.actions.RotateTo# */{
     /**
      * @class Rotates a cocos.Node object to a certain angle by modifying its rotation
      * attribute. The direction will be decided by the shortest angle.
-     * 
+     *
      * @memberOf cocos.actions
      * @constructs
      * @extends cocos.actions.ActionInterval
@@ -305,7 +305,7 @@ var MoveTo = ActionInterval.extend(/** @lends cocos.actions.MoveTo# */{
 
     /**
      * @class Animates moving a cocos.nodes.Node object to a another point.
-     * 
+     *
      * @memberOf cocos.actions
      * @constructs
      * @extends cocos.actions.ActionInterval
@@ -321,7 +321,7 @@ var MoveTo = ActionInterval.extend(/** @lends cocos.actions.MoveTo# */{
 
     startWithTarget: function (target) {
         MoveTo.superclass.startWithTarget.call(this, target);
-        
+
         this.set('startPosition', util.copy(target.get('position')));
         this.set('delta', geo.ccpSub(this.get('endPosition'), this.get('startPosition')));
     },
@@ -357,12 +357,72 @@ var MoveBy = MoveTo.extend(/** @lends cocos.actions.MoveBy# */{
     }
 });
 
+/**
+ * @memberOf cocos.actions
+ * @class Fades out a cocos.nodes.Node to zero opacity
+ * @extends cocos.actions.ActionInterval
+ */
+var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
+    update: function (t) {
+        var target = this.get('target');
+        if (!target) return;
+        target.set('opacity', 1-t);
+    }
+});
 
+/**
+ * @memberOf cocos.actions
+ * @class Fades in a cocos.nodes.Node to 100% opacity
+ * @extends cocos.actions.ActionInterval
+ */
+var FadeIn = ActionInterval.extend(/** @lends cocos.actions.FadeIn# */{
+    update: function (t) {
+        var target = this.get('target');
+        if (!target) return;
+        target.set('opacity', t);
+    }
+});
+
+/**
+ * @memberOf cocos.actions
+ * @class Fades a cocos.nodes.Node to a given opacity
+ * @extends cocos.actions.ActionInterval
+ */
+var FadeTo = ActionInterval.extend(/** @lends cocos.actions.FadeTo# */{
+    /**
+     * The final opacity
+     * @type Float
+     */
+    toOpacity: null,
+
+    /**
+     * The initial opacity
+     * @type Float
+     */
+    fromOpacity: null,
+
+    init: function (opts) {
+        FadeTo.superclass.init.call(this, opts);
+        this.set('toOpacity', opts.toOpacity);
+    },
+
+    startWithTarget: function (target) {
+        FadeTo.superclass.startWithTarget.call(this, target);
+        this.set('fromOpacity', target.get('opacity'));
+    },
+
+    update: function (t) {
+        var target = this.get('target');
+        if (!target) return;
+
+        target.set('opacity', this.fromOpacity + ( this.toOpacity - this.fromOpacity ) * t);
+    }
+});
 
 var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     /**
      * Array of actions to run
-     * @type cocos.Node[]
+     * @type cocos.nodes.Node[]
      */
     actions: null,
 
@@ -393,7 +453,7 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
 
         this.actions = util.copy(opts.actions);
         this.actionSequence = {};
-        
+
         util.each(this.actions, util.callback(this, function (action) {
             this.duration += action.duration;
         }));
@@ -458,7 +518,7 @@ var Animate = ActionInterval.extend(/** @lends cocos.actions.Animate# */{
 
 
     /**
-     * Animates a sprite given the name of an Animation 
+     * Animates a sprite given the name of an Animation
      *
      * @memberOf cocos.actions
      * @constructs
@@ -521,5 +581,8 @@ exports.RotateTo = RotateTo;
 exports.RotateBy = RotateBy;
 exports.MoveTo = MoveTo;
 exports.MoveBy = MoveBy;
+exports.FadeIn = FadeIn;
+exports.FadeOut = FadeOut;
+exports.FadeTo = FadeTo;
 exports.Sequence = Sequence;
 exports.Animate = Animate;
