@@ -5,6 +5,7 @@
 var util = require('util'),
     geo = require('geometry'),
     ccp = geo.ccp,
+    events    = require('events'),
     Scheduler = require('./Scheduler').Scheduler,
     EventDispatcher = require('./EventDispatcher').EventDispatcher,
     Scene = require('./nodes/Scene').Scene;
@@ -18,6 +19,8 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
     isPaused: false,
     maxFrameRate: 30,
     displayFPS: false,
+    preloadScene: null,
+    isReady: false,
 
     // Time delta
     dt: 0,
@@ -57,6 +60,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
         while (view.firstChild) {
             view.removeChild(view.firstChild);
         }
+
 
         var canvas = document.createElement('canvas');
         this.set('canvas', canvas);
@@ -136,6 +140,23 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
         */
     },
 
+    runPreloadScene: function () {
+        var preloader = this.get('preloadScene');
+        if (!preloader) {
+            var PreloadScene = require('./nodes/PreloadScene').PreloadScene;
+            preloader = PreloadScene.create();
+            this.set('preloadScene', preloader);
+        }
+
+        events.addListener(preloader, 'complete', util.callback(this, function (preloader) {
+            this.isReady = true;
+            events.trigger(this, 'ready', this);
+        }));
+
+        this.pushScene(preloader);
+        this.startAnimation();
+    },
+
     /**
      * Enters the Director's main loop with the given Scene. Call it to run
      * only your FIRST scene. Don't call it if there is already a running
@@ -149,7 +170,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
         }
 
         if (this._runningScene) {
-            throw "You can't run an scene if another Scene is running. Use replaceScene or pushScene instead";
+            throw "You can't run a Scene if another Scene is already running. Use replaceScene or pushScene instead";
         }
 
         this.pushScene(scene);
@@ -207,6 +228,10 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      * cocos.Directory#pause instead.
      */
     stopAnimation: function () {
+        if (this._animationTimer) {
+            clearInterval(this._animationTimer);
+            this._animationTimer = null;
+        }
     },
 
     /**

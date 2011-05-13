@@ -269,13 +269,12 @@ exports.main = function () {
 	director.attachInView(document.getElementById('cocos2d-tests'));
 	director.set('displayFPS', true);
 
-    var preloader = nodes.PreloadScene.create();
-    director.runWithScene(preloader);
-
-    events.addListener(preloader, 'complete', function (preloader) {
+    events.addListener(director, 'ready', function (director) {
 		var scene = nodes.Scene.create();
 		scene.addChild({child: nextAction().create()});
 
 		director.replaceScene(scene);
 	});
+
+    director.runPreloadScene();
 };

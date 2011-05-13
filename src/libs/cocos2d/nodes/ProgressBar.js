@@ -12,7 +12,7 @@ var ProgressBar = Node.extend(/** @lends cocos.nodes.ProgressBar# */{
     emptySprite: null,
     fullSprite: null,
     maxValue: 100,
-    value: 50,
+    value: 0,
 
     /**
      * @memberOf cocos.nodes
@@ -37,6 +37,11 @@ var ProgressBar = Node.extend(/** @lends cocos.nodes.ProgressBar# */{
             this.set('fullSprite', s);
             this.addChild({child: s});
         }
+
+        events.addListener(this, 'maxvalue_changed', util.callback(this, 'updateImages'));
+        events.addListener(this, 'value_changed', util.callback(this, 'updateImages'));
+
+        this.updateImages();
     },
 
     updateImages: function () {
@@ -47,7 +52,7 @@ var ProgressBar = Node.extend(/** @lends cocos.nodes.ProgressBar# */{
             maxValue = this.get('maxValue'),
             ratio = (value / maxValue);
 
-        var diff = size.width * ratio;
+        var diff = Math.round(size.width * ratio);
         if (diff === 0) {
             full.set('visible', false);
         } else {
@@ -64,10 +69,6 @@ var ProgressBar = Node.extend(/** @lends cocos.nodes.ProgressBar# */{
             empty.set('position', new geo.Point(diff, 0));
             empty.set('contentSize', new geo.Size(size.width - diff, size.height));
         }
-    },
-
-    draw: function (ctx) {
-        this.updateImages();
     }
 });
 
