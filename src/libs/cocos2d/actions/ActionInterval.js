@@ -376,8 +376,6 @@ var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
  * @extends cocos.actions.ActionInterval
  */
 var FadeIn = ActionInterval.extend(/** @lends cocos.actions.FadeIn# */{
-    /* Fades in an object
-     */
     update: function (t) {
         var target = this.get('target');
         if (!target) return;
