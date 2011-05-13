@@ -366,7 +366,7 @@ var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
     update: function (t) {
         var target = this.get('target');
         if (!target) return;
-        target.set('opacity', 1-t);
+        target.set('opacity', 255 - (255 * t));
     },
 
     reverse: function () {
@@ -383,7 +383,7 @@ var FadeIn = ActionInterval.extend(/** @lends cocos.actions.FadeIn# */{
     update: function (t) {
         var target = this.get('target');
         if (!target) return;
-        target.set('opacity', t);
+        target.set('opacity', t * 255);
     },
 
     reverse: function () {

@@ -78,10 +78,10 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     scaleY: 1,
 
     /**
-     * Opacity of the Node. 0 is totally transparent, 1 is totally opaque
+     * Opacity of the Node. 0 is totally transparent, 255 is totally opaque
      * @type Float
      */
-    opacity: 1,
+    opacity: 255,
 
     isRunning: false,
     isRelativeAnchorPoint: true,
@@ -356,7 +356,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         this.transform(context);
 
         // Set alpha value (global only for now)
-        context.globalAlpha = this.get('opacity');
+        context.globalAlpha = this.get('opacity') / 255.0;
 
         // Adjust redraw region by nodes position
         if (rect) {
