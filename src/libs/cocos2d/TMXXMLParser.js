@@ -241,7 +241,7 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
             layer.set('layerSize', s);
 
             var opacity = l.getAttribute('opacity');
-            if (opacity === undefined) {
+            if (!opacity && opacity !== 0) {
                 layer.set('opacity', 255);
             } else {
                 layer.set('opacity', 255 * parseFloat(opacity));

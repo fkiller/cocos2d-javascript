@@ -2,12 +2,15 @@
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
-var util = require('util');
+var util = require('util'),
+    events = require('events'),
+    RemoteResource = require('./RemoteResource').RemoteResource;
 
 var Texture2D = BObject.extend(/** @lends cocos.Texture2D# */{
     imgElement: null,
     size: null,
     name: null,
+    isLoaded: false,
 
     /**
      * @memberOf cocos
@@ -32,14 +35,31 @@ var Texture2D = BObject.extend(/** @lends cocos.Texture2D# */{
 
         this.size = {width: 0, height: 0};
 
-        this.set('imgElement', data);
+        if (data instanceof RemoteResource) {
+            events.addListener(data, 'load', util.callback(this, this.dataDidLoad));
+            this.set('imgElement', data.load());
+        } else {
+            this.set('imgElement', data);
+            this.dataDidLoad(data);
+        }
+    },
+
+    dataDidLoad: function (data) {
+        this.isLoaded = true;
         this.set('size', {width: this.imgElement.width, height: this.imgElement.height});
+        events.trigger(self, 'load', self);
     },
 
     drawAtPoint: function (ctx, point) {
+        if (!this.isLoaded) {
+            return;
+        }
         ctx.drawImage(this.imgElement, point.x, point.y);
     },
     drawInRect: function (ctx, rect) {
+        if (!this.isLoaded) {
+            return;
+        }
         ctx.drawImage(this.imgElement,
             rect.origin.x, rect.origin.y,
             rect.size.width, rect.size.height

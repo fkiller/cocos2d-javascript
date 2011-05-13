@@ -78,12 +78,12 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
      */
     scaleY: 1,
 
-		/**
-		 * Global alpha value [0-1] 0 = fully transparent, 1 = opaque
-		 * @type Float
-		 */
-		opacity: 1,
-		
+    /**
+     * Opacity of the Node. 0 is totally transparent, 255 is totally opaque
+     * @type Float
+     */
+    opacity: 255,
+
     isRunning: false,
     isRelativeAnchorPoint: true,
 
@@ -154,7 +154,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         //this.insertChild({child: child, z:z});
         var added = false;
 
-        
+
         for (var i = 0, childLen = this.children.length; i < childLen; i++) {
             var c = this.children[i];
             if (c.zOrder > z) {
@@ -356,9 +356,9 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
         this.transform(context);
 
-				// set alpha value (global only for now)
-				context.globalAlpha = this.opacity;
-				
+        // Set alpha value (global only for now)
+        context.globalAlpha = this.get('opacity') / 255.0;
+
         // Adjust redraw region by nodes position
         if (rect) {
             var pos = this.get('position');
@@ -400,7 +400,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
         // Scale
         context.scale(this.scaleX, this.scaleY);
- 
+
         if (this.anchorPointInPixels.x !== 0 || this.anchorPointInPixels.y !== 0) {
             context.translate(Math.round(-this.anchorPointInPixels.x), Math.round(-this.anchorPointInPixels.y));
         }
@@ -417,7 +417,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
             if (!this.isRelativeAnchorPoint && !geo.pointEqualToPoint(this.anchorPointInPixels, ccp(0, 0))) {
                 this.transformMatrix = geo.affineTransformTranslate(this.transformMatrix, this.anchorPointInPixels.x, this.anchorPointInPixels.y);
             }
-            
+
             if (!geo.pointEqualToPoint(this.position, ccp(0, 0))) {
                 this.transformMatrix = geo.affineTransformTranslate(this.transformMatrix, this.position.x, this.position.y);
             }
@@ -428,13 +428,13 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
             if (!(this.scaleX == 1 && this.scaleY == 1)) {
                 this.transformMatrix = geo.affineTransformScale(this.transformMatrix, this.scaleX, this.scaleY);
             }
-            
+
             if (!geo.pointEqualToPoint(this.anchorPointInPixels, ccp(0, 0))) {
                 this.transformMatrix = geo.affineTransformTranslate(this.transformMatrix, -this.anchorPointInPixels.x, -this.anchorPointInPixels.y);
             }
-            
+
             this.set('isTransformDirty', false);
-                
+
         }
 
         return this.transformMatrix;
