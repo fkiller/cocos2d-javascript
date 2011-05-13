@@ -53,7 +53,7 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
             rect    = frame.get('rect');
         }
 
-        util.each(['scale', 'scaleX', 'scaleY', 'rect', 'flipX', 'flipY'], util.callback(this, function (key) {
+        util.each(['scale', 'scaleX', 'scaleY', 'rect', 'flipX', 'flipY', 'contentSize'], util.callback(this, function (key) {
             evt.addListener(this, key.toLowerCase() + '_changed', util.callback(this, this._updateQuad));
         }));
         evt.addListener(this, 'textureatlas_changed', util.callback(this, this._updateTextureQuad));
@@ -143,7 +143,7 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
             relativeOffset.y = -relativeOffset.y;
         }
 
-        var offsetPosition = this.get('offsetPosition');
+        var offsetPosition = util.copy(this.get('offsetPosition'));
         offsetPosition.x =  relativeOffset.x + (this.get('contentSize').width  - rect.size.width) / 2;
         offsetPosition.y = -relativeOffset.y + (this.get('contentSize').height - rect.size.height) / 2;
 
@@ -165,6 +165,9 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
      * @private
      */
     _updateQuad: function () {
+        if (!this.get('rect')) {
+            return;
+        }
         if (!this.quad) {
             this.quad = {
                 drawRect: geo.rectMake(0, 0, 0, 0), 
@@ -181,7 +184,7 @@ var Sprite = Node.extend(/** @lends cocos.nodes.Sprite# */{
             relativeOffset.y = -relativeOffset.y;
         }
 
-        var offsetPosition = this.get('offsetPosition');
+        var offsetPosition = util.copy(this.get('offsetPosition'));
         offsetPosition.x = relativeOffset.x + (this.get('contentSize').width  - this.get('rect').size.width) / 2;
         offsetPosition.y = relativeOffset.y + (this.get('contentSize').height - this.get('rect').size.height) / 2;
 
