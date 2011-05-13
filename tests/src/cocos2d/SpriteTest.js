@@ -2,19 +2,21 @@
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
-var util = require('util'),
+var util      = require('util'),
     Texture2D = require('cocos2d/Texture2D').Texture2D,
-    cocos = require('cocos2d'),
-    nodes = cocos.nodes,
-    actions = cocos.actions,
-    geo = require('geometry'),
-    ccp = geo.ccp;
+    cocos     = require('cocos2d'),
+    events    = require('events'),
+    nodes     = cocos.nodes,
+    actions   = cocos.actions,
+    geo       = require('geometry'),
+    ccp       = geo.ccp;
 
 var sceneIdx = -1;
 var transitions = [
     "Sprite1",
     "SpriteBatchNode1",
     "SpriteAnchorPoint",
+	"SpriteColorOpacity",
     "SpriteAnimationFlip",
     "SpriteZOrder",
     "AnimationCache"
@@ -482,16 +484,97 @@ tests.AnimationCache = SpriteDemo.extend(/** @lends AnimationCache.prototype# */
         grossini.runAction(seq);
     }
 });
-                
+
+tests.SpriteColorOpacity = SpriteDemo.extend(/** @lends SpriteColorOpacity.prototype# */{
+    title: "Sprite: Opacity",
+
+    init: function () {
+        tests.SpriteColorOpacity.superclass.init.call(this);
+
+
+		var sprite1 = nodes.Sprite.create({file: module.dirname + "/resources/grossini_dance_atlas.png", rect: geo.rectMake(85 * 0, 121 * 1, 85, 121)});
+		var sprite2 = nodes.Sprite.create({file: module.dirname + "/resources/grossini_dance_atlas.png", rect: geo.rectMake(85 * 1, 121 * 1, 85, 121)});
+		var sprite3 = nodes.Sprite.create({file: module.dirname + "/resources/grossini_dance_atlas.png", rect: geo.rectMake(85 * 2, 121 * 1, 85, 121)});
+		var sprite4 = nodes.Sprite.create({file: module.dirname + "/resources/grossini_dance_atlas.png", rect: geo.rectMake(85 * 3, 121 * 1, 85, 121)});
+
+		var sprite5 = nodes.Sprite.create({file: module.dirname + "/resources/grossini_dance_atlas.png", rect: geo.rectMake(85 * 0, 121 * 1, 85, 121)});
+		var sprite6 = nodes.Sprite.create({file: module.dirname + "/resources/grossini_dance_atlas.png", rect: geo.rectMake(85 * 1, 121 * 1, 85, 121)});
+		var sprite7 = nodes.Sprite.create({file: module.dirname + "/resources/grossini_dance_atlas.png", rect: geo.rectMake(85 * 2, 121 * 1, 85, 121)});
+		var sprite8 = nodes.Sprite.create({file: module.dirname + "/resources/grossini_dance_atlas.png", rect: geo.rectMake(85 * 3, 121 * 1, 85, 121)});
+		
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+
+		sprite1.set('position', ccp((s.width / 5) * 1, (s.height / 3) * 1));
+		sprite2.set('position', ccp((s.width / 5) * 2, (s.height / 3) * 1));
+		sprite3.set('position', ccp((s.width / 5) * 3, (s.height / 3) * 1));
+		sprite4.set('position', ccp((s.width / 5) * 4, (s.height / 3) * 1));
+
+		sprite5.set('position', ccp((s.width / 5) * 1, (s.height / 3) * 2));
+		sprite6.set('position', ccp((s.width / 5) * 2, (s.height / 3) * 2));
+		sprite7.set('position', ccp((s.width / 5) * 3, (s.height / 3) * 2));
+		sprite8.set('position', ccp((s.width / 5) * 4, (s.height / 3) * 2));
+		
+        var action = actions.FadeIn.create({duration: 3}),
+            actionBack = action.reverse(),
+            fade = actions.RepeatForever.create(actions.Sequence.create({actions: [action, actionBack]}));
+		
+		/*
+        id tintred = [CCTintBy actionWithDuration:2 red:0 green:-255 blue:-255];
+        id tintred_back = [tintred reverse];
+        id red = [CCRepeatForever actionWithAction: [CCSequence actions: tintred, tintred_back, nil]];
         
+        id tintgreen = [CCTintBy actionWithDuration:2 red:-255 green:0 blue:-255];
+        id tintgreen_back = [tintgreen reverse];
+        id green = [CCRepeatForever actionWithAction: [CCSequence actions: tintgreen, tintgreen_back, nil]];
+        
+        id tintblue = [CCTintBy actionWithDuration:2 red:-255 green:-255 blue:0];
+        id tintblue_back = [tintblue reverse];
+        id blue = [CCRepeatForever actionWithAction: [CCSequence actions: tintblue, tintblue_back, nil]];
+		*/
+		
+		
+		/*
+        [sprite5 runAction:red];
+        [sprite6 runAction:green];
+        [sprite7 runAction:blue];
+		*/
+        sprite8.runAction(fade);
+		
+		// late add: test dirtyColor and dirtyPosition
+		this.addChild({child: sprite1, z: 0, tag: kTagSprite1});
+		this.addChild({child: sprite2, z: 0, tag: kTagSprite2});
+		this.addChild({child: sprite3, z: 0, tag: kTagSprite3});
+		this.addChild({child: sprite4, z: 0, tag: kTagSprite4});
+		this.addChild({child: sprite5, z: 0, tag: kTagSprite5});
+		this.addChild({child: sprite6, z: 0, tag: kTagSprite6});
+		this.addChild({child: sprite7, z: 0, tag: kTagSprite7});
+		this.addChild({child: sprite8, z: 0, tag: kTagSprite8});
+		
+		
+        cocos.Scheduler.get('sharedScheduler').schedule({target: this, method: this.removeAndAddSprite, interval: 2});
+    },
 
-// Initialise test
-var director = cocos.Director.get('sharedDirector');
+    removeAndAddSprite: function () {
+        var sprite = this.getChild({tag: kTagSprite5});
+        
+        this.removeChild({child: sprite, cleanup: false});
+		this.addChild({child: sprite, z: 0, tag: kTagSprite5});
+    }
+});
+                
 
-director.attachInView(document.getElementById('cocos2d-tests'));
-director.set('displayFPS', true);
+exports.main = function () {
+    // Initialise test
+    var director = cocos.Director.get('sharedDirector');
 
-var scene = nodes.Scene.create();
-scene.addChild({child: nextAction().create()});
+    director.attachInView(document.getElementById('cocos2d-tests'));
+    director.set('displayFPS', true);
 
-director.runWithScene(scene);
+    events.addListener(director, 'ready', function (director) {
+        var scene = nodes.Scene.create();
+        scene.addChild({child: nextAction().create()});
+        director.replaceScene(scene);
+    });
+
+    director.runPreloadScene();
+};
