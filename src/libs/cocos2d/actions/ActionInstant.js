@@ -90,6 +90,30 @@ var FlipY = ActionInstant.extend(/** @lends cocos.actions.FlipY# */{
     }
 });
 
+/* @class */
+// helper for actions that must simply call a function
+// Implementation of cocos2d CCCallFunc
+
+var CallFunc = ActionInstant.extend({
+	callback: null,
+	
+	init: function(opts) {
+		CallFunc.superclass.init.call(this, opts);
+		this.callback = util.callback(opts.target, opts.method);
+	},
+	
+	startWithTarget: function(target) {
+		CallFunc.superclass.startWithTarget.call(this, target);
+		this.execute();
+	},
+	
+	execute: function() {
+		this.callback.call();
+	}
+});
+
 exports.ActionInstant = ActionInstant;
 exports.FlipX = FlipX;
 exports.FlipY = FlipY;
+exports.CallFunc = CallFunc;
+

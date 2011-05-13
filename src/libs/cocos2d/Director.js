@@ -90,7 +90,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
 			view.appendChild(canvas);
 
 			this.set('winSize', {width: view.clientWidth, height: view.clientHeight});
-
+			
 
 			// Setup event handling
 
@@ -213,9 +213,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
 			*/
 			document.documentElement.addEventListener('keydown', keyDown, false);
 			document.documentElement.addEventListener('keyup', keyUp, false);
-			/*
-			document.documentElement.addEventListener('keypress', keyPress, false);
-			*/
+			
 		},
 
     /**
