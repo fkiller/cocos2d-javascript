@@ -21,7 +21,7 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
     mouseDelegatePriority: (-Number.MAX_VALUE + 1),
     state: kMenuStateWaiting,
     selectedItem: null,
-    opacuty: 255,
+    opacity: 255,
     color: null,
 
     /**
@@ -91,17 +91,18 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
     },
 
     mouseUp: function (event) {
-        if (this.selectedItem) {
-            this.selectedItem.set('isSelected', false);
-            this.selectedItem.activate();
-
-            return true;
+				var selItem = this.get('selectedItem');
+        if (selItem) {
+            selItem.set('isSelected', false);
+            selItem.activate();
         }
 
         if (this.state != kMenuStateWaiting) {
             this.set('state', kMenuStateWaiting);
         }
-
+				if (selItem) {
+					return true;
+				}
         return false;
 
     },
