@@ -2,13 +2,14 @@
 /*jslint undef: true, strict: true, white: true, newcap: true, browser: true, indent: 4 */
 "use strict";
 
-var util = require('util'),
+var util      = require('util'),
     Texture2D = require('cocos2d/Texture2D').Texture2D,
-    cocos = require('cocos2d'),
-    nodes = cocos.nodes,
-    actions = cocos.actions,
-    geo = require('geometry'),
-    ccp = geo.ccp;
+    cocos     = require('cocos2d'),
+    events    = require('events'),
+    nodes     = cocos.nodes,
+    actions   = cocos.actions,
+    geo       = require('geometry'),
+    ccp       = geo.ccp;
 
 var sceneIdx = -1;
 var transitions = [
@@ -483,15 +484,19 @@ tests.AnimationCache = SpriteDemo.extend(/** @lends AnimationCache.prototype# */
     }
 });
                 
-        
 
-// Initialise test
-var director = cocos.Director.get('sharedDirector');
+exports.main = function () {
+    // Initialise test
+    var director = cocos.Director.get('sharedDirector');
 
-director.attachInView(document.getElementById('cocos2d-tests'));
-director.set('displayFPS', true);
+    director.attachInView(document.getElementById('cocos2d-tests'));
+    director.set('displayFPS', true);
 
-var scene = nodes.Scene.create();
-scene.addChild({child: nextAction().create()});
+    events.addListener(director, 'ready', function (director) {
+        var scene = nodes.Scene.create();
+        scene.addChild({child: nextAction().create()});
+        director.replaceScene(scene);
+    });
 
-director.runWithScene(scene);
+    director.runPreloadScene();
+};

@@ -5,7 +5,7 @@
 var params = window.location.search;
 if (params) {
     var mod = params.split('=')[1];
-    require('./' + mod);
+    require('./' + mod).main();
 } else {
     var c = document.getElementById('cocos2d-tests');
     c.style.textAlign = 'center';
