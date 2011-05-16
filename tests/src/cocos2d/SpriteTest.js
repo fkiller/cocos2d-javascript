@@ -296,6 +296,7 @@ tests.SpriteAnimationFlip = SpriteDemo.extend(/** @lends SpriteAnimationFlip.pro
                                                          actions.FlipX.create({flipX: false})]});
 
         sprite.runAction(actions.RepeatForever.create(seq));
+
     }
 });
 

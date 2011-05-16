@@ -88,6 +88,13 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         this.hashForMethods = {};
     },
 
+		/** The scheduled method will be called every 'interval' seconds.
+		 If paused is YES, then it won't be called until it is resumed.
+		 If 'interval' is 0, it will be called every frame, but if so, it recommened to use 'scheduleUpdateForTarget:' instead.
+		 If the selector is already scheduled, then only the interval parameter will be updated without re-scheduling it again.
+
+		 @since v0.99.3
+		 */
     schedule: function (opts) {
         var target   = opts.target,
             method   = opts.method,
@@ -109,6 +116,11 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         element.timers.push(timer);
     },
 
+		/** Schedules the 'update' selector for a given target with a given priority.
+		 The 'update' selector will be called every frame.
+		 The lower the priority, the earlier it is called.
+		 @since v0.99.3
+		 */
     scheduleUpdate: function (opts) {
         var target   = opts.target,
             priority = opts.priority,
@@ -148,7 +160,10 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
 
         this.hashForUpdates[target.get('id')] = entry;
     },
-
+		
+		/** 'tick' the scheduler.
+		 You should NEVER call this method, unless you know what you are doing.
+		 */
     tick: function (dt) {
         var i, len, x;
         if (this.timeScale != 1.0) {
@@ -158,21 +173,21 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         var entry;
         for (i = 0, len = this.updatesNeg.length; i < len; i++) {
             entry = this.updatesNeg[i];
-            if (!entry.paused) {
+            if (entry && !entry.paused) {
                 entry.target.update(dt);
             }
         }
 
         for (i = 0, len = this.updates0.length; i < len; i++) {
             entry = this.updates0[i];
-            if (!entry.paused) {
+            if (entry && !entry.paused) {
                 entry.target.update(dt);
             }
         }
 
         for (i = 0, len = this.updatesPos.length; i < len; i++) {
             entry = this.updatesPos[i];
-            if (!entry.paused) {
+            if (entry && !entry.paused) {
                 entry.target.update(dt);
             }
         }
@@ -180,18 +195,125 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         for (x in this.hashForMethods) {
             if (this.hashForMethods.hasOwnProperty(x)) {
                 entry = this.hashForMethods[x];
-                for (i = 0, len = entry.timers.length; i < len; i++) {
-                    var timer = entry.timers[i];
-                    timer.update(dt);
-                }
+								if (entry) {
+                	for (i = 0, len = entry.timers.length; i < len; i++) {
+	                    var timer = entry.timers[i];
+											if (timer) {
+	                    	timer.update(dt);
+											}
+	                }
+								}
             }
         }
 
     },
+		
+		/** Unshedules a selector for a given target.
+		 If you want to unschedule the "update", use unscheduleUpdateForTarget.
+		 @since v0.99.3
+		 */
+		unschedule: function(opts) {
+			if (!opts.target || !opts.method) {
+				return;
+			}
+			var element = this.hashForMethods[opts.target.get('id')];
+			if (element) {
+				for (var i=0; i<element.timers.length; i++) {
+					// Compare callback function
+					if (element.timers[i].callback == util.callback(opts.target, opts.method)) {
+						var timer = element.timers.splice(i, 1);
+						timer = null;
+					}
+				}
+			}
+		},
+		
+		/** Unschedules the update selector for a given target
+		 @since v0.99.3
+		 */
+		unscheduleUpdateForTarget: function(target) {
+			if (!target) {
+				return;
+			}
+			var elementUpdate = this.hashForUpdates[target.get('id')];
+			if (elementUpdate) {
+				// Remove from updates list
+				if (elementUpdate.priority === 0) {
+					this.updates0.splice(this.updates0.indexOf(elementUpdate), 1);
+				} else if (elementUpdate.priority < 0) {
+					this.updatesNeg.splice(this.updatesNeg.indexOf(elementUpdate), 1);
+				} else /* priority > 0 */{
+					this.updatesPos.splice(this.updatesPos.indexOf(elementUpdate), 1);
+				}
+			}
+			// Release HashMethodEntry object
+			this.hashForUpdates[target.get('id')] = null;
+		},
 
+		/** Unschedules all selectors from all targets.
+		 You should NEVER call this method, unless you know what you are doing.
+
+		 @since v0.99.3
+		 */
+		unscheduleAllSelectors: function() {
+			var i, x, entry;
+			
+			// Custom selectors
+			for (x in this.hashForMethods) {
+				if (this.hashForMethods.hasOwnProperty(x)) {
+					entry = this.hashForMethods[x];
+					this.unscheduleAllSelectorsForTarget(entry.target);
+				}
+			}
+			// Updates selectors
+			for (i = 0, len = this.updatesNeg.length; i < len; i++) {
+          entry = this.updatesNeg[i];
+          if (entry) {
+						this.unscheduleUpdateForTarget(entry.target);
+          }
+      }
+
+      for (i = 0, len = this.updates0.length; i < len; i++) {
+          entry = this.updates0[i];
+          if (entry) {
+						this.unscheduleUpdateForTarget(entry.target);
+          }
+      }
+
+      for (i = 0, len = this.updatesPos.length; i < len; i++) {
+          entry = this.updatesPos[i];
+          if (entry) {
+						this.unscheduleUpdateForTarget(entry.target);
+          }
+      }
+		},
+		
+		/** Unschedules all selectors for a given target.
+		 This also includes the "update" selector.
+		 @since v0.99.3
+		 */
     unscheduleAllSelectorsForTarget: function (target) {
+			if (!target) {
+				return;
+			}
+			// Custom selector
+			var element = this.hashForMethods[target.get('id')];
+			if (element) {
+				element.paused = true;
+				element.timers = []; // Clear all timers
+			}
+			// Release HashMethodEntry object
+			this.hashForMethods[target.get('id')] = null;
+			
+			// Update selector
+			this.unscheduleUpdateForTarget(target);
     },
 
+		/** Pauses the target.
+		 All scheduled selectors/update for a given target won't be 'ticked' until the target is resumed.
+		 If the target is not present, nothing happens.
+		 @since v0.99.3
+		 */
     pauseTarget: function (target) {
         var element = this.hashForMethods[target.get('id')];
         if (element) {
@@ -204,6 +326,11 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         }
     },
 
+		/** Resumes the target.
+		 The 'target' will be unpaused, so all schedule selectors/update will be 'ticked' again.
+		 If the target is not present, nothing happens.
+		 @since v0.99.3
+		 */
     resumeTarget: function (target) {
         var element = this.hashForMethods[target.get('id')];
         if (element) {
