@@ -8,12 +8,16 @@ var util = require('util'),
     MenuItem = require('./MenuItem').MenuItem,
     geom = require('geometry'), ccp = geom.ccp;
 
-/** @private
- * @constant */
+/**
+ * @private
+ * @constant
+ */
 var kMenuStateWaiting = 0;
 
-/** @private
- * @constant */
+/**
+ * @private
+ * @constant
+ */
 var kMenuStateTrackingTouch = 1;
     
 
@@ -21,7 +25,6 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
     mouseDelegatePriority: (-Number.MAX_VALUE + 1),
     state: kMenuStateWaiting,
     selectedItem: null,
-    opacity: 255,
     color: null,
 
     /**
@@ -91,7 +94,7 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
     },
 
     mouseUp: function (event) {
-				var selItem = this.get('selectedItem');
+        var selItem = this.get('selectedItem');
         if (selItem) {
             selItem.set('isSelected', false);
             selItem.activate();
@@ -100,9 +103,9 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
         if (this.state != kMenuStateWaiting) {
             this.set('state', kMenuStateWaiting);
         }
-				if (selItem) {
-					return true;
-				}
+        if (selItem) {
+            return true;
+        }
         return false;
 
     },
