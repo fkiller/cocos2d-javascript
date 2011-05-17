@@ -76,7 +76,7 @@ var DelayTime = ActionInterval.extend(/** @lends cocos.actions.DelayTime# */{
      *
      * @memberOf cocos.actions
      * @constructs
-     * @extends cocos.actions.DelayTime
+     * @extends cocos.actions.ActionInterval
      */
     update: function (t) {
         if (t === 1.0) {

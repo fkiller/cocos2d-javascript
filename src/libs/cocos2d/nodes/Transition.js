@@ -367,7 +367,7 @@ var TransitionSlideInT = TransitionSlideInL.extend(/** @lends cocos.nodes.Transi
  * @memberOf cocos.nodes
  * @extends cocos.nodes.TransitionSlideInL
  */
-var TransitionSlideInB = TransitionSlideInL.extend(/** @lends cocos.nodes.TransitionSlideInT */{
+var TransitionSlideInB = TransitionSlideInL.extend(/** @lends cocos.nodes.TransitionSlideInB */{
     sceneOrder: function () {
         this.set('inSceneOnTop', true);
     },
