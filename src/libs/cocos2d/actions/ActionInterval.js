@@ -79,7 +79,9 @@ var DelayTime = ActionInterval.extend(/** @lends cocos.actions.DelayTime# */{
    * @extends cocos.actions.DelayTime
 	 */
 	update: function(t) {
-		return; // No-op
+		if (t === 1.0) {
+			this.stop();
+		}
 	},
 	
 	copy: function() {
@@ -87,8 +89,9 @@ var DelayTime = ActionInterval.extend(/** @lends cocos.actions.DelayTime# */{
 	},
 	
 	reverse: function() {
-		return this.copy();
+		return DelayTime.create({duration: this.get('duration')});
 	}
+	
 });
 
 
@@ -493,7 +496,7 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     init: function (opts) {
         Sequence.superclass.init.call(this, opts);
 
-        this.actions = util.copy(opts.actions);
+        this.actions = util.copy(opts.actions); // Duplication?
         this.actionSequence = {};
 
         util.each(this.actions, util.callback(this, function (action) {
@@ -551,11 +554,17 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     },
 
     copy: function () {
+			// Constructor will copy actions array
         return Sequence.create({actions: this.get('actions')});
     },
 
 		reverse: function() {
-			return Sequence.create({actions: this.get('actions').reverse()});
+			// reverse() would modify actions array
+			var ractions = [];
+			for (var i=0; i<this.actions.length; i++) {
+				ractions.unshift(this.actions[i]);
+			}
+			return Sequence.create({actions: ractions});
 		}
 });
 

@@ -3,6 +3,7 @@
 "use strict";
 
 var geo = require('geometry'),
+	util = require('util'),
 	actions = require('../actions'),
 	Scene = require('./Scene').Scene,
 	Director = require('../Director').Director,
@@ -152,29 +153,38 @@ var TransitionRotoZoom = TransitionScene.extend(
 	onEnter: function() {
 		TransitionRotoZoom.superclass.onEnter.call(this);
 		
-		var dur = this.get('duration') / 2;
+		var dur = this.get('duration');
 		this.get('inScene').set('scale', 0.001);
 		this.get('outScene').set('scale', 1.0);
 		
 		this.get('inScene').set('anchorPoint', geo.ccp(0.5, 0.5));
 		this.get('outScene').set('anchorPoint', geo.ccp(0.5, 0.5));
-
-		var rotozoom = actions.Sequence.create({actions: [
+		
+		var outzoom = [
 			actions.Spawn.initWithActions({actions: [
 				actions.ScaleBy.create({scale: 0.001, duration: dur/2}),
 				actions.RotateBy.create({angle: 360*2, duration: dur/2})
 				]}),
-			actions.DelayTime.create({duration: dur})
-		]});
+			actions.DelayTime.create({duration: dur/2})];
 		
-		this.get('outScene').runAction(rotozoom);
-		this.get('inScene').runAction(actions.Sequence.create({actions: [
-			rotozoom.reverse(),
+		// Can't nest sequences or reverse them very easily, so incoming scene actions must be put 
+		// together manually for now...
+		var inzoom = [
+			actions.DelayTime.create({duration: dur/2}),
+			
+			actions.Spawn.initWithActions({actions: [
+				actions.ScaleTo.create({scale: 1.0, duration: dur/2}),
+				actions.RotateBy.create({angle: -360*2, duration: dur/2})
+				]}),
 			actions.CallFunc.create({
 				target: this,
 				method: this.finish
 			})
-		]}));
+		];
+		
+		// Sequence init() copies actions
+		this.get('outScene').runAction(actions.Sequence.create({actions: outzoom}));
+		this.get('inScene').runAction(actions.Sequence.create({actions: inzoom}));
 	}
 });
 

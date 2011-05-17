@@ -13,7 +13,7 @@ var util = require('util'),
 
 var sceneIdx = -1;
 var transitions = [
-//	"TransitionRotoZoomTest",
+	"TransitionRotoZoomTest",
 	"TransitionMoveInLTest", 
 	"TransitionMoveInRTest", 
 	"TransitionMoveInTTest",
@@ -23,7 +23,7 @@ var transitions = [
 	"TransitionSlideInTTest", 
 	"TransitionSlideInBTest"];
 var transObjects = [
-//	cocos.nodes.TransitionRotoZoom,
+	cocos.nodes.TransitionRotoZoom,
 	cocos.nodes.TransitionMoveInL, 
 	cocos.nodes.TransitionMoveInR,
 	cocos.nodes.TransitionMoveInT,
@@ -148,7 +148,7 @@ var TransitionDemo = nodes.Layer.extend({
 // actions.Spawn...
 tests.TransitionRotoZoomTest = TransitionDemo.extend({
 	title: 'TransitionRotoZoom Test',
-	subtitle: 'rotates and zooms next scene',
+	subtitle: 'rotates and zooms & reverse to next scene',
 
 	init: function() {
 		tests.TransitionRotoZoomTest.superclass.init.call(this);
