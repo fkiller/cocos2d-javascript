@@ -81,18 +81,20 @@ var MenuItemSprite = MenuItem.extend(/** @lends cocos.nodes.MenuItemSprite# */{
         this.set('contentSize', normalImage.get('contentSize'));
     },
 
-    draw: function (ctx) {
+    visit: function (ctx, rect) {
+        MenuItemSprite.superclass.visit.call(this, ctx, rect);
+
         if (this.isEnabled) {
             if (this.isSelected) {
-                this.selectedImage.draw(ctx);
+                this.selectedImage.visit(ctx);
             } else {
-                this.normalImage.draw(ctx);
+                this.normalImage.visit(ctx);
             }
         } else {
             if (this.disabledImage) {
-                this.disabledImage.draw(ctx);
+                this.disabledImage.visit(ctx);
             } else {
-                this.normalImage.draw(ctx);
+                this.normalImage.visit(ctx);
             }
         }
     }
