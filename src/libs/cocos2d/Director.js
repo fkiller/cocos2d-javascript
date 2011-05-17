@@ -144,16 +144,9 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
         function keyUp(evt) {
             eventDispatcher.keyUp(evt);
         }
-        /*
-        function keyPress(evt) {
-            eventDispatcher.keyPress(evt)
-        }
-        */
+
         document.documentElement.addEventListener('keydown', keyDown, false);
         document.documentElement.addEventListener('keyup', keyUp, false);
-        /*
-        document.documentElement.addEventListener('keypress', keyPress, false);
-        */
     },
 
     runPreloadScene: function () {
@@ -234,13 +227,13 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      * cocos.Directory#stopAnimation was called earlier.
      */
     startAnimation: function () {
-		this.animate();
+        this.animate();
 
     },
-	animate: function() {
-		this.drawScene();
-		window.requestAnimFrame(util.callback(this, 'animate'), this.canvas);
-	},
+    animate: function() {
+        this.drawScene();
+        window.requestAnimFrame(util.callback(this, 'animate'), this.canvas);
+    },
 
     /**
      * Stops the animation. Nothing will be drawn. The main loop won't be
@@ -277,7 +270,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      */
     drawScene: function () {
         this.calculateDeltaTime();
-		
+        
         if (!this.isPaused) {
             Scheduler.get('sharedScheduler').tick(this.dt);
         }
