@@ -9,7 +9,7 @@ var util = require('util'),
 var RemoteImage = RemoteResource.extend(/** @lends cocos.RemoteImage# */{
     /**
      * @memberOf cocos
-     * @extends RemoteResource
+     * @extends cocos.RemoteResource
      * @constructs
      */
     init: function (opts) {
