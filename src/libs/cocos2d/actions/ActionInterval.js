@@ -71,27 +71,26 @@ var ActionInterval = act.FiniteTimeAction.extend(/** @lends cocos.actions.Action
 });
 
 var DelayTime = ActionInterval.extend(/** @lends cocos.actions.DelayTime# */{
-	/**
-   * Delays the action a certain amount of seconds
-   *
-   * @memberOf cocos.actions
-   * @constructs
-   * @extends cocos.actions.DelayTime
-	 */
-	update: function(t) {
-		if (t === 1.0) {
-			this.stop();
-		}
-	},
-	
-	copy: function() {
-		return DelayTime.create({duration: this.get('duration')});
-	},
-	
-	reverse: function() {
-		return DelayTime.create({duration: this.get('duration')});
-	}
-	
+    /**
+     * Delays the action a certain amount of seconds
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInterval
+     */
+    update: function (t) {
+        if (t === 1.0) {
+            this.stop();
+        }
+    },
+
+    copy: function () {
+        return DelayTime.create({duration: this.get('duration')});
+    },
+
+    reverse: function () {
+        return DelayTime.create({duration: this.get('duration')});
+    }
 });
 
 
@@ -189,10 +188,11 @@ var ScaleTo = ActionInterval.extend(/** @lends cocos.actions.ScaleTo# */{
         this.target.set('scaleY', this.startScaleY + this.deltaY * t);
     },
 
-		copy: function() {
-			return ScaleTo.create({duration: this.get('duration'), scaleX: this.get('endScaleX'),
-				scaleY: this.get('endScaleY')});
-		}
+    copy: function () {
+        return ScaleTo.create({duration: this.get('duration'),
+                                 scaleX: this.get('endScaleX'),
+                                 scaleY: this.get('endScaleY')});
+    }
 });
 
 var ScaleBy = ScaleTo.extend(/** @lends cocos.actions.ScaleBy# */{
@@ -284,9 +284,9 @@ var RotateTo = ActionInterval.extend(/** @lends cocos.actions.RotateTo# */{
         this.target.set('rotation', this.startAngle + this.diffAngle * t);
     },
 
-		copy: function() {
-			return RotateTo.create({duration: this.get('duration'), angle: this.get('dstAngle')});
-		}
+    copy: function () {
+        return RotateTo.create({duration: this.get('duration'), angle: this.get('dstAngle')});
+    }
 });
 
 var RotateBy = RotateTo.extend(/** @lends cocos.actions.RotateBy# */{
@@ -554,106 +554,107 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     },
 
     copy: function () {
-			// Constructor will copy actions array
+        // Constructor will copy actions array
         return Sequence.create({actions: this.get('actions')});
     },
 
-		reverse: function() {
-			// reverse() would modify actions array
-			var ractions = [];
-			for (var i=0; i<this.actions.length; i++) {
-				ractions.unshift(this.actions[i]);
-			}
-			return Sequence.create({actions: ractions});
-		}
+    reverse: function() {
+        // reverse() would modify actions array
+        var ractions = [];
+        for (var i=0; i<this.actions.length; i++) {
+            ractions.unshift(this.actions[i]);
+        }
+        return Sequence.create({actions: ractions});
+    }
 });
 
 
 var Spawn = ActionInterval.extend(/** @lends cocos.actions.Spawn# */{
-	one: null,
-	two: null,
-	
-	/**
-   * initializes the Spawn action with the 2 actions to spawn 
-   *
-   * @memberOf cocos.actions
-   * @constructs
-   * @extends cocos.actions.ActionInterval
-   *
-   * @opt {cocos.actions.FiniteTimeAction} one: first action to spawn
-   * @opt {cocos.actions.FiniteTimeAction} two: second action to spawn
-   */
-	init: function(opts) {
-		var action1 = opts.one, 
-			action2 = opts.two;
-			
-		if (!action1 || !action2) {
-			throw "cocos.actions.Spawn: required actions missing";
-		}
-		var d1 = action1.get('duration'), 
-			d2 = action2.get('duration');
-		
-		Spawn.superclass.init.call(this, {duration: Math.max(d1, d2)});
-		
-		this.set('one', action1);
-		this.set('two', action2);
-		
-		if (d1 > d2) {
-			this.set('two', Sequence.create({actions: [
-				action2, 
-				DelayTime.create({duration: d1-d2})
-			]}));
-		} else if (d1 < d2) {
-			this.set('one', Sequence.create({actions: [
-				action1,
-				DelayTime.create({duration: d2-d1})
-			]}));
-		}
-	},
-	
-	startWithTarget: function(target) {
-		Spawn.superclass.startWithTarget.call(this, target);
-		this.get('one').startWithTarget(target);
-		this.get('two').startWithTarget(target);
-	},
-	
-	stop: function() {
-		this.get('one').stop();
-		this.get('two').stop();
-		Spawn.superclass.stop.call(this);
-	},
-	
-	update: function(t) {
-		this.get('one').update(t);
-		this.get('two').update(t);
-	},
-	
-	copy: function() {
-		return Spawn.initWithActions({actions: [this.get('one').copy(), this.get('two').copy()]});
-	},
-	
-	reverse: function() {
-		return Spawn.initWithActions({actions: [this.get('one').reverse(), this.get('two').reverse()]});
-	}
+    one: null,
+    two: null,
+
+    /**
+     * initializes the Spawn action with the 2 actions to spawn 
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInterval
+     *
+     * @opt {cocos.actions.FiniteTimeAction} one: first action to spawn
+     * @opt {cocos.actions.FiniteTimeAction} two: second action to spawn
+     */
+    init: function (opts) {
+        var action1 = opts.one, 
+            action2 = opts.two;
+            
+        if (!action1 || !action2) {
+            throw "cocos.actions.Spawn: required actions missing";
+        }
+        var d1 = action1.get('duration'), 
+            d2 = action2.get('duration');
+        
+        Spawn.superclass.init.call(this, {duration: Math.max(d1, d2)});
+        
+        this.set('one', action1);
+        this.set('two', action2);
+        
+        if (d1 > d2) {
+            this.set('two', Sequence.create({actions: [
+                action2, 
+                DelayTime.create({duration: d1-d2})
+            ]}));
+        } else if (d1 < d2) {
+            this.set('one', Sequence.create({actions: [
+                action1,
+                DelayTime.create({duration: d2-d1})
+            ]}));
+        }
+    },
+    
+    startWithTarget: function (target) {
+        Spawn.superclass.startWithTarget.call(this, target);
+        this.get('one').startWithTarget(target);
+        this.get('two').startWithTarget(target);
+    },
+    
+    stop: function () {
+        this.get('one').stop();
+        this.get('two').stop();
+        Spawn.superclass.stop.call(this);
+    },
+    
+    update: function (t) {
+        this.get('one').update(t);
+        this.get('two').update(t);
+    },
+    
+    copy: function () {
+        return Spawn.initWithActions({actions: [this.get('one').copy(), this.get('two').copy()]});
+    },
+    
+    reverse: function () {
+        return Spawn.initWithActions({actions: [this.get('one').reverse(), this.get('two').reverse()]});
+    }
 });
 
 util.extend(Spawn, {
-	/** helper class function to create Spawn object from array of actions
-	 *
-	* @opt {Array} actions: list of actions to run simultaneously
-	*/
-	initWithActions: function(opts) {
-		var now, prev = opts.actions.shift();
-		while (opts.actions.length > 0) {
-			now = opts.actions.shift();
-			if (now) {
-				prev = this.create({one: prev, two: now});
-			} else {
-				break;
-			}
-		}
-		return prev;
-	}
+    /**
+     * Helper class function to create Spawn object from array of actions
+     *
+     * @opt {Array} actions: list of actions to run simultaneously
+     */
+    initWithActions: function (opts) {
+        var now, prev = opts.actions.shift();
+        while (opts.actions.length > 0) {
+            now = opts.actions.shift();
+            if (now) {
+                prev = this.create({one: prev, two: now});
+            } else {
+                break;
+            }
+        }
+        return prev;
+    }
 });
 
 var Animate = ActionInterval.extend(/** @lends cocos.actions.Animate# */{

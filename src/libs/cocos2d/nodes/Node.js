@@ -340,9 +340,9 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         Scheduler.get('sharedScheduler').pauseTarget(this);
         ActionManager.get('sharedManager').pauseTarget(this);
     },
-		unscheduleSelector: function(selector) {
-			Scheduler.get('sharedScheduler').unschedule({target: this, method: selector});
-		},
+    unscheduleSelector: function (selector) {
+        Scheduler.get('sharedScheduler').unschedule({target: this, method: selector});
+    },
     unscheduleAllSelectors: function () {
         Scheduler.get('sharedScheduler').unscheduleAllSelectorsForTarget(this);
     },

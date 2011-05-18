@@ -69,6 +69,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      *
      * @param {HTMLElement} view Any HTML element to add the application to
      */
+
 		attachInView: function (view) {
 			if (!view.tagName) {
 				throw "Director.attachInView must be given a HTML DOM Node";
@@ -209,14 +210,9 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
 			function keyUp(evt) {
 				eventDispatcher.keyUp(evt);
 			}
-			/*
-			function keyPress(evt) {
-			eventDispatcher.keyPress(evt)
-			}
-			*/
+			
 			document.documentElement.addEventListener('keydown', keyDown, false);
 			document.documentElement.addEventListener('keyup', keyUp, false);
-			
 		},
 
     runPreloadScene: function () {
@@ -297,14 +293,15 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      * cocos.Directory#stopAnimation was called earlier.
      */
     startAnimation: function () {
-		this.animate();
+        this.animate();
 
     },
-	animate: function() {
-		this.drawScene();
-		window.requestAnimFrame(util.callback(this, 'animate'), this.canvas);
-	},
-	
+
+    animate: function() {
+        this.drawScene();
+        window.requestAnimFrame(util.callback(this, 'animate'), this.canvas);
+    },
+
     /**
      * Stops the animation. Nothing will be drawn. The main loop won't be
      * triggered anymore. If you want to pause your animation call
@@ -340,7 +337,7 @@ var Director = BObject.extend(/** @lends cocos.Director# */{
      */
     drawScene: function () {
         this.calculateDeltaTime();
-		
+        
         if (!this.isPaused) {
             Scheduler.get('sharedScheduler').tick(this.dt);
         }
