@@ -97,7 +97,7 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
         var selItem = this.get('selectedItem');
 
         if (selItem) {
-            selItem.set('isSelected', false);
+            selItem.unselected();
             selItem.activate();
         }
 
@@ -118,7 +118,7 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
         var selectedItem = this.itemForMouseEvent(event);
         this.set('selectedItem', selectedItem);
         if (selectedItem) {
-            selectedItem.set('isSelected', true);
+            selectedItem.selected()
             this.set('state', kMenuStateTrackingTouch);
 
             return true;
@@ -132,11 +132,11 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
 
         if (currentItem != this.selectedItem) {
             if (this.selectedItem) {
-                this.selectedItem.set('isSelected', false);
+                this.selectedItem.unselected();
             }
             this.set('selectedItem', currentItem);
             if (this.selectedItem) {
-                this.selectedItem.set('isSelected', true);
+                this.selectedItem.selected();
             }
         }
 

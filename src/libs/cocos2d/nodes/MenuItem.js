@@ -48,6 +48,14 @@ var MenuItem = Node.extend(/** @lends cocos.nodes.MenuItem# */{
             this.contentSize.width,
             this.contentSize.height
         );
+    },
+
+    selected: function () {
+        this.isSelected = true;
+    },
+
+    unselected: function () {
+        this.isSelected = false;
     }
 });
 
@@ -81,23 +89,79 @@ var MenuItemSprite = MenuItem.extend(/** @lends cocos.nodes.MenuItemSprite# */{
         this.set('contentSize', normalImage.get('contentSize'));
     },
 
-    visit: function (ctx, rect) {
-        MenuItemSprite.superclass.visit.call(this, ctx, rect);
+    set_normalImage: function (image) {
+        if (image != this.normalImage) {
+            image.set('anchorPoint', ccp(0, 0));
+            image.set('visible', true);
+            this.removeChild({child: this.normalImage, cleanup: true});
+            this.addChild(image);
 
-        if (this.isEnabled) {
-            if (this.isSelected) {
-                this.selectedImage.visit(ctx);
-            } else {
-                this.normalImage.visit(ctx);
-            }
+            this.normalImage = image;
+        }
+    },
+
+    set_selectedImage: function (image) {
+        if (image != this.selectedImage) {
+            image.set('anchorPoint', ccp(0, 0));
+            image.set('visible', false);
+            this.removeChild({child: this.selectedImage, cleanup: true});
+            this.addChild(image);
+
+            this.selectedImage = image;
+        }
+    },
+
+    set_disabledImage: function (image) {
+        if (image != this.disabledImage) {
+            image.set('anchorPoint', ccp(0, 0));
+            image.set('visible', false);
+            this.removeChild({child: this.disabledImage, cleanup: true});
+            this.addChild(image);
+
+            this.disabledImage = image;
+        }
+    },
+
+    selected: function () {
+        MenuItemSprite.superclass.selected.call(this);
+
+        if (this.selectedImage) {
+            this.normalImage.set('visible',   false);
+            this.selectedImage.set('visible', true);
+            if (this.disabledImage) this.disabledImage.set('visible', false);
+        } else {
+            this.normalImage.set('visible',   true);
+            if (this.disabledImage) this.disabledImage.set('visible', false);
+        }
+    },
+
+    unselected: function () {
+        MenuItemSprite.superclass.unselected.call(this);
+
+        this.normalImage.set('visible',   true);
+        if (this.selectedImage) this.selectedImage.set('visible', false);
+        if (this.disabledImage) this.disabledImage.set('visible', false);
+    },
+
+    set_isEnabled: function (enabled) {
+        this.isEnabled = enabled;
+
+        if (enabled) {
+            this.normalImage.set('visible',   true);
+            if (this.selectedImage) this.selectedImage.set('visible', false);
+            if (this.disabledImage) this.disabledImage.set('visible', false);
         } else {
             if (this.disabledImage) {
-                this.disabledImage.visit(ctx);
+                this.normalImage.set('visible',   false);
+                if (this.selectedImage) this.selectedImage.set('visible', false);
+                this.disabledImage.set('visible', true);
             } else {
-                this.normalImage.visit(ctx);
+                this.normalImage.set('visible',   true);
+                if (this.selectedImage) this.selectedImage.set('visible', false);
             }
         }
     }
+
 });
 
 var MenuItemImage = MenuItemSprite.extend(/** @lends cocos.nodes.MenuItemImage# */{
