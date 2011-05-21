@@ -342,7 +342,7 @@ var util = {
             util.extend(namespace, window.require('./' + mod, parent));
         });
 
-        parent.exports = namespace;
+        util.extend(parent.exports, namespace);
 
         return namespace;
     }
