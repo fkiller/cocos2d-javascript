@@ -71,20 +71,35 @@ BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
      * access the property directly. This will ensure all bindings, setters and
      * getters work correctly.
      * 
-     * @param {String} key Name of property to get
+     * @param {String} key Name of property to get or dot (.) separated path to a property
      * @returns {*} Value of the property
      */
     get: function (key) {
-        var accessor = getAccessors(this)[key];
+        var next = false
+        if (~key.indexOf('.')) {
+            var tokens = key.split('.');
+            key = tokens.shift();
+            next = tokens.join('.');
+        }
+
+
+        var accessor = getAccessors(this)[key],
+            val;
         if (accessor) {
-            return accessor.target.get(accessor.key);
+            val = accessor.target.get(accessor.key);
         } else {
             // Call getting function
             if (this['get_' + key]) {
-                return this['get_' + key]();
+                val = this['get_' + key]();
+            } else {
+                val = this[key];
             }
+        }
 
-            return this[key];
+        if (next) {
+            return val.get(next);
+        } else {
+            return val;
         }
     },
 
