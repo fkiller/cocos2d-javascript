@@ -5,7 +5,7 @@
 var util = require('util'),
     path = require('path');
 
-var modules = 'Preloader RemoteImage RemoteResource SpriteFrame SpriteFrameCache Director Animation AnimationCache Scheduler ActionManager TMXXMLParser'.w();
+var modules = 'Texture2D Preloader RemoteImage RemoteResource SpriteFrame SpriteFrameCache Director Animation AnimationCache Scheduler ActionManager TMXXMLParser'.w();
 
 /**
  * @namespace All cocos2d objects live in this namespace
