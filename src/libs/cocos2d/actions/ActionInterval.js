@@ -7,6 +7,7 @@ var util = require('util'),
     geo = require('geometry'),
     ccp = geo.ccp;
 
+
 var ActionInterval = act.FiniteTimeAction.extend(/** @lends cocos.actions.ActionInterval# */{
     /**
      * Number of seconds that have elapsed
@@ -391,14 +392,105 @@ var MoveBy = MoveTo.extend(/** @lends cocos.actions.MoveBy# */{
     }
 });
 
+var JumpBy = ActionInterval.extend(/** @lends cocos.actions.JumpBy# */{
+	/**
+	 * Number of pixels to jump by
+	 * @type geometry.Point
+	 */
+	delta: null,
+	
+	/**
+	 * Height of jump
+	 * @type Float
+	 */
+	height: 0,
+	
+	/**
+	 * Number of times to jump
+	 * @type Integer
+	 */
+	jumps: 0,
+	
+	/**
+	 * Starting point
+	 * @type geometry.Point
+	 */
+	startPosition: null,
+	
+    /**
+	 * Moves a CCNode object simulating a parabolic jump movement by modifying it's position attribute.
+	 *
+	 * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInterval
+	 *
+	 * @opt {Float} duration Number of seconds to run action for
+	 * @opt {geometry.Point} startPosition Point at which jump starts
+	 * @opt {geometry.Point} delta Number of pixels to jump by
+	 * @opt {Float} height Height of jump
+	 * @opt {Int} jumps Number of times to repeat
+	 */
+	init: function(opts) {
+		JumpBy.superclass.init.call(this, opts);
+		
+		this.delta 	= util.copy(opts.delta);
+		this.height = opts.height;
+		this.jumps 	= opts.jumps;
+	},
+	
+	copy: function() {
+		return JumpBy.create({duration: this.duration, 
+								 delta: this.delta,
+								height: this.height,
+								 jumps: this.jumps});
+	},
+	
+	startWithTarget: function(target) {
+		JumpBy.superclass.startWithTarget.call(this, target);
+		this.set('startPosition', target.get('position'));
+	},
+	
+	update: function(t) {
+		// parabolic jump
+		// the fmod function I added doesn't seem to do the trick here...
+		// simple modulo works better for now.
+		//var frac = math.fmod(t * this.jumps, 1.0);
+		var frac = (t * this.jumps) % 1.0;
+		var y = this.height * 4 * frac * (1 - frac);
+		y += this.delta.y * t;
+		var x = this.delta.x * t;
+		this.target.set('position', geo.ccp(this.startPosition.x + x, this.startPosition.y + y));
+	},
+	
+	reverse: function() {
+		return JumpBy.create({duration: this.duration,
+								 delta: geo.ccp(-this.delta.x, -this.delta.y),
+								height: this.height,
+								 jumps: this.jumps});
+	}
+});
 
+var JumpTo = JumpBy.extend(/** @lends cocos.actions.JumpTo# */{
+	/**
+	 * Moves a Node object to a parabolic position simulating a jump movement by modifying it's position attribute.
+	 *
+	 * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.JumpBy
+	 */
+	startWithTarget: function(target) {
+		JumpTo.superclass.startWithTarget.call(this, target);
+		this.delta = geo.ccp(this.delta.x - this.startPosition.x, this.delta.y - this.startPosition.y);
+	}
+});
+	
 /**
  * @memberOf cocos.actions
  * @class Fades out a cocos.nodes.Node to zero opacity
  * @extends cocos.actions.ActionInterval
  */
 var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
-		
+        
     update: function (t) {
         var target = this.get('target');
         if (!target) return;
@@ -416,7 +508,7 @@ var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
  * @extends cocos.actions.ActionInterval
  */
 var FadeIn = ActionInterval.extend(/** @lends cocos.actions.FadeIn# */{
-		
+        
     update: function (t) {
         var target = this.get('target');
         if (!target) return;
@@ -527,11 +619,11 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
         } else {
             this.elapsed += dt;
         }
-				// Required to prevent array bounds index errors
-				if (this.currentActionIndex < this.actions.length) {
-        	this.actions[this.currentActionIndex].step(dt);
-					this.update(Math.min(1, this.elapsed / this.duration));
-				}
+                // Required to prevent array bounds index errors
+                if (this.currentActionIndex < this.actions.length) {
+            this.actions[this.currentActionIndex].step(dt);
+                    this.update(Math.min(1, this.elapsed / this.duration));
+                }
     },
 
     update: function (dt) {
@@ -728,6 +820,8 @@ exports.RotateTo = RotateTo;
 exports.RotateBy = RotateBy;
 exports.MoveTo = MoveTo;
 exports.MoveBy = MoveBy;
+exports.JumpBy = JumpBy;
+exports.JumpTo = JumpTo;
 exports.FadeIn = FadeIn;
 exports.FadeOut = FadeOut;
 exports.FadeTo = FadeTo;
