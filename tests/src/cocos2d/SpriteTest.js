@@ -156,7 +156,6 @@ tests.Sprite1 = SpriteDemo.extend(/** @lends Sprite1.prototype# */{
 
         if (rand < 0.2) {
             action = actions.ScaleBy.create({duration: 3, scale: 2});
-/*
         } else if (rand < 0.4) {
             action = actions.RotateBy.create({duration: 3, angle: 360});
         } else if (rand < 0.6) {
@@ -165,16 +164,10 @@ tests.Sprite1 = SpriteDemo.extend(/** @lends Sprite1.prototype# */{
         } else if (rand < 0.8) {
             action = actions.RotateBy.create({duration: 3, angle: 360});
             //action = cocos.TintBy.create({duration:3, scale:2});
-*/
-		} else if (rand < 0.9) {
-			action = actions.JumpBy.create({duration: 1, delta: geo.ccp(40, 40), height: 2, jumps: 1});
         } else {
             action = actions.ScaleBy.create({duration: 3, scale: 2});
             //action = cocos.FadeOut.create({duration:3, scale:2});
         }
-
-
-
 
         actionBack = action.reverse();
         seq = actions.Sequence.create({actions: [action, actionBack]});
