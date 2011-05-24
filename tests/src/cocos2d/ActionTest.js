@@ -144,7 +144,7 @@ tests.Jump = ActionDemo.extend(/** @lends Jump.prototype# */{
 		
 		var s = cocos.Director.get('sharedDirector').get('winSize');
 		
-       	var action1 = actions.JumpTo.create({duration: 2, delta: ccp(300, 300), height: 50, jumps: 4});
+       	var action1 = actions.JumpTo.create({duration: 2, delta: ccp(s.width/2, 300), height: 50, jumps: 4});
 		var action2 = actions.JumpBy.create({duration: 2, delta: ccp(300, 0), height: 50, jumps: 4});
 		var action3 = actions.JumpBy.create({duration: 2, delta: ccp(0, 0), height: 80, jumps: 4});
         actionBack = action2.reverse();
