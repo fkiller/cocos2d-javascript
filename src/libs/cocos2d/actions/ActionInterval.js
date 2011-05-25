@@ -472,7 +472,8 @@ var JumpBy = ActionInterval.extend(/** @lends cocos.actions.JumpBy# */{
 
 var JumpTo = JumpBy.extend(/** @lends cocos.actions.JumpTo# */{
 	/**
-	 * Moves a Node object to a parabolic position simulating a jump movement by modifying it's position attribute.
+	 * Moves a Node object to a parabolic position simulating a jump 
+	 * movement by modifying it's position attribute.
 	 *
 	 * @memberOf cocos.actions
      * @constructs
