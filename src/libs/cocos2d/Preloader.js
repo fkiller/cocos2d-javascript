@@ -41,8 +41,7 @@ var Preloader = BObject.extend(/** @lends cocos.Preloader# */{
             if (__remote_resources__.hasOwnProperty(uri)) {
                 if (__resources__[uri]) {
                     // Already loaded
-                    this.set('loaded', this.get('loaded') +1);
-                    events.trigger(this, 'load', uri, this);
+                    this.didLoadResource(uri);
                     continue;
                 }
                 var file = resource(uri);
@@ -59,7 +58,9 @@ var Preloader = BObject.extend(/** @lends cocos.Preloader# */{
     
     didLoadResource: function(uri) {
         this.set('loaded', this.get('loaded') +1);
-        events.removeListener(this._listeners[uri]);
+        if (this._listeners[uri]) {
+            events.removeListener(this._listeners[uri]);
+        }
         events.trigger(this, 'load', uri, this);
 
         if (this.get('loaded') >= this.get('count')) {

@@ -339,6 +339,17 @@ var TMXMapInfo = BObject.extend(/** @lends cocos.TMXMapInfo# */{
             objectGroup.set('objects', objectsArray);
             this.objectGroups.push(objectGroup);
         }
+
+
+        // PARSE <map><property>
+        var properties = doc.querySelectorAll('map > properties > property');
+
+        for (i = 0; i < properties.length; i++) {
+            var property = properties[i];
+            if (property.getAttribute('name')) {
+                this.properties[property.getAttribute('name')] = property.getAttribute('value');
+            }
+        }
     }
 });
 
