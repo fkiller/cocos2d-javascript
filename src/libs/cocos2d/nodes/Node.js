@@ -206,6 +206,25 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         }
     },
 
+    removeChildren: function(opts) {
+        var children = this.get('children'),
+            isRunning = this.get('isRunning');
+        
+        // Perform cleanup on each child but can't call removeChild() 
+        // due to Array.splice's destructive nature during iteration.
+        for (var i = 0; i < children.length; i++) {
+            if (opts.cleanup) {
+                children[i].cleanup();
+            }
+            if (isRunning) {
+                children[i].onExit();
+            }
+            children[i].set('parent', null);
+        }
+        // Now safe to empty children list
+        this.children = [];
+    },
+    
     detatchChild: function (opts) {
         var child = opts.child,
             cleanup = opts.cleanup;
