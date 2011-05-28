@@ -244,6 +244,14 @@ var SpriteBatchNode = BatchNode.extend(/** @lends cocos.nodes.SpriteBatchNode# *
      */
     get_texture: function () {
         return this.textureAtlas ? this.textureAtlas.texture : null;
+    },
+
+    set_opacity: function (newOpacity) {
+        this.opacity = newOpacity;
+        for (var i = 0, len = this.children.length; i < len; i++) {
+            var child = this.children[i];
+            child.set('opacity', newOpacity);
+        }
     }
 
 });

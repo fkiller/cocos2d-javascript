@@ -179,7 +179,14 @@ var util = {
 
     callback: function(target, method) {
         if (typeof(method) == 'string') {
+            var methodName = method;
             method = target[method];
+            if (!method) {
+                throw "Callback to undefined method: " + methodName;
+            }
+        }
+        if (!method) {
+            throw "Callback with no method to call";
         }
 
         return function() {

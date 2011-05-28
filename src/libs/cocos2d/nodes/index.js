@@ -5,7 +5,7 @@
 var util = require('util'),
     path = require('path');
 
-var modules = 'ProgressBar PreloadScene Node Layer Scene Label Sprite TMXTiledMap BatchNode RenderTexture Menu MenuItem Transition'.w();
+var modules = 'AtlasNode LabelAtlas ProgressBar PreloadScene Node Layer Scene Label Sprite TMXTiledMap BatchNode RenderTexture Menu MenuItem Transition'.w();
 
 /** 
  * @memberOf cocos
