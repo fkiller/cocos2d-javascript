@@ -14,8 +14,18 @@ var util      = require('util'),
 
 var sceneIdx = -1;
 var transitions = [
+    "Manual",
+    "Move",
     "Jump",
+    "Bezier",
+    "Blink",
+    "Sequence",
+    "Sequence2",
     "Spawn", 
+    "Reverse",
+    "Delay",
+    "ReverseSequence",
+    "RepeatForever",
     "Speed"
 ];
 
@@ -58,8 +68,27 @@ var ActionDemo = nodes.Layer.extend({
         ActionDemo.superclass.init.call(this);
         
         this.set('isMouseEnabled', true);
+        
         var s = cocos.Director.get('sharedDirector').get('winSize');
 
+        var grossini = nodes.Sprite.create({file: module.dirname + "/resources/grossini.png", 
+            rect: new geo.Rect(0, 0, 85, 121)});
+        var tamara = nodes.Sprite.create({file: module.dirname + "/resources/grossinis_sister1.png", 
+            rect: new geo.Rect(0, 0, 52, 139)});
+        var kathia = nodes.Sprite.create({file: module.dirname + "/resources/grossinis_sister2.png", 
+            rect: new geo.Rect(0, 0, 56, 138)});
+        this.set('grossini', grossini);
+        this.set('tamara', tamara);
+        this.set('kathia', kathia);
+         
+        this.addChild({child: grossini, z: 1, tag: kTagSprite1});
+        this.addChild({child: tamara, z: 2, tag: kTagSprite2});
+        this.addChild({child: kathia, z: 3, tag: kTagSprite3});
+        
+        grossini.set('position', ccp(s.width/2, s.height/3));
+        tamara.set('position', ccp(s.width/2, 2*s.height/3));
+        kathia.set('position', ccp(s.width/2, s.height/2));
+        
         var label = nodes.Label.create({string: this.get('title'), fontName: 'Arial', fontSize: 26});
         this.addChild({child: label, z: 1});
         label.set('position', ccp(s.width / 2, s.height - 50));
@@ -72,7 +101,6 @@ var ActionDemo = nodes.Layer.extend({
             l.set('position', ccp(s.width / 2, s.height - 80));
         }
 
-
         var item1 = nodes.MenuItemImage.create({normalImage: module.dirname + "/resources/b1.png", selectedImage: module.dirname + "/resources/b2.png", callback: util.callback(this, 'backCallback')});
         var item2 = nodes.MenuItemImage.create({normalImage: module.dirname + "/resources/r1.png", selectedImage: module.dirname + "/resources/r2.png", callback: util.callback(this, 'restartCallback')});
         var item3 = nodes.MenuItemImage.create({normalImage: module.dirname + "/resources/f1.png", selectedImage: module.dirname + "/resources/f2.png", callback: util.callback(this, 'nextCallback')});
@@ -83,7 +111,7 @@ var ActionDemo = nodes.Layer.extend({
         item1.set('position', ccp(s.width / 2 - 100, 30));
         item2.set('position', ccp(s.width / 2, 30));
         item3.set('position', ccp(s.width / 2 + 100, 30));
-        this.addChild({child: menu, z: 1});
+        this.addChild({child: menu});
     },
 
     restartCallback: function () {
@@ -113,6 +141,42 @@ var ActionDemo = nodes.Layer.extend({
         director.replaceScene(scene);
     },
     
+    alignSpritesLeft: function(numSprites) {
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        if (numSprites == 1) {
+            this.get('tamara').set('visible', false);
+            this.get('kathia').set('visible', false);
+            this.get('grossini').set('position', ccp(60, s.height/2));
+        } else if (numSprites == 2) {
+            this.get('kathia').set('position', ccp(60, s.height/3));
+            this.get('tamara').set('position', ccp(60, 2*s.height/3));
+            this.get('grossini').set('visible', false);
+        } else if (numSprites == 3) {
+            this.get('grossini').set('position', ccp(60, s.height/2));
+            this.get('tamara').set('position', ccp(60, 2*s.height/3));
+            this.get('kathia').set('position', ccp(60, s.height/3));
+        }
+    },
+    
+    centerSprites: function(numSprites) {
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        if (numSprites == 1) {
+            this.get('tamara').set('visible', false);
+            this.get('kathia').set('visible', false);
+            this.get('grossini').set('position', ccp(s.width/2, s.height/2));
+        } else if (numSprites == 2) {
+            this.get('kathia').set('position', ccp(s.width/3, s.height/2));
+            this.get('tamara').set('position', ccp(2*s.width/3, s.height/2));
+            this.get('grossini').set('visible', false);
+        } else if (numSprites == 3) {
+            this.get('grossini').set('position', ccp(s.width/2, s.height/2));
+            this.get('tamara').set('position', ccp(2*s.width/3, s.height/2));
+            this.get('kathia').set('position', ccp(s.width/3, s.height/2));
+        }
+    },
+    
     addNewSprite: function (point, tag) {
         var idx = Math.floor(Math.random() * 1400 / 100),
             x = (idx % 5) * 85,
@@ -126,6 +190,50 @@ var ActionDemo = nodes.Layer.extend({
     }
 });
 
+tests.Manual = ActionDemo.extend(/** @lends Manual.prototype# */{
+    title: 'Manual Transformation',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.Manual.superclass.onEnter.call(this);
+        
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        this.get('tamara').set('scale', ccp(2.5, -1.0));
+        this.get('tamara').set('position', ccp(100, 70));
+        this.get('tamara').set('opacity', 128);
+        
+        this.get('grossini').set('rotation', 120);
+        this.get('grossini').set('position', ccp(s.width/2, s.height/2));
+    }
+});
+
+/**
+ * @class
+ *
+ * Example Move Action
+ */
+tests.Move = ActionDemo.extend(/** @lends Move.prototype# */{
+    title: 'MoveTo / MoveBy',
+    subtitle: '',
+
+	onEnter: function() {
+		tests.Move.superclass.onEnter.call(this);
+		
+		this.centerSprites(3);
+		
+		var s = cocos.Director.get('sharedDirector').get('winSize');
+		
+		var actionTo = actions.MoveTo.create({duration: 2, position: ccp(s.width-40, s.height-40)});
+		var actionBy = actions.MoveBy.create({duration: 2, position: ccp(80, 80)});
+		var actionByBack = actionBy.reverse();
+		
+		this.get('tamara').runAction(actionTo);
+		this.get('grossini').runAction(actions.Sequence.create({actions: [actionBy, actionByBack]}));
+		this.get('kathia').runAction(actions.MoveTo.create({duration: 1, position: ccp(40, 40)}));
+	}
+});
+		
 /**
  * @class
  *
@@ -134,16 +242,6 @@ var ActionDemo = nodes.Layer.extend({
 tests.Jump = ActionDemo.extend(/** @lends Jump.prototype# */{
     title: 'JumpTo / JumpBy',
     subtitle: '',
-
-    init: function () {
-        tests.Jump.superclass.init.call(this);
-        
-        var s = cocos.Director.get('sharedDirector').get('winSize');
-        
-        this.addNewSprite(ccp(s.width/2, s.height/2), kTagSprite1);
-		this.addNewSprite(ccp(s.width/2, s.height/2), kTagSprite2);
-		this.addNewSprite(ccp(s.width/2, s.height/2), kTagSprite3);
-    },
 
 	onEnter: function() {
 		tests.Jump.superclass.onEnter.call(this);
@@ -167,28 +265,243 @@ tests.Jump = ActionDemo.extend(/** @lends Jump.prototype# */{
 /**
  * @class
  *
+ * Example Bezier Action
+ */
+tests.Bezier = ActionDemo.extend(/** @lends Bezier.prototype# */{
+    title: 'BezierBy / BezierTo',
+    subtitle: '',
+
+	onEnter: function() {
+		tests.Bezier.superclass.onEnter.call(this);
+		
+		var s = cocos.Director.get('sharedDirector').get('winSize');
+		
+	//	this.alignSpritesLeft();
+		
+		var bezier = new geo.BezierConfig();
+		bezier.controlPoint1 = ccp(0, s.height/2);
+        bezier.controlPoint2 = ccp(300, -s.height/2);
+        bezier.endPosition = ccp(300,100);
+        
+        var bezierForward = actions.BezierBy.create({duration: 3, bezier: bezier});
+        var bezierBack = bezierForward.reverse();
+        var seq = actions.Sequence.create({actions: [bezierForward, bezierBack]});
+        
+        this.get('tamara').set('position', ccp(80, 160));
+        var bezier2 = new geo.BezierConfig();
+        bezier2.controlPoint1 = ccp(100, s.height/2);
+        bezier2.controlPoint2 = ccp(200, -s.height/2);
+        bezier2.endPosition = ccp(240,160);
+        
+        var bezierTo1 = actions.BezierTo.create({duration: 2, bezier: bezier2});
+        
+        this.get('kathia').set('position', ccp(400, 160));
+        var bezierTo2 = actions.BezierTo.create({duration: 2, bezier: bezier2});
+        
+        this.get('grossini').runAction(actions.RepeatForever.create(seq));
+        this.get('tamara').runAction(bezierTo1);
+        this.get('kathia').runAction(bezierTo2);
+	}
+});
+		
+/**
+ * @class
+ *
+ * Example Blink Action
+ */
+tests.Blink = ActionDemo.extend(/** @lends Blink.prototype# */{
+    title: 'Blink',
+    subtitle: '',
+
+	onEnter: function() {
+		tests.Blink.superclass.onEnter.call(this);
+		
+		this.centerSprites(2);
+		
+		this.get('tamara').runAction(actions.Blink.create({duration: 2, blinks: 10}));
+		this.get('kathia').runAction(actions.Blink.create({duration: 2, blinks: 5}));
+	}
+});
+
+
+/**
+ * @class
+ *
+ * Example Sequence Action
+ */
+tests.Sequence = ActionDemo.extend(/** @lends Sequence.prototype# */{
+    title: 'Sequence: Move + Rotate',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.Sequence.superclass.onEnter.call(this);
+        
+        this.alignSpritesLeft(1);
+        
+        var action = actions.Sequence.create({actions: [
+            actions.MoveBy.create({duration: 2, position: ccp(240, 0)}),
+            actions.RotateBy.create({duration: 2, angle: 540})
+            ]});
+        this.get('grossini').runAction(action);
+    }
+});
+        
+/**
+ * @class
+ *
+ * Example Sequence2 Action
+ */
+tests.Sequence2 = ActionDemo.extend(/** @lends Sequence2.prototype# */{
+    title: 'Sequence of InstantActions',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.Sequence2.superclass.onEnter.call(this);
+        
+        this.alignSpritesLeft(1);
+        this.get('grossini').set('position', ccp(200, 200));
+        
+        var action = actions.Sequence.create({actions: [
+            actions.MoveBy.create({duration: 1, position: ccp(100, 0)}),
+            actions.CallFunc.create({target: this, method: 'callback1'}),
+            actions.CallFunc.create({target: this, method: 'callback2'}),
+            actions.CallFunc.create({target: this, method: 'callback3'})
+            ]});
+        this.get('grossini').runAction(action);
+    },
+    
+    callback1: function(target) {
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        var label = cocos.nodes.Label.create({string: "callback 1 called", fontName: 'Marker Felt', fontSize: 16});
+        label.set('position', ccp(s.width / 4, s.height / 2));
+        this.addChild({child: label});
+    },
+    
+    callback2: function(target) {
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        var label = cocos.nodes.Label.create({string: "callback 2 called", fontName: 'Marker Felt', fontSize: 16});
+        label.set('position', ccp(s.width / 4*2, s.height / 2));
+        this.addChild({child: label});
+    },
+    
+    callback3: function(target) {
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        var label = cocos.nodes.Label.create({string: "callback 3 called", fontName: 'Marker Felt', fontSize: 16});
+        label.set('position', ccp(s.width / 4*3, s.height / 2));
+        this.addChild({child: label});
+    }
+});
+
+/**
+ * @class
+ *
  * Example Spawn Action
  */
 tests.Spawn = ActionDemo.extend(/** @lends Spawn.prototype# */{
     title: 'Spawn: Jump + Rotate',
     subtitle: '',
     
-    init: function() {
-        tests.Spawn.superclass.init.call(this);
-        
-        var s = cocos.Director.get('sharedDirector').get('winSize');
-        
-        this.addNewSprite(ccp(0, s.height/2), kTagSprite1);
-    },
-    
     onEnter: function() {
         tests.Spawn.superclass.onEnter.call(this);
         
+        this.alignSpritesLeft(1);
         var action = actions.Spawn.initWithActions({actions: [
             actions.JumpBy.create({duration: 2, delta: ccp(300, 0), height: 50, jumps: 4}),
             actions.RotateBy.create({duration: 2, angle: 720})
             ]});
         this.getChild({tag: kTagSprite1}).runAction(action);
+    }
+});
+
+/**
+ * @class
+ *
+ * Example Reverse Action
+ */
+tests.Reverse = ActionDemo.extend(/** @lends Reverse.prototype# */{
+    title: 'Reverse an action',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.Reverse.superclass.onEnter.call(this);
+        
+        this.alignSpritesLeft(1);
+        
+        var jump = actions.JumpBy.create({duration: 2, delta: ccp(300, 0), height: 50, jumps: 4});
+        var action = actions.Sequence.create({actions: [jump, jump.reverse()]});
+
+        this.get('grossini').runAction(action);
+    }
+});
+
+/**
+ * @class
+ *
+ * Example Delay Action
+ */
+tests.Delay = ActionDemo.extend(/** @lends Delay.prototype# */{
+    title: 'DelayTime: m + delay + m',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.Delay.superclass.onEnter.call(this);
+        
+        this.alignSpritesLeft(1);
+        
+        var move = actions.MoveBy.create({duration: 1, position: ccp(150, 0)});
+        var action = actions.Sequence.create({actions: [move,
+            actions.DelayTime.create({duration: 2}),
+            move]});
+
+        this.get('grossini').runAction(action);
+    }
+});
+
+/**
+ * @class
+ *
+ * Example ReverseSequence Action
+ */
+tests.ReverseSequence = ActionDemo.extend(/** @lends ReverseSequence.prototype# */{
+    title: 'Reverse a sequence',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.ReverseSequence.superclass.onEnter.call(this);
+        
+        this.alignSpritesLeft(1);
+        
+        var move1 = actions.MoveBy.create({duration: 1, position: ccp(250, 0)});
+        var move2 = actions.MoveBy.create({duration: 1, position: ccp(0, 50)});
+        var seq = actions.Sequence.create({actions: [move1, move2, move1.reverse()]});
+        var action = actions.Sequence.create({actions: [seq, seq.reverse()]});
+
+        this.get('grossini').runAction(action);
+    }
+});
+
+/**
+ * @class
+ *
+ * Example RepeatForever Action
+ */
+tests.RepeatForever = ActionDemo.extend(/** @lends RepeatForever.prototype# */{
+    title: 'CallFunc + RepeatForever',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.RepeatForever.superclass.onEnter.call(this);
+        
+        this.centerSprites(1);
+        
+        this.get('grossini').runAction(actions.Sequence.create({actions: [
+            actions.DelayTime.create({duration: 1}),
+            actions.CallFunc.create({target: this, method: 'repeatForever'})
+            ]}));
+    },
+    
+    repeatForever: function(target) {
+        target.runAction(actions.RepeatForever.create(actions.RotateBy.create({duration: 1, angle: 360})));
     }
 });
 
@@ -201,20 +514,12 @@ tests.Speed = ActionDemo.extend(/** @lends Speed.prototype# */{
     title: 'Speed',
     subtitle: '',
     
-    init: function() {
-        tests.Speed.superclass.init.call(this);
-        
-        var s = cocos.Director.get('sharedDirector').get('winSize');
-        
-        this.addNewSprite(ccp(0, s.height/2), kTagSprite1);
-		this.addNewSprite(ccp(0, s.height/2), kTagSprite2);
-		this.addNewSprite(ccp(0, s.height/2), kTagSprite3);
-    },
-    
     onEnter: function() {
         tests.Speed.superclass.onEnter.call(this);
     
         var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        this.alignSpritesLeft(3);
         // rotate and jump
         var jump1 = actions.JumpBy.create({duration: 4, delta: ccp(-s.width+80, 0), height: 100, jumps: 4});
         var jump2 = jump1.reverse();

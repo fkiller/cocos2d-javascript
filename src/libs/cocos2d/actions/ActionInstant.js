@@ -118,12 +118,12 @@ var CallFunc = ActionInstant.extend({
 	
 	startWithTarget: function(target) {
 		CallFunc.superclass.startWithTarget.call(this, target);
-		this.execute();
+		this.execute(target);
 	},
 	
-	execute: function() {
+	execute: function(target) {
 	    // Pass target to callback
-		this.callback.call(this.target);
+		this.callback.call(this, target);
 	},
 	
 	copy: function() {

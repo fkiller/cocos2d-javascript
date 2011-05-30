@@ -380,7 +380,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
         // Set alpha value (global only for now)
         context.globalAlpha = this.get('opacity') / 255.0;
-
+        
         // Adjust redraw region by nodes position
         if (rect) {
             var pos = this.get('position');
@@ -393,7 +393,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
                 child.visit(context, rect);
             }
         });
-
+        
         this.draw(context, rect);
 
         // Draw foreground nodes

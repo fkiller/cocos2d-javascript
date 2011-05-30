@@ -77,7 +77,7 @@ var ActionInterval = act.FiniteTimeAction.extend(/** @lends cocos.actions.Action
 
 var DelayTime = ActionInterval.extend(/** @lends cocos.actions.DelayTime# */{
     /**
-     * Delays the action a certain amount of seconds
+     * @class DelayTime Delays the action a certain amount of seconds
      *
      * @memberOf cocos.actions
      * @constructs
@@ -151,7 +151,7 @@ var ScaleTo = ActionInterval.extend(/** @lends cocos.actions.ScaleTo# */{
     deltaY: 0.0,
 
     /**
-     * Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
+     * @class ScaleTo Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
      *
      * @memberOf cocos.actions
      * @constructs
@@ -202,7 +202,7 @@ var ScaleTo = ActionInterval.extend(/** @lends cocos.actions.ScaleTo# */{
 
 var ScaleBy = ScaleTo.extend(/** @lends cocos.actions.ScaleBy# */{
     /**
-     * Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
+     * @class ScaleBy Scales a cocos.Node object to a zoom factor by modifying it's scale attribute.
      *
      * @memberOf cocos.actions
      * @constructs
@@ -250,7 +250,7 @@ var RotateTo = ActionInterval.extend(/** @lends cocos.actions.RotateTo# */{
     diffAngle: 0,
 
     /**
-     * @class Rotates a cocos.Node object to a certain angle by modifying its rotation
+     * @class RotateTo Rotates a cocos.Node object to a certain angle by modifying its rotation
      * attribute. The direction will be decided by the shortest angle.
      *
      * @memberOf cocos.actions
@@ -302,7 +302,7 @@ var RotateBy = RotateTo.extend(/** @lends cocos.actions.RotateBy# */{
     angle: 0,
 
     /**
-     * Rotates a cocos.Node object to a certain angle by modifying its rotation
+     * @class RotateBy Rotates a cocos.Node object to a certain angle by modifying its rotation
      * attribute. The direction will be decided by the shortest angle.
      *
      * @memberOf cocos.action
@@ -343,7 +343,7 @@ var MoveTo = ActionInterval.extend(/** @lends cocos.actions.MoveTo# */{
     endPosition: null,
 
     /**
-     * @class Animates moving a cocos.nodes.Node object to a another point.
+     * @class MoveTo Animates moving a cocos.nodes.Node object to a another point.
      *
      * @memberOf cocos.actions
      * @constructs
@@ -378,7 +378,7 @@ var MoveTo = ActionInterval.extend(/** @lends cocos.actions.MoveTo# */{
 
 var MoveBy = MoveTo.extend(/** @lends cocos.actions.MoveBy# */{
     /**
-     * Animates moving a cocos.node.Node object by a given number of pixels
+     * @class MoveBy Animates moving a cocos.node.Node object by a given number of pixels
      *
      * @memberOf cocos.actions
      * @constructs
@@ -435,7 +435,7 @@ var JumpBy = ActionInterval.extend(/** @lends cocos.actions.JumpBy# */{
     startPosition: null,
     
     /**
-     * Moves a CCNode object simulating a parabolic jump movement by modifying it's position attribute.
+     * @class JumpBy Moves a CCNode object simulating a parabolic jump movement by modifying it's position attribute.
      *
      * @memberOf cocos.actions
      * @constructs
@@ -469,9 +469,6 @@ var JumpBy = ActionInterval.extend(/** @lends cocos.actions.JumpBy# */{
     
     update: function(t) {
         // parabolic jump
-        // the fmod function I added doesn't seem to do the trick here...
-        // simple modulo works better for now.
-        //var frac = math.fmod(t * this.jumps, 1.0);
         var frac = (t * this.jumps) % 1.0;
         var y = this.height * 4 * frac * (1 - frac);
         y += this.delta.y * t;
@@ -489,11 +486,10 @@ var JumpBy = ActionInterval.extend(/** @lends cocos.actions.JumpBy# */{
 
 var JumpTo = JumpBy.extend(/** @lends cocos.actions.JumpTo# */{
     /**
-     * Moves a Node object to a parabolic position simulating a jump 
+     * @class JumpTo Moves a Node object to a parabolic position simulating a jump 
      * movement by modifying it's position attribute.
      *
      * @memberOf cocos.actions
-     * @constructs
      * @extends cocos.actions.JumpBy
      */
     startWithTarget: function(target) {
@@ -501,14 +497,144 @@ var JumpTo = JumpBy.extend(/** @lends cocos.actions.JumpTo# */{
         this.delta = geo.ccp(this.delta.x - this.startPosition.x, this.delta.y - this.startPosition.y);
     }
 });
+
+var BezierBy = ActionInterval.extend(/** @lends cocos.actions.BezierBy# */{
+    /**
+     * @type {geometry.BezierConfig}
+     */
+    config: null,
     
-/**
- * @memberOf cocos.actions
- * @class Fades out a cocos.nodes.Node to zero opacity
- * @extends cocos.actions.ActionInterval
- */
-var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
+    startPosition: null,
+    
+    /**
+     * @class BezierBy An action that moves the target with a cubic Bezier curve by a certain distance.
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInterval
+     *
+     * @opts {geometry.BezierConfig} bezier Bezier control points object
+     * @opts {Float} duration
+     */
+    init: function(opts) {
+        BezierBy.superclass.init.call(this, opts);
         
+        this.config = util.copy(opts.bezier);
+    },
+    
+    startWithTarget: function(target) {
+        BezierBy.superclass.startWithTarget.call(this, target);
+        this.set('startPosition', this.target.get('position'));
+    },
+    
+    update: function(t) {
+        var c = this.get('config');
+        var xa = 0,
+            xb = c.controlPoint1.x,
+            xc = c.controlPoint2.x,
+            xd = c.endPosition.x,
+            ya = 0,
+            yb = c.controlPoint1.y,
+            yc = c.controlPoint2.y,
+            yd = c.endPosition.y;
+        
+        var x = BezierBy.bezierat(xa, xb, xc, xd, t);
+        var y = BezierBy.bezierat(ya, yb, yc, yd, t);
+        
+        this.target.set('position', geo.ccpAdd(this.get('startPosition'), geo.ccp(x, y)));
+    },
+    
+    copy: function() {
+        return BezierBy.create({bezier: this.get('config'), duration: this.get('duration')});
+    },
+    
+    reverse: function() {
+        var c = this.get('config'),
+            bc = new geo.BezierConfig();
+            
+        bc.endPosition = geo.ccpNeg(c.endPosition);
+        bc.controlPoint1 = geo.ccpAdd(c.controlPoint2, geo.ccpNeg(c.endPosition));
+        bc.controlPoint2 = geo.ccpAdd(c.controlPoint1, geo.ccpNeg(c.endPosition));
+        
+        return BezierBy.create({bezier: bc, duration: this.get('duration')});
+    }
+});
+
+util.extend(BezierBy, {
+    /**
+     * Bezier cubic formula
+     * ((1 - t) + t)3 = 1 
+     */
+    bezierat: function(a, b, c, d, t) {
+       return Math.pow(1-t, 3) * a + 
+            3 * t * Math.pow(1-t, 2) * b +
+            3 * Math.pow(t, 2) * (1 - t) * c +
+            Math.pow(t, 3) * d;
+    }
+});
+
+var BezierTo = BezierBy.extend(/** @lends cocos.actions.BezierTo# */{
+    /**
+     * @class BezierTo An action that moves the target with a cubic Bezier curve to a destination point.
+     *
+     * @memberOf cocos.actions
+     * @extends cocos.actions.BezierBy
+     */
+    startWithTarget: function(target) {
+        BezierTo.superclass.startWithTarget.call(this, target);
+        
+        var c = this.get('config');
+        c.controlPoint1 = geo.ccpSub(c.controlPoint1, this.get('startPosition'));
+        c.controlPoint2 = geo.ccpSub(c.controlPoint2, this.get('startPosition'));
+        c.endPosition = geo.ccpSub(c.endPosition, this.get('startPosition'));
+    }
+});
+
+var Blink = ActionInterval.extend(/** @lends cocos.actions.Blink# */{
+    /**
+     * @type {Integer}
+     */
+    times: 1,
+    
+    /**
+     * @class Blink Blinks a Node object by modifying it's visible attribute
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInterval
+     *
+     * @opts {Integer} blinks Number of times to blink
+     * @opts {Float} duration
+     */
+    init: function(opts) {
+        Blink.superclass.init.call(this, opts);
+        this.times = opts.blinks;
+    },
+    
+    update: function(t) {
+        if (! this.get_isDone()) {
+            var slice = 1 / this.times;
+            var m = t % slice;
+            this.target.set('visible', (m > slice/2));
+        }
+    },
+    
+    copy: function() {
+        return Blink.create({duration: this.get('duration'), blinks: this.get('times')});
+    },
+    
+    reverse: function() {
+        return this.copy();
+    }
+});
+
+var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
+   /**
+    * @class FadeOut Fades out a cocos.nodes.Node to zero opacity
+    *
+    * @memberOf cocos.actions
+    * @extends cocos.actions.ActionInterval
+    */     
     update: function (t) {
         var target = this.get('target');
         if (!target) return;
@@ -524,13 +650,14 @@ var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
     }
 });
 
-/**
- * @memberOf cocos.actions
- * @class Fades in a cocos.nodes.Node to 100% opacity
- * @extends cocos.actions.ActionInterval
- */
+
 var FadeIn = ActionInterval.extend(/** @lends cocos.actions.FadeIn# */{
-        
+    /**
+     * @class FadeIn Fades in a cocos.nodes.Node to 100% opacity
+     *
+     * @memberOf cocos.actions
+     * @extends cocos.actions.ActionInterval
+     */
     update: function (t) {
         var target = this.get('target');
         if (!target) return;
@@ -546,11 +673,7 @@ var FadeIn = ActionInterval.extend(/** @lends cocos.actions.FadeIn# */{
     }
 });
 
-/**
- * @memberOf cocos.actions
- * @class Fades a cocos.nodes.Node to a given opacity
- * @extends cocos.actions.ActionInterval
- */
+
 var FadeTo = ActionInterval.extend(/** @lends cocos.actions.FadeTo# */{
     /**
      * The final opacity
@@ -564,6 +687,13 @@ var FadeTo = ActionInterval.extend(/** @lends cocos.actions.FadeTo# */{
      */
     fromOpacity: null,
 
+    /**
+     * @class FadeTo Fades a cocos.nodes.Node to a given opacity
+     *
+     * @memberOf cocos.actions
+     * @constructor
+     * @extends cocos.actions.ActionInterval
+     */
     init: function (opts) {
         FadeTo.superclass.init.call(this, opts);
         this.set('toOpacity', opts.toOpacity);
@@ -628,14 +758,6 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
             self.duration += action.duration;
         });
     },
-
-    initOne: function(one, two) {
-        var d = one.get('duration') + two.get('duration');
-        Sequence.superclass.init.call(this, {duration: d});
-        
-        this.actions.push(one);
-        this.actions.push(tw0);
-    },
     
     startWithTarget: function (target) {
         Sequence.superclass.startWithTarget.call(this, target);
@@ -669,7 +791,7 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
 
     update: function (dt) {
         // Action finished onto the next one
-        if (this.elapsed > this.currentActionEndDuration) {
+        if (!this.get_isDone() && (this.elapsed > this.currentActionEndDuration)) {
             var previousAction = this.actions[this.currentActionIndex];
             previousAction.update(1.0);
             previousAction.stop();
@@ -682,12 +804,15 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
                 currentAction.startWithTarget(this.target);
 
                 this.currentActionEndDuration += currentAction.duration;
-            } else {
-                this.stop();
-            }
+            } 
         }
     },
 
+    get_isDone: function () {
+        return ((this.elapsed >= this.duration) && 
+            (this.currentActionIndex >= this.actions.length));
+    },
+    
     copy: function () {
         // Constructor will copy actions 
         return Sequence.create({actions: this.get('actions')});
@@ -709,7 +834,7 @@ var Spawn = ActionInterval.extend(/** @lends cocos.actions.Spawn# */{
     two: null,
 
     /**
-     * initializes the Spawn action with the 2 actions to spawn 
+     * @class Spawn Executes multiple actions simultaneously
      *
      * @memberOf cocos.actions
      * @constructs
@@ -876,6 +1001,9 @@ exports.MoveTo = MoveTo;
 exports.MoveBy = MoveBy;
 exports.JumpBy = JumpBy;
 exports.JumpTo = JumpTo;
+exports.BezierBy = BezierBy;
+exports.BezierTo = BezierTo;
+exports.Blink = Blink;
 exports.FadeIn = FadeIn;
 exports.FadeOut = FadeOut;
 exports.FadeTo = FadeTo;

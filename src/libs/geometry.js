@@ -95,6 +95,20 @@ var geometry = {
     },
 
     /**
+     * @class 
+     * Bezier curve control object
+     *
+     * @param {geometry.Point} controlPoint1
+     * @param {geometry.Point} controlPoint2
+     * @param {geometry.Point} endPoint
+     */
+    BezierConfig: function(p1, p2, ep) {
+        this.controlPoint1 = util.copy(p1);
+        this.controlPoint2 = util.copy(p2);
+        this.endPosition = util.copy(ep);
+    },
+    
+    /**
      * Creates a geometry.Point instance
      *
      * @param {Float} x X coordinate
