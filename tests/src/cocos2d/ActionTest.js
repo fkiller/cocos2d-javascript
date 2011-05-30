@@ -25,6 +25,7 @@ var transitions = [
     "Reverse",
     "Delay",
     "ReverseSequence",
+    "Repeat",
     "RepeatForever",
     "Speed"
 ];
@@ -477,6 +478,35 @@ tests.ReverseSequence = ActionDemo.extend(/** @lends ReverseSequence.prototype# 
         var action = actions.Sequence.create({actions: [seq, seq.reverse()]});
 
         this.get('grossini').runAction(action);
+    }
+});
+
+/**
+ * @class
+ *
+ * Example Repeat Action
+ */
+tests.Repeat = ActionDemo.extend(/** @lends Repeat.prototype# */{
+    title: 'Repeat / RepeatForever actions',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.Repeat.superclass.onEnter.call(this);
+        
+        this.alignSpritesLeft(2);
+        
+        var a1 = actions.MoveBy.create({duration: 1, position: ccp(150, 0)});
+        var action1 = actions.Repeat.create({action: actions.Sequence.create({actions: [
+            actions.Place.create({position: ccp(60, 60)}),
+            a1
+            ]}), 
+            times: 3});
+        
+        var action2 = actions.RepeatForever.create(actions.Sequence.create({actions: [
+            a1.copy(), a1.reverse()]}));
+        
+        this.get('kathia').runAction(action1);
+        this.get('tamara').runAction(action2);
     }
 });
 

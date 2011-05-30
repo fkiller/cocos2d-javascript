@@ -759,15 +759,12 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     },
 
     stop: function () {
-        util.each(this.actions, function (action) {
-            action.stop();
-        });
+        this.actions[0].stop();
+        this.actions[1].stop();
         Sequence.superclass.stop.call(this);
     },
 
     update: function (t) {
-        window.console.log("sequence update " + this.elapsed);
-
         // This is confusing but will hopefully work better in conjunction
         // with modifer actions like Repeat & Spawn...
         var found = 0;
@@ -804,11 +801,6 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
         this.last = found;
     },
 
-    get_isDone: function () {
-        return ((this.elapsed >= this.duration) && 
-            (this.currentActionIndex >= this.actions.length));
-    },
-    
     copy: function () {
         // Constructor will copy actions 
         return Sequence.create({actions: this.get('actions')});
