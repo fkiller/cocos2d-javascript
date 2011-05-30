@@ -4,6 +4,7 @@
 
 var util      = require('util'),
     Texture2D = require('cocos2d/Texture2D').Texture2D,
+    Scheduler = require('cocos2d/Scheduler').Scheduler,
     cocos     = require('cocos2d'),
     events    = require('events'),
     nodes     = cocos.nodes,
@@ -13,7 +14,9 @@ var util      = require('util'),
 
 var sceneIdx = -1;
 var transitions = [
-    "Jump"
+    "Jump",
+    "Spawn", 
+    "Speed"
 ];
 
 var tests = {};
@@ -22,6 +25,10 @@ var kTagSprite1 = 1,
     kTagSprite2 = 2,
     kTagSprite3 = 3;
 
+var kTagAction1 = 1,
+    kTagAction2 = 2,
+    kTagSlider = 1;
+    
 function nextAction() {
     sceneIdx++;
     sceneIdx = sceneIdx % transitions.length;
@@ -49,7 +56,8 @@ var ActionDemo = nodes.Layer.extend({
 
     init: function () {
         ActionDemo.superclass.init.call(this);
-
+        
+        this.set('isMouseEnabled', true);
         var s = cocos.Director.get('sharedDirector').get('winSize');
 
         var label = nodes.Label.create({string: this.get('title'), fontName: 'Arial', fontSize: 26});
@@ -103,6 +111,18 @@ var ActionDemo = nodes.Layer.extend({
         scene.addChild({child: nextAction().create()});
 
         director.replaceScene(scene);
+    },
+    
+    addNewSprite: function (point, tag) {
+        var idx = Math.floor(Math.random() * 1400 / 100),
+            x = (idx % 5) * 85,
+            y = (idx % 3) * 121;
+
+        var sprite = nodes.Sprite.create({file: module.dirname + "/resources/grossini_dance_atlas.png", rect: new geo.Rect(x, y, 85, 121)});
+        this.addChild({child: sprite, z: 0, tag: tag});
+        sprite.set('position', ccp(point.x, point.y));
+
+		return sprite;
     }
 });
 
@@ -117,23 +137,12 @@ tests.Jump = ActionDemo.extend(/** @lends Jump.prototype# */{
 
     init: function () {
         tests.Jump.superclass.init.call(this);
-
-        this.set('isMouseEnabled', true);
-
+        
         var s = cocos.Director.get('sharedDirector').get('winSize');
-        this.addNewSprite(ccp(s.width / 2, s.height / 2));
-    },
-
-    addNewSprite: function (point) {
-        var idx = Math.floor(Math.random() * 1400 / 100),
-            x = (idx % 5) * 85,
-            y = (idx % 3) * 121;
-
-        var sprite = nodes.Sprite.create({file: module.dirname + "/resources/grossini_dance_atlas.png", rect: new geo.Rect(x, y, 85, 121)});
-        this.addChild({child: sprite, z: 0});
-        sprite.set('position', ccp(point.x, point.y));
-
-		return sprite;
+        
+        this.addNewSprite(ccp(s.width/2, s.height/2), kTagSprite1);
+		this.addNewSprite(ccp(s.width/2, s.height/2), kTagSprite2);
+		this.addNewSprite(ccp(s.width/2, s.height/2), kTagSprite3);
     },
 
 	onEnter: function() {
@@ -148,15 +157,98 @@ tests.Jump = ActionDemo.extend(/** @lends Jump.prototype# */{
 		var action2 = actions.JumpBy.create({duration: 2, delta: ccp(300, 0), height: 50, jumps: 4});
 		var action3 = actions.JumpBy.create({duration: 2, delta: ccp(0, 0), height: 80, jumps: 4});
         actionBack = action2.reverse();
-
-		var s1 = this.addNewSprite(ccp(s.width/2, s.height/2));
-		var s2 = this.addNewSprite(ccp(s.width/2, s.height/2));
-		var s3 = this.addNewSprite(ccp(s.width/2, s.height/2));
         
-		s1.runAction(action1);
-		s2.runAction(actions.Sequence.create({actions: [action2, actionBack]}));
-		s3.runAction(actions.RepeatForever.create(action3));
+		this.getChild({tag: kTagSprite1}).runAction(action1);
+		this.getChild({tag: kTagSprite2}).runAction(actions.Sequence.create({actions: [action2, actionBack]}));
+		this.getChild({tag: kTagSprite3}).runAction(actions.RepeatForever.create(action3));
 	}
+});
+
+/**
+ * @class
+ *
+ * Example Spawn Action
+ */
+tests.Spawn = ActionDemo.extend(/** @lends Spawn.prototype# */{
+    title: 'Spawn: Jump + Rotate',
+    subtitle: '',
+    
+    init: function() {
+        tests.Spawn.superclass.init.call(this);
+        
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        this.addNewSprite(ccp(0, s.height/2), kTagSprite1);
+    },
+    
+    onEnter: function() {
+        tests.Spawn.superclass.onEnter.call(this);
+        
+        var action = actions.Spawn.initWithActions({actions: [
+            actions.JumpBy.create({duration: 2, delta: ccp(300, 0), height: 50, jumps: 4}),
+            actions.RotateBy.create({duration: 2, angle: 720})
+            ]});
+        this.getChild({tag: kTagSprite1}).runAction(action);
+    }
+});
+
+/**
+ * @class
+ *
+ * Example Speed Action
+ */
+tests.Speed = ActionDemo.extend(/** @lends Speed.prototype# */{
+    title: 'Speed',
+    subtitle: '',
+    
+    init: function() {
+        tests.Speed.superclass.init.call(this);
+        
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        this.addNewSprite(ccp(0, s.height/2), kTagSprite1);
+		this.addNewSprite(ccp(0, s.height/2), kTagSprite2);
+		this.addNewSprite(ccp(0, s.height/2), kTagSprite3);
+    },
+    
+    onEnter: function() {
+        tests.Speed.superclass.onEnter.call(this);
+    
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        // rotate and jump
+        var jump1 = actions.JumpBy.create({duration: 4, delta: ccp(-s.width+80, 0), height: 100, jumps: 4});
+        var jump2 = jump1.reverse();
+        var rot1 = actions.RotateBy.create({duration: 4, angle: 720});
+        //var rot2 = rot1.reverse();
+        
+        var seq3_1 = actions.Sequence.create({actions: [jump2, jump1]});
+        //var seq3_2 = actions.Sequence.create({actions: [rot1, rot2]});
+        var spawn = actions.Spawn.create({one: seq3_1, two: rot1});
+        var action = actions.Speed.create({action: actions.RepeatForever.create(spawn), speed: 1.0});
+        //var action = actions.Speed.create({action: actions.RepeatForever.create(seq3_1), speed: 1.0});
+        action.set('tag', kTagAction1);
+        
+        //var action2 = action.copy();
+        //var action3 = action.copy();
+        //action2.set('tag', kTagAction1);
+        //action3.set('tag', kTagAction1);
+        
+		//this.getChild({tag: kTagSprite1}).runAction(action2);
+		//this.getChild({tag: kTagSprite2}).runAction(action3);
+		this.getChild({tag: kTagSprite3}).runAction(action);
+		
+	    Scheduler.get('sharedScheduler').schedule({target: this, method: 'update', interval: 1.0, paused: !this.get('isRunning')});
+    },
+    
+    update: function(t) {
+        //var action1 = this.getChild({tag: kTagSprite1}).getAction({tag: kTagAction1});
+        //var action2 = this.getChild({tag: kTagSprite2}).getAction({tag: kTagAction1});
+        var action3 = this.getChild({tag: kTagSprite3}).getAction({tag: kTagAction1});
+        
+        //action1.setSpeed(Math.random() * 2);
+        //action2.setSpeed(Math.random() * 2);
+        action3.setSpeed(Math.random() * 2);
+    }
 });
 
 exports.main = function () {

@@ -18,7 +18,13 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
      */
     target: null,
     originalTarget: null,
-
+    
+    /**
+     * Unique tag to identify the action
+     * @type *
+     */
+    tag: null,
+    
     /**
      * Called every frame with it's delta time.
      *
@@ -144,6 +150,64 @@ var FiniteTimeAction = Action.extend(/** @lends cocos.actions.FiniteTimeAction# 
     }
 });
 
+var Speed = Action.extend(/** @lends cocos.actions.Speed# */{
+    other: null,
+    
+    /** 
+     * speed of the inner function
+     * @type Float
+     */
+    speed: 1.0,
+    
+    /** 
+     * Changes the speed of an action, making it take longer (speed>1)
+     * or less (speed<1) time.
+     * Useful to simulate 'slow motion' or 'fast forward' effect.
+     * @warning This action can't be Sequenceable because it is not an IntervalAction
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.Action
+     */
+    init: function(opts) {
+        Speed.superclass.init.call(this, opts);
+        
+        this.other = opts.action;
+        this.speed = opts.speed;
+    },
+    
+    startWithTarget: function(target) {
+        Speed.superclass.startWithTarget.call(this, target);
+        this.other.startWithTarget(this.target);
+    },
+    
+    setSpeed: function(speed) {
+        this.speed = speed;
+    },
+    
+    stop: function() {
+        this.other.stop();
+        Speed.superclass.stop.call(this);
+    },
+    
+    step: function(dt) {
+        this.other.step(dt * this.speed);
+    },
+    
+    get_isDone: function() {
+        return this.other.get_isDone();
+    },
+    
+    copy: function() {
+        return Speed.create({action: this.other.copy(), speed: this.speed});
+    },
+    
+    reverse: function() {
+        return Speed.create({action: this.other.reverse(), speed: this.speed});
+    }
+});
+
 exports.Action = Action;
 exports.RepeatForever = RepeatForever;
 exports.FiniteTimeAction = FiniteTimeAction;
+exports.Speed = Speed;

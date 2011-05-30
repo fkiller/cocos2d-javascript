@@ -27,6 +27,9 @@ var ActionInstant = act.FiniteTimeAction.extend(/** @lends cocos.actions.ActionI
     update: function (t) {
         // ignore
     },
+    copy: function() {
+        throw "copy() not implemented on this action";
+    },
     reverse: function () {
         return this.copy();
     }
@@ -90,16 +93,27 @@ var FlipY = ActionInstant.extend(/** @lends cocos.actions.FlipY# */{
     }
 });
 
-/* @class */
-// helper for actions that must simply call a function
-// Implementation of cocos2d CCCallFunc
-
 var CallFunc = ActionInstant.extend({
 	callback: null,
-	
+    target: null,
+    method: null,
+    
+	/**
+     * @memberOf cocos.actions
+     * @class Calls a 'callback'
+     * @extends cocos.actions.ActionInstant
+     * @constructs
+     *
+     * @opt {BObject} target
+     * @opt {String|Function} method
+     */
 	init: function(opts) {
 		CallFunc.superclass.init.call(this, opts);
-		this.callback = util.callback(opts.target, opts.method);
+		
+		// Save target & method so that copy() can recreate callback
+		this.target = opts.target;
+		this.method = opts.method;
+		this.callback = util.callback(this.target, this.method);
 	},
 	
 	startWithTarget: function(target) {
@@ -108,7 +122,12 @@ var CallFunc = ActionInstant.extend({
 	},
 	
 	execute: function() {
-		this.callback.call();
+	    // Pass target to callback
+		this.callback.call(this.target);
+	},
+	
+	copy: function() {
+	    return CallFunc.create({target: this.target, method: this.method});
 	}
 });
 

@@ -431,7 +431,14 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     runAction: function (action) {
         ActionManager.get('sharedManager').addAction({action: action, target: this, paused: this.get('isRunning')});
     },
-
+    
+    /**
+     * @opts {String} tag Tag of the action to return
+     */
+    getAction: function(opts) {
+        return ActionManager.get('sharedManager').getActionFromTarget({target: this, tag: opts.tag});
+    },
+    
     nodeToParentTransform: function () {
         if (this.isTransformDirty) {
             this.transformMatrix = geo.affineTransformIdentity();

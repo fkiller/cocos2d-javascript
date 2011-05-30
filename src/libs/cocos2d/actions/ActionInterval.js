@@ -66,6 +66,10 @@ var ActionInterval = act.FiniteTimeAction.extend(/** @lends cocos.actions.Action
         this._firstTick = true;
     },
 
+    copy: function() {
+        throw "copy() not implemented";
+    },
+    
     reverse: function () {
         throw "Reverse Action not implemented";
     }
@@ -221,7 +225,7 @@ var ScaleBy = ScaleTo.extend(/** @lends cocos.actions.ScaleBy# */{
     },
 
     reverse: function () {
-        return ScaleBy.create({duration: this.duration, scaleX: 1 / this.endScaleX, scaleY: 1 / this.endScaleY});
+        return ScaleBy.create({duration: this.get('duration'), scaleX: 1 / this.endScaleX, scaleY: 1 / this.endScaleY});
     }
 });
 
@@ -324,12 +328,12 @@ var RotateBy = RotateTo.extend(/** @lends cocos.actions.RotateBy# */{
         this.target.set('rotation', this.startAngle + this.angle * t);
     },
 
-    reverse: function () {
-        return RotateBy.create({duration: this.duration, angle: -this.angle});
-    },
-
     copy: function () {
-        return RotateBy.create({duration: this.duration, angle: this.angle});
+        return RotateBy.create({duration: this.get('duration'), angle: this.angle});
+    },
+    
+    reverse: function () {
+        return RotateBy.create({duration: this.get('duration'), angle: -this.angle});
     }
 });
 
@@ -346,7 +350,7 @@ var MoveTo = ActionInterval.extend(/** @lends cocos.actions.MoveTo# */{
      * @extends cocos.actions.ActionInterval
      *
      * @opt {Float} duration Number of seconds to run action for
-     * @opt {geometry.Point} position Destination poisition
+     * @opt {geometry.Point} position Destination position
      */
     init: function (opts) {
         MoveTo.superclass.init.call(this, opts);
@@ -365,6 +369,10 @@ var MoveTo = ActionInterval.extend(/** @lends cocos.actions.MoveTo# */{
         var startPosition = this.get('startPosition'),
             delta = this.get('delta');
         this.target.set('position', ccp(startPosition.x + delta.x * t, startPosition.y + delta.y * t));
+    },
+    
+    copy: function() {
+        return MoveTo.create({duration: this.get('duration'), position: this.get('endPosition')});
     }
 });
 
@@ -389,6 +397,15 @@ var MoveBy = MoveTo.extend(/** @lends cocos.actions.MoveBy# */{
         var dTmp = this.get('delta');
         MoveBy.superclass.startWithTarget.call(this, target);
         this.set('delta', dTmp);
+    },
+    
+    copy: function() {
+         return MoveBy.create({duration: this.get('duration'), position: this.get('delta')});
+    },
+    
+    reverse: function() {
+        var delta = this.get('delta');
+        return MoveBy.create({duration: this.get('duration'), position: geo.ccp(-delta.x, -delta.y)});
     }
 });
 
@@ -498,8 +515,12 @@ var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
         target.set('opacity', 255 - (255 * t));
     },
 
+    copy: function () {
+        return FadeOut.create({duration: this.get('duration')});
+    },
+    
     reverse: function () {
-        return FadeIn.create({duration: this.get('duration')});
+        return exports.FadeIn.create({duration: this.get('duration')});
     }
 });
 
@@ -516,8 +537,12 @@ var FadeIn = ActionInterval.extend(/** @lends cocos.actions.FadeIn# */{
         target.set('opacity', t * 255);
     },
 
+    copy: function () {
+        return FadeIn.create({duration: this.get('duration')});
+    },
+    
     reverse: function () {
-        return FadeOut.create({duration: this.get('duration')});
+        return exports.FadeOut.create({duration: this.get('duration')});
     }
 });
 
@@ -546,7 +571,7 @@ var FadeTo = ActionInterval.extend(/** @lends cocos.actions.FadeTo# */{
 
     startWithTarget: function (target) {
         FadeTo.superclass.startWithTarget.call(this, target);
-        this.set('fromOpacity', target.get('opacity'));
+        this.set('fromOpacity', this.target.get('opacity'));
     },
 
     update: function (t) {
@@ -554,6 +579,10 @@ var FadeTo = ActionInterval.extend(/** @lends cocos.actions.FadeTo# */{
         if (!target) return;
 
         target.set('opacity', this.fromOpacity + ( this.toOpacity - this.fromOpacity ) * t);
+    },
+    
+    copy: function() {
+        return FadeTo.create({duration: this.get('duration'), toOpacity: this.get('toOpacity')});
     }
 });
 
@@ -589,12 +618,14 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     init: function (opts) {
         Sequence.superclass.init.call(this, opts);
 
-        this.actions = util.copy(opts.actions); // Duplication?
         this.actionSequence = {};
-
-        util.each(this.actions, util.callback(this, function (action) {
-            this.duration += action.duration;
-        }));
+        this.actions = []; //util.copy(opts.actions); 
+        
+        var self = this;
+        util.each(opts.actions, function(action) {
+            self.actions.push(action.copy());
+            self.duration += action.duration;
+        });
     },
 
     startWithTarget: function (target) {
@@ -620,11 +651,8 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
         } else {
             this.elapsed += dt;
         }
-                // Required to prevent array bounds index errors
-                if (this.currentActionIndex < this.actions.length) {
-            this.actions[this.currentActionIndex].step(dt);
-                    this.update(Math.min(1, this.elapsed / this.duration));
-                }
+        this.actions[this.currentActionIndex].step(dt);
+        this.update(Math.min(1, this.elapsed / this.duration));
     },
 
     update: function (dt) {
@@ -647,7 +675,7 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     },
 
     copy: function () {
-        // Constructor will copy actions array
+        // Constructor will copy actions 
         return Sequence.create({actions: this.get('actions')});
     },
 
@@ -706,8 +734,8 @@ var Spawn = ActionInterval.extend(/** @lends cocos.actions.Spawn# */{
     
     startWithTarget: function (target) {
         Spawn.superclass.startWithTarget.call(this, target);
-        this.get('one').startWithTarget(target);
-        this.get('two').startWithTarget(target);
+        this.get('one').startWithTarget(this.target);
+        this.get('two').startWithTarget(this.target);
     },
     
     stop: function () {
