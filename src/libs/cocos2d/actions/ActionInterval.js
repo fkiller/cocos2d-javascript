@@ -502,13 +502,12 @@ var JumpTo = JumpBy.extend(/** @lends cocos.actions.JumpTo# */{
     }
 });
     
-/**
- * @memberOf cocos.actions
- * @class Fades out a cocos.nodes.Node to zero opacity
- * @extends cocos.actions.ActionInterval
- */
 var FadeOut = ActionInterval.extend(/** @lends cocos.actions.FadeOut# */{
-        
+    /**
+     * @memberOf cocos.actions
+     * @class Fades out a cocos.nodes.Node to zero opacity
+     * @extends cocos.actions.ActionInterval
+     */    
     update: function (t) {
         var target = this.get('target');
         if (!target) return;
@@ -546,11 +545,6 @@ var FadeIn = ActionInterval.extend(/** @lends cocos.actions.FadeIn# */{
     }
 });
 
-/**
- * @memberOf cocos.actions
- * @class Fades a cocos.nodes.Node to a given opacity
- * @extends cocos.actions.ActionInterval
- */
 var FadeTo = ActionInterval.extend(/** @lends cocos.actions.FadeTo# */{
     /**
      * The final opacity
@@ -564,6 +558,12 @@ var FadeTo = ActionInterval.extend(/** @lends cocos.actions.FadeTo# */{
      */
     fromOpacity: null,
 
+    /**
+     * @class FadeTo Fades a cocos.nodes.Node to a given opacity
+     *
+     * @memberOf cocos.actions
+     * @extends cocos.actions.ActionInterval
+     */
     init: function (opts) {
         FadeTo.superclass.init.call(this, opts);
         this.set('toOpacity', opts.toOpacity);
@@ -593,115 +593,86 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
      */
     actions: null,
 
+    split: 0,
+    last: 0,
+    
     /**
-     * The array index of the currently running action
-     * @type Integer
-     */
-    currentActionIndex: 0,
-
-    /**
-     * The duration when the current action finishes
-     * @type Float
-     */
-    currentActionEndDuration: 0,
-
-    /**
-     * Runs a number of actions sequentially, one after another
+     * Runs a pair of actions sequentially, one after another
      *
      * @memberOf cocos.actions
      * @constructs
      * @extends cocos.actions.ActionInterval
      *
-     * @opt {Float} duration Number of seconds to run action for
-     * @opt {cocos.actions.Action[]} Array of actions to run in sequence
+     * @opt {cocos.actions.FiniteTimeAction} one 1st action to run
+     * @opt {cocos.actions.FiniteTimeAction} two 2nd action to run
      */
     init: function (opts) {
-        Sequence.superclass.init.call(this, opts);
-
-        this.actionSequence = {};
-        this.actions = []; //util.copy(opts.actions); 
-        this.currentActionIndex = 0;
-        this.duration = 0;
+        if (!opts.one) {
+            throw "Sequence argument one must be non-nil";
+        }
+        if (!opts.two) {
+            throw "Sequence argument two must be non-nil";
+        }
+        this.actions = [];
         
-        var self = this;
-        util.each(opts.actions, function(action) {
-            self.actions.push(action.copy());
-            if (action.get('duration') !== undefined) {
-                self.duration += action.get('duration');
-            }
-        });
-    },
-
-    initOne: function(one, two) {
-        var d = one.get('duration') + two.get('duration');
+        var d = opts.one.get('duration') + opts.two.get('duration');
+        
         Sequence.superclass.init.call(this, {duration: d});
         
-        this.actions.push(one);
-        this.actions.push(tw0);
+        this.actions[0] = opts.one;
+        this.actions[1] = opts.two;
     },
     
     startWithTarget: function (target) {
         Sequence.superclass.startWithTarget.call(this, target);
-
-        this.currentActionIndex = 0;
-        this.currentActionEndDuration = this.actions[0].get('duration');
-        // Not all actions have durations
-        if (this.currentActionEndDuration === undefined) {
-            this.currentActionEndDuration = 0;
-        }
-        window.console.log("starting sequence 0 duration = " + this.currentActionEndDuration);
-        this.actions[0].startWithTarget(this.target);
+        this.split = this.actions[0].get('duration') / this.get('duration');
+        this.last = -1;
     },
 
     stop: function () {
-        window.console.log("stopping sequence");
         util.each(this.actions, function (action) {
             action.stop();
         });
-
         Sequence.superclass.stop.call(this);
     },
 
-    step: function (dt) {
-        window.console.log("sequence step: " + dt);
-        if (this._firstTick) {
-            this._firstTick = false;
-            this.elapsed = 0;
-        } else {
-            this.elapsed += dt;
-        }
-        if (this.currentActionIndex < this.actions.length) {
-            window.console.log("sequence " + this.currentActionIndex + " elapsed: " + this.elapsed);
-            this.actions[this.currentActionIndex].step(dt);
-        }
-        this.update(Math.min(1, this.elapsed / this.duration));
-
-    },
-
-    update: function (dt) {
-        // Action finished onto the next one
-
+    update: function (t) {
         window.console.log("sequence update " + this.elapsed);
-        if (!this.get_isDone() &&
-             (this.elapsed > this.currentActionEndDuration)) {
-            window.console.log("stopping action # " + (this.currentActionIndex+1));
 
-            var previousAction = this.actions[this.currentActionIndex];
-            previousAction.update(1.0);
-            previousAction.stop();
-
-            // UNSAFE?  array bounds error in step() is possible
-            this.currentActionIndex++;
-
-            if (this.currentActionIndex < this.actions.length) {
-                var currentAction = this.actions[this.currentActionIndex];
-                currentAction.startWithTarget(this.target);
-
-                this.currentActionEndDuration += currentAction.duration;
+        // This is confusing but will hopefully work better in conjunction
+        // with modifer actions like Repeat & Spawn...
+        var found = 0;
+        var new_t = 0;
+        
+        if (t >= this.split) {
+            found = 1;
+            if (this.split == 1) {
+                new_t = 1;
             } else {
-                this.stop();
+                new_t = (t - this.split) / (1 - this.split);
+            }
+        } else {
+            found = 0;
+            if (this.split != 0) {
+                new_t = t / this.split;
+            } else {
+                new_t = 1;
             }
         }
+        if (this.last == -1 && found == 1) {
+            this.actions[0].startWithTarget(this.target);
+            this.actions[0].update(1);
+            this.actions[0].stop();
+        }
+        if (this.last != found) {
+            if (this.last != -1) {
+                this.actions[this.last].update(1);
+                this.actions[this.last].stop();
+            }
+            this.actions[found].startWithTarget(this.target);
+        }
+        this.actions[found].update(new_t);
+        this.last = found;
     },
 
     copy: function () {
@@ -710,12 +681,39 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     },
 
     reverse: function() {
-        // reverse() would modify existing actions array so build new one
-        var ractions = [];
-        for (var i=0; i<this.actions.length; i++) {
-            ractions.unshift(this.actions[i].reverse());
+        return Sequence.create({actions: [this.actions[1].reverse(), this.actions[0].reverse()]});
+    }
+});
+
+util.extend(Sequence, {
+    /** 
+     * Override BObject.create in order to implement recursive construction
+     * of actions array
+     */
+    create: function() {
+        // Copy actions array
+        var actions = util.copy(arguments[0].actions);
+        var prev = actions.shift().copy();
+        
+        // Recursively create Sequence with pair of actions
+        while (actions.length > 0) {
+            var now = actions.shift().copy();
+            if (now) {
+                prev = this.initFromPair(prev, now);
+            } else {
+                break;
+            }
         }
-        return Sequence.create({actions: ractions});
+        return prev;
+    },
+    
+    /** 
+     * Create sequence object from a pair of actions
+     */
+    initFromPair: function(a1, a2) {
+        var ret = new this();
+        ret.init.apply(ret, [{one: a1, two: a2}]);
+        return ret;
     }
 });
 
