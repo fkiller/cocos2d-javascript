@@ -19,20 +19,76 @@ var ActionInstant = act.FiniteTimeAction.extend(/** @lends cocos.actions.ActionI
 
         this.duration = 0;
     },
+    
     get_isDone: function () {
         return true;
     },
+    
     step: function (dt) {
         this.update(1);
     },
+    
     update: function (t) {
         // ignore
     },
+    
     copy: function() {
-        throw "copy() not implemented on this action";
+        throw "Implement copy()";
     },
+    
     reverse: function () {
         return this.copy();
+    }
+});
+
+var Show = ActionInstant.extend(/** @lends cocos.actions.Show# */{
+    /** 
+    * @class Show Show the node
+    **/
+    startWithTarget: function(target) {
+        Show.superclass.startWithTarget.call(this, target);
+        this.target.set('visible', true);
+    },
+
+    copy: function() {
+        return Show.create();
+    },
+    
+    reverse: function() {
+        return exports.Hide.create();
+    }
+});
+
+var Hide = ActionInstant.extend(/** @lends cocos.actions.Hide# */{
+    /** 
+    * @class Hide Hide the node
+    **/
+    startWithTarget: function(target) {
+        Show.superclass.startWithTarget.call(this, target);
+        this.target.set('visible', false);
+    },
+
+    copy: function() {
+        return Hide.create();
+    },
+    
+    reverse: function() {
+        return exports.Show.create();
+    }
+});
+
+var ToggleVisibility = ActionInstant.extend(/** @lends cocos.actions.ToggleVisibility# */{
+    /** 
+    * @class ToggleVisibility Toggles the visibility of a node
+    **/
+    startWithTarget: function(target) {
+        ToggleVisibility.superclass.startWithTarget.call(this, target);
+        var vis = this.target.get('visible');
+        this.target.set('visible', !vis);
+    },
+    
+    copy: function() {
+        return ToggleVisibility.create();
     }
 });
 
@@ -53,14 +109,17 @@ var FlipX = ActionInstant.extend(/** @lends cocos.actions.FlipX# */{
 
         this.flipX = opts.flipX;
     },
+    
     startWithTarget: function (target) {
         FlipX.superclass.startWithTarget.call(this, target);
 
         target.set('flipX', this.flipX);
     },
+    
     reverse: function () {
         return FlipX.create({flipX: !this.flipX});
     },
+    
     copy: function () {
         return FlipX.create({flipX: this.flipX});
     }
@@ -83,14 +142,17 @@ var FlipY = ActionInstant.extend(/** @lends cocos.actions.FlipY# */{
 
         this.flipY = opts.flipY;
     },
+    
     startWithTarget: function (target) {
         FlipY.superclass.startWithTarget.call(this, target);
 
         target.set('flipY', this.flipY);
     },
+    
     reverse: function () {
         return FlipY.create({flipY: !this.flipY});
     },
+    
     copy: function () {
         return FlipY.create({flipY: this.flipY});
     }
@@ -163,6 +225,9 @@ var CallFunc = ActionInstant.extend(/** @lends cocos.actions.CallFunc# */{
 });
 
 exports.ActionInstant = ActionInstant;
+exports.Show = Show;
+exports.Hide = Hide;
+exports.ToggleVisibility = ToggleVisibility;
 exports.FlipX = FlipX;
 exports.FlipY = FlipY;
 exports.Place = Place;

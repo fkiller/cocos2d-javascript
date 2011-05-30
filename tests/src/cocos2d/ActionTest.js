@@ -24,9 +24,12 @@ var transitions = [
     "Spawn", 
     "Reverse",
     "Delay",
-    "ReverseSequence",
     "Repeat",
     "RepeatForever",
+    "RotateToRepeat",
+    "RotateJerk",
+    "ReverseSequence",
+    "ReverseSequence2",
     "Speed"
 ];
 
@@ -532,6 +535,94 @@ tests.RepeatForever = ActionDemo.extend(/** @lends RepeatForever.prototype# */{
     
     repeatForever: function(target) {
         target.runAction(actions.RepeatForever.create(actions.RotateBy.create({duration: 1, angle: 360})));
+    }
+});
+
+/**
+ * @class
+ *
+ * Example RotateToRepeat Action
+ */
+tests.RotateToRepeat = ActionDemo.extend(/** @lends RotateToRepeat.prototype# */{
+    title: 'Repeat/RepeatForever + RotateTo',
+    subtitle: 'You should see smooth movements',
+    
+    onEnter: function() {
+        tests.RotateToRepeat.superclass.onEnter.call(this);
+        
+        this.centerSprites(2);
+
+        var act1 = actions.RotateTo.create({duration: 1, angle: 90});
+        var act2 = actions.RotateTo.create({duration: 1, angle: 0});
+        var seq = actions.Sequence.create({actions: [act1, act2]});
+        var rep1 = actions.RepeatForever.create(seq);
+        var rep2 = actions.Repeat.create({action: seq, times: 10});
+        
+        this.get('tamara').runAction(rep1);
+        this.get('kathia').runAction(rep2);
+    }
+});
+
+/**
+ * @class
+ *
+ * Example RotateJerk Action
+ */
+tests.RotateJerk = ActionDemo.extend(/** @lends RotateJerk.prototype# */{
+    title: 'RepeatForever / Repeat + RotateTo',
+    subtitle: 'You should see smooth movements',
+    
+    onEnter: function() {
+        tests.RotateJerk.superclass.onEnter.call(this);
+        
+        this.centerSprites(2);
+
+        var seq = actions.Sequence.create({actions: [
+            actions.RotateTo.create({duration: 0.5, angle :-20}),
+            actions.RotateTo.create({duration: 0.5, angle: 20})
+            ]});
+        var rep1 = actions.Repeat.create({action: seq, times: 10});
+        var rep2 = actions.RepeatForever.create(seq);
+        this.get('tamara').runAction(rep1);
+        this.get('kathia').runAction(rep2);
+    }
+});   
+
+/**
+ * @class
+ *
+ * Example ReverseSequence2 Action
+ */
+tests.ReverseSequence2 = ActionDemo.extend(/** @lends ReverseSequence2.prototype# */{
+    title: 'Reverse sequence 2',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.ReverseSequence2.superclass.onEnter.call(this);
+        
+        this.alignSpritesLeft(2);
+        
+        // Sequence should work both with IntervalAction and InstantActions
+        var move1 = actions.MoveBy.create({duration: 1, position: ccp(250, 0)});
+        var move2 = actions.MoveBy.create({duration: 1, position: ccp(0, 50)});
+        var tog1 = actions.ToggleVisibility.create();
+        var tog2 = actions.ToggleVisibility.create();
+        var seq = actions.Sequence.create({actions: [move1, tog1, move2, tog2, move1.reverse()]});
+        var action = actions.Repeat.create({action: actions.Sequence.create({actions: [
+            seq, seq.reverse()
+            ]}), 
+            times: 3});
+        this.get('kathia').runAction(action);
+        
+        //   Also test that the reverse of Hide is Show, and vice-versa
+        var move_t = actions.MoveBy.create({duration: 1, position: ccp(100, 0)});
+        var move_t2 = actions.MoveBy.create({duration: 1, position: ccp(50, 0)});
+        var hide = actions.Hide.create();
+        var seq_t = actions.Sequence.create({actions: [
+            move_t, hide, move_t2]});
+        var seq_back = seq_t.reverse();
+        this.get('tamara').runAction(actions.Sequence.create({actions: [
+            seq_t, seq_back]}));
     }
 });
 

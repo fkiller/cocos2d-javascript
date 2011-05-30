@@ -819,11 +819,11 @@ util.extend(Sequence, {
     create: function() {
         // Copy actions array
         var actions = util.copy(arguments[0].actions);
-        var prev = actions.shift().copy();
+        var prev = actions.shift();
         
         // Recursively create Sequence with pair of actions
         while (actions.length > 0) {
-            var now = actions.shift().copy();
+            var now = actions.shift();
             if (now) {
                 prev = this.initFromPair(prev, now);
             } else {
@@ -881,10 +881,8 @@ var Repeat = ActionInterval.extend(/** @lends cocos.actions.Repeat# */{
      
      update: function(dt) {
          var t = dt * this.times;
-         //window.console.log("Repeat:update() dt = " + dt + ", t = " + t);
          
          if (t > (this.total+1)) {
-             window.console.log("t > total+1");
              this.other.update(1);
              this.total += 1;
              this.other.stop();
@@ -892,11 +890,9 @@ var Repeat = ActionInterval.extend(/** @lends cocos.actions.Repeat# */{
              
              // If repeat is over
              if (this.total == this.times) {
-                 window.console.log("repeat is over");
                  // set it in the original position
                  this.other.update(0);
              } else {
-                 window.console.log("starting next repeat");
                  // otherwise start next repeat
                  this.other.update(t - this.total);
              }
