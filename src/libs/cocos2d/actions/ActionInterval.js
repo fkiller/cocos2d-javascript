@@ -620,6 +620,7 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
 
         this.actionSequence = {};
         this.actions = []; //util.copy(opts.actions); 
+        this.currentActionIndex = 0;
         
         var self = this;
         util.each(opts.actions, function(action) {
@@ -628,6 +629,14 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
         });
     },
 
+    initOne: function(one, two) {
+        var d = one.get('duration') + two.get('duration');
+        Sequence.superclass.init.call(this, {duration: d});
+        
+        this.actions.push(one);
+        this.actions.push(tw0);
+    },
+    
     startWithTarget: function (target) {
         Sequence.superclass.startWithTarget.call(this, target);
 
@@ -645,14 +654,17 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     },
 
     step: function (dt) {
+        //window.console.log("sequence " + this.currentActionIndex + " elapsed: " + this.elapsed);
         if (this._firstTick) {
             this._firstTick = false;
             this.elapsed = 0;
         } else {
             this.elapsed += dt;
         }
-        this.actions[this.currentActionIndex].step(dt);
-        this.update(Math.min(1, this.elapsed / this.duration));
+        if (this.currentActionIndex < this.actions.length) {
+            this.actions[this.currentActionIndex].step(dt);
+            this.update(Math.min(1, this.elapsed / this.duration));
+        }
     },
 
     update: function (dt) {
@@ -662,7 +674,7 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
             previousAction.update(1.0);
             previousAction.stop();
 
-
+            // UNSAFE?  array bounds error in step() is possible
             this.currentActionIndex++;
 
             if (this.currentActionIndex < this.actions.length) {
@@ -670,6 +682,8 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
                 currentAction.startWithTarget(this.target);
 
                 this.currentActionEndDuration += currentAction.duration;
+            } else {
+                this.stop();
             }
         }
     },
@@ -744,17 +758,28 @@ var Spawn = ActionInterval.extend(/** @lends cocos.actions.Spawn# */{
         Spawn.superclass.stop.call(this);
     },
     
+    step: function (dt) {
+        if (this._firstTick) {
+            this._firstTick = false;
+            this.elapsed = 0;
+        } else {
+            this.elapsed += dt;
+        }
+        this.get('one').step(dt);
+        this.get('two').step(dt);
+    },
+    
     update: function (t) {
         this.get('one').update(t);
         this.get('two').update(t);
     },
     
     copy: function () {
-        return Spawn.initWithActions({actions: [this.get('one').copy(), this.get('two').copy()]});
+        return Spawn.create({one: this.get('one').copy(), two: this.get('two').copy()});
     },
     
     reverse: function () {
-        return Spawn.initWithActions({actions: [this.get('one').reverse(), this.get('two').reverse()]});
+        return Spawn.create({one: this.get('one').reverse(), two: this.get('two').reverse()});
     }
 });
 

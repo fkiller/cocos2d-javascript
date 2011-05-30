@@ -219,34 +219,33 @@ tests.Speed = ActionDemo.extend(/** @lends Speed.prototype# */{
         var jump1 = actions.JumpBy.create({duration: 4, delta: ccp(-s.width+80, 0), height: 100, jumps: 4});
         var jump2 = jump1.reverse();
         var rot1 = actions.RotateBy.create({duration: 4, angle: 720});
-        //var rot2 = rot1.reverse();
+        var rot2 = rot1.reverse();
         
         var seq3_1 = actions.Sequence.create({actions: [jump2, jump1]});
-        //var seq3_2 = actions.Sequence.create({actions: [rot1, rot2]});
-        var spawn = actions.Spawn.create({one: seq3_1, two: rot1});
+        var seq3_2 = actions.Sequence.create({actions: [rot1, rot2]});
+        var spawn = actions.Spawn.create({one: seq3_1, two: seq3_2});
         var action = actions.Speed.create({action: actions.RepeatForever.create(spawn), speed: 1.0});
-        //var action = actions.Speed.create({action: actions.RepeatForever.create(seq3_1), speed: 1.0});
         action.set('tag', kTagAction1);
         
-        //var action2 = action.copy();
-        //var action3 = action.copy();
-        //action2.set('tag', kTagAction1);
-        //action3.set('tag', kTagAction1);
+        var action2 = action.copy();
+        var action3 = action.copy();
+        action2.set('tag', kTagAction1);
+        action3.set('tag', kTagAction1);
         
-		//this.getChild({tag: kTagSprite1}).runAction(action2);
-		//this.getChild({tag: kTagSprite2}).runAction(action3);
+		this.getChild({tag: kTagSprite1}).runAction(action2);
+		this.getChild({tag: kTagSprite2}).runAction(action3);
 		this.getChild({tag: kTagSprite3}).runAction(action);
 		
 	    Scheduler.get('sharedScheduler').schedule({target: this, method: 'update', interval: 1.0, paused: !this.get('isRunning')});
     },
     
     update: function(t) {
-        //var action1 = this.getChild({tag: kTagSprite1}).getAction({tag: kTagAction1});
-        //var action2 = this.getChild({tag: kTagSprite2}).getAction({tag: kTagAction1});
+        var action1 = this.getChild({tag: kTagSprite1}).getAction({tag: kTagAction1});
+        var action2 = this.getChild({tag: kTagSprite2}).getAction({tag: kTagAction1});
         var action3 = this.getChild({tag: kTagSprite3}).getAction({tag: kTagAction1});
         
-        //action1.setSpeed(Math.random() * 2);
-        //action2.setSpeed(Math.random() * 2);
+        action1.setSpeed(Math.random() * 2);
+        action2.setSpeed(Math.random() * 2);
         action3.setSpeed(Math.random() * 2);
     }
 });

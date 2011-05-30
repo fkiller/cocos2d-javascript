@@ -134,7 +134,6 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
         if (!element) {
             return;
         }
-        //window.console.log("removing actions from target " + target.get('tag') + " (" + targetID + ")");
         // Delete everything in array but don't replace it incase something else has a reference
         element.actions.splice(0, element.actions.length);
     },
