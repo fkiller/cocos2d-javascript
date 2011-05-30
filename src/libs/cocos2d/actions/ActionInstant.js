@@ -8,8 +8,9 @@ var util = require('util'),
 
 var ActionInstant = act.FiniteTimeAction.extend(/** @lends cocos.actions.ActionInstant */{
     /**
-     * @memberOf cocos.actions
      * @class Base class for actions that triggers instantly. They have no duration.
+     *
+     * @memberOf cocos.actions
      * @extends cocos.actions.FiniteTimeAction
      * @constructs
      */
@@ -39,8 +40,9 @@ var FlipX = ActionInstant.extend(/** @lends cocos.actions.FlipX# */{
     flipX: false,
 
     /**
+     * @class FlipX Flips a sprite horizontally
+     *
      * @memberOf cocos.actions
-     * @class Flips a sprite horizontally
      * @extends cocos.actions.ActionInstant
      * @constructs
      *
@@ -68,8 +70,9 @@ var FlipY = ActionInstant.extend(/** @lends cocos.actions.FlipY# */{
     flipY: false,
 
     /**
+     * @class FlipY Flips a sprite vertically
+     *
      * @memberOf cocos.actions
-     * @class Flips a sprite vertically
      * @extends cocos.actions.ActionInstant
      * @constructs
      *
@@ -93,14 +96,42 @@ var FlipY = ActionInstant.extend(/** @lends cocos.actions.FlipY# */{
     }
 });
 
-var CallFunc = ActionInstant.extend({
+var Place = ActionInstant.extend(/** @lends cocos.actions.Place# */{
+    position: null,
+    
+    /**
+	 * @class Place Places the node in a certain position
+	 *
+     * @memberOf cocos.actions
+     * @extends cocos.actions.ActionInstant
+     * @constructs
+     *
+     * @opt {geometry.Point} position
+     */
+    init: function(opts) {
+        Place.superclass.init.call(this, opts);
+        this.set('position', util.copy(opts.position));
+    },
+    
+    startWithTarget: function(target) {
+        Place.superclass.startWithTarget.call(this, target);
+        this.target.set('position', this.position);
+    },
+    
+    copy: function() {
+        return Place.create({position: this.position});
+    }
+});
+
+var CallFunc = ActionInstant.extend(/** @lends cocos.actions.CallFunc# */{
 	callback: null,
     target: null,
     method: null,
     
 	/**
+	 * @class CallFunc Calls a 'callback'
+	 *
      * @memberOf cocos.actions
-     * @class Calls a 'callback'
      * @extends cocos.actions.ActionInstant
      * @constructs
      *
@@ -134,5 +165,6 @@ var CallFunc = ActionInstant.extend({
 exports.ActionInstant = ActionInstant;
 exports.FlipX = FlipX;
 exports.FlipY = FlipY;
+exports.Place = Place;
 exports.CallFunc = CallFunc;
 

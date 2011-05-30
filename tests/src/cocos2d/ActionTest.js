@@ -14,9 +14,19 @@ var util      = require('util'),
 
 var sceneIdx = -1;
 var transitions = [
+/*
+    "Manual",
+    "Move",
     "Jump",
     "Spawn", 
+    "Reverse",
+    "Delay",
+    */
+    "Repeat" /*,
+    "RepeatForever",
+    "ReverseSequence",
     "Speed"
+    */
 ];
 
 var tests = {};
@@ -173,9 +183,30 @@ tests.Spawn = ActionDemo.extend(/** @lends Spawn.prototype# */{
     title: 'Spawn: Jump + Rotate',
     subtitle: '',
     
-    init: function() {
-        tests.Spawn.superclass.init.call(this);
+    onEnter: function() {
+        tests.Sequence2.superclass.onEnter.call(this);
         
+        this.alignSpritesLeft(1);
+        
+        var action = actions.Sequence.create({actions: [
+            actions.Place.create({position: ccp(200, 200)}),
+            actions.MoveBy.create({duration: 1, position: ccp(100, 0)}),
+            actions.CallFunc.create({target: this, method: 'callback1'}),
+            actions.CallFunc.create({target: this, method: 'callback2'}),
+            actions.CallFunc.create({target: this, method: 'callback3'})
+            ]});
+        this.get('grossini').runAction(action);
+    },
+    
+    callback1: function(target) {
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        var label = cocos.nodes.Label.create({string: "callback 1 called", fontName: 'Marker Felt', fontSize: 16});
+        label.set('position', ccp(s.width / 4, s.height / 2));
+        this.addChild({child: label});
+    },
+    
+    callback2: function(target) {
+>>>>>>> Stashed changes
         var s = cocos.Director.get('sharedDirector').get('winSize');
         
         this.addNewSprite(ccp(0, s.height/2), kTagSprite1);
@@ -195,7 +226,105 @@ tests.Spawn = ActionDemo.extend(/** @lends Spawn.prototype# */{
 /**
  * @class
  *
- * Example Speed Action
+ * Example Reverse Action
+ */
+tests.Reverse = ActionDemo.extend(/** @lends Reverse.prototype# */{
+    title: 'Reverse an action',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.Reverse.superclass.onEnter.call(this);
+        
+        this.alignSpritesLeft(1);
+        
+        var jump = actions.JumpBy.create({duration: 2, delta: ccp(300, 0), height: 50, jumps: 4});
+        var action = actions.Sequence.create({actions: [jump, jump.reverse()]});
+
+        this.get('grossini').runAction(action);
+    }
+});
+
+/**
+ * @class
+ *
+ * Example Delay Action
+ */
+tests.Delay = ActionDemo.extend(/** @lends Delay.prototype# */{
+    title: 'DelayTime: m + delay + m',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.Delay.superclass.onEnter.call(this);
+        
+        this.alignSpritesLeft(1);
+        
+        var move = actions.MoveBy.create({duration: 1, position: ccp(150, 0)});
+        var action = actions.Sequence.create({actions: [move,
+            actions.DelayTime.create({duration: 2}),
+            move]});
+
+        this.get('grossini').runAction(action);
+    }
+});
+
+/**
+ * @class
+ *
+ * Example ReverseSequence Action
+ */
+tests.ReverseSequence = ActionDemo.extend(/** @lends ReverseSequence.prototype# */{
+    title: 'Reverse a sequence',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.ReverseSequence.superclass.onEnter.call(this);
+        
+        this.alignSpritesLeft(1);
+        
+        var move1 = actions.MoveBy.create({duration: 1, position: ccp(250, 0)});
+        var move2 = actions.MoveBy.create({duration: 1, position: ccp(0, 50)});
+        var seq = actions.Sequence.create({actions: [move1, move2, move1.reverse()]});
+        var action = actions.Sequence.create({actions: [seq, seq.reverse()]});
+
+        this.get('grossini').runAction(action);
+    }
+});
+
+/**
+ * @class
+ *
+ * Example Repeat Action
+ */
+tests.Repeat = ActionDemo.extend(/** @lends Repeat.prototype# */{
+    title: 'Repeat / RepeatForever actions',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.Repeat.superclass.onEnter.call(this);
+        
+        this.alignSpritesLeft(2);
+        
+        var a1 = actions.MoveBy.create({duration: 1, position: ccp(150, 0)});
+        var action1 = actions.Repeat.create({action: actions.Sequence.create({actions: [
+            a1,
+            actions.Place.create({position: ccp(60, 60)})
+            ]}), 
+            times: 3});
+            /*
+        var action2 = actions.RepeatForever.create(actions.Sequence.create({actions: [
+            a1.copy(), a1.reverse()
+            ]}));
+        */
+        this.get('kathia').runAction(action1);
+        //this.get('tamara').runAction(action2);
+    }
+});
+
+/**
+ * @class
+ *
+ * Example RepeatForever Action
+>>>>>>> Stashed changes
  */
 tests.Speed = ActionDemo.extend(/** @lends Speed.prototype# */{
     title: 'Speed',

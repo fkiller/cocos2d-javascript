@@ -621,11 +621,14 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
         this.actionSequence = {};
         this.actions = []; //util.copy(opts.actions); 
         this.currentActionIndex = 0;
+        this.duration = 0;
         
         var self = this;
         util.each(opts.actions, function(action) {
             self.actions.push(action.copy());
-            self.duration += action.duration;
+            if (action.get('duration') !== undefined) {
+                self.duration += action.get('duration');
+            }
         });
     },
 
@@ -642,10 +645,16 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
 
         this.currentActionIndex = 0;
         this.currentActionEndDuration = this.actions[0].get('duration');
+        // Not all actions have durations
+        if (this.currentActionEndDuration === undefined) {
+            this.currentActionEndDuration = 0;
+        }
+        window.console.log("starting sequence 0 duration = " + this.currentActionEndDuration);
         this.actions[0].startWithTarget(this.target);
     },
 
     stop: function () {
+        window.console.log("stopping sequence");
         util.each(this.actions, function (action) {
             action.stop();
         });
@@ -654,7 +663,7 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     },
 
     step: function (dt) {
-        //window.console.log("sequence " + this.currentActionIndex + " elapsed: " + this.elapsed);
+        window.console.log("sequence step: " + dt);
         if (this._firstTick) {
             this._firstTick = false;
             this.elapsed = 0;
@@ -662,14 +671,21 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
             this.elapsed += dt;
         }
         if (this.currentActionIndex < this.actions.length) {
+            window.console.log("sequence " + this.currentActionIndex + " elapsed: " + this.elapsed);
             this.actions[this.currentActionIndex].step(dt);
-            this.update(Math.min(1, this.elapsed / this.duration));
         }
+        this.update(Math.min(1, this.elapsed / this.duration));
+
     },
 
     update: function (dt) {
         // Action finished onto the next one
-        if (this.elapsed > this.currentActionEndDuration) {
+
+        window.console.log("sequence update " + this.elapsed);
+        if (!this.get_isDone() &&
+             (this.elapsed > this.currentActionEndDuration)) {
+            window.console.log("stopping action # " + (this.currentActionIndex+1));
+
             var previousAction = this.actions[this.currentActionIndex];
             previousAction.update(1.0);
             previousAction.stop();
@@ -694,15 +710,97 @@ var Sequence = ActionInterval.extend(/** @lends cocos.actions.Sequence# */{
     },
 
     reverse: function() {
-        // reverse() would modify actions array
+        // reverse() would modify existing actions array so build new one
         var ractions = [];
         for (var i=0; i<this.actions.length; i++) {
-            ractions.unshift(this.actions[i]);
+            ractions.unshift(this.actions[i].reverse());
         }
         return Sequence.create({actions: ractions});
     }
 });
 
+var Repeat = ActionInterval.extend(/** @lends cocos.actions.Repeat# */{
+    times: 1,
+    total: 0,
+    other: null,
+    
+    /**
+     * @class Repeat Repeats an action a number of times.
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.ActionInterval
+     *
+     * @opt {cocos.actions.FiniteTimeAction} action Action to repeat
+     * @opt {Number} times Number of times to repeat
+     */
+     init: function(opts) {
+         var d = opts.action.get('duration') * opts.times;
+
+         Repeat.superclass.init.call(this, {duration: d});
+         
+         this.times = opts.times;
+         this.other = opts.action.copy();
+         this.total = 0;
+     },
+     
+     startWithTarget: function(target) {
+         this.total = 0;
+         Repeat.superclass.startWithTarget.call(this, target);
+         this.other.startWithTarget(target);
+     },
+     
+     stop: function() {
+         this.other.stop();
+         Repeat.superclass.stop.call(this);
+     },
+     
+     update: function(dt) {
+         var t = dt * this.times;
+         //window.console.log("Repeat:update() dt = " + dt + ", t = " + t);
+         
+         if (t > (this.total+1)) {
+             window.console.log("t > total+1");
+             this.other.update(1);
+             this.total += 1;
+             this.other.stop();
+             this.other.startWithTarget(this.target);
+             
+             // If repeat is over
+             if (this.total == this.times) {
+                 window.console.log("repeat is over");
+                 // set it in the original position
+                 this.other.update(0);
+             } else {
+                 window.console.log("starting next repeat");
+                 // otherwise start next repeat
+                 this.other.update(t - this.total);
+             }
+         } else {
+             var r = t % 1.0;
+             
+             // fix last repeat position otherwise it could be 0
+             if (dt == 1) {
+                 r = 1;
+                 this.total += 1;
+             }
+             this.other.update(Math.min(r, 1));
+         }
+     },
+     
+     get_isDone: function() {
+         return this.total == this.times;
+     },
+     
+     copy: function() {
+         // Constructor copies action
+         return Repeat.create({action: this.other, times: this.times});
+     },
+     
+     reverse: function() {
+         return Repeat.create({action: this.other.reverse(), times: this.times});
+     }
+});
 
 var Spawn = ActionInterval.extend(/** @lends cocos.actions.Spawn# */{
     one: null,
@@ -881,4 +979,5 @@ exports.FadeOut = FadeOut;
 exports.FadeTo = FadeTo;
 exports.Spawn = Spawn;
 exports.Sequence = Sequence;
+exports.Repeat = Repeat;
 exports.Animate = Animate;
