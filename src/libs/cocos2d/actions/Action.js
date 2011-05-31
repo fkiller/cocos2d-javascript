@@ -31,7 +31,7 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
      * @param {Float} dt The delta time
      */
     step: function (dt) {
-        console.warn("Action.step() Override me");
+        window.console.warn("Action.step() Override me");
     },
 
     /**
@@ -40,7 +40,7 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
      * @param {Float} time How much of the animation has played. 0.0 = just started, 1.0 just finished.
      */
     update: function (time) {
-        console.warn("Action.update() Override me");
+        window.console.warn("Action.update() Override me");
     },
 
     /**

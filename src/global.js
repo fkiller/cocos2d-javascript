@@ -6,24 +6,6 @@ var util = require('util'),
     events = require('events');
 
 
-
-if (!Object.keys) {
-    Object.keys = function(o){
-        if (o !== Object(o)) {
-            throw new TypeError('Object.keys called on non-object');
-        }
-        var ret=[],
-            p;
-        for (p in o) {
-            if (Object.prototype.hasOwnProperty.call(o,p)) {
-                ret.push(p);
-            }
-        }
-        return ret;
-    }
-}
-
-
 /**
  * @ignore
  */
@@ -89,35 +71,20 @@ BObject.prototype = util.extend(BObject.prototype, /** @lends BObject# */{
      * access the property directly. This will ensure all bindings, setters and
      * getters work correctly.
      * 
-     * @param {String} key Name of property to get or dot (.) separated path to a property
+     * @param {String} key Name of property to get
      * @returns {*} Value of the property
      */
     get: function (key) {
-        var next = false
-        if (~key.indexOf('.')) {
-            var tokens = key.split('.');
-            key = tokens.shift();
-            next = tokens.join('.');
-        }
-
-
-        var accessor = getAccessors(this)[key],
-            val;
+        var accessor = getAccessors(this)[key];
         if (accessor) {
-            val = accessor.target.get(accessor.key);
+            return accessor.target.get(accessor.key);
         } else {
             // Call getting function
             if (this['get_' + key]) {
-                val = this['get_' + key]();
-            } else {
-                val = this[key];
+                return this['get_' + key]();
             }
-        }
 
-        if (next) {
-            return val.get(next);
-        } else {
-            return val;
+            return this[key];
         }
     },
 

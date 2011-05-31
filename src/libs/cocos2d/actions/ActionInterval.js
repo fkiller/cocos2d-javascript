@@ -817,13 +817,13 @@ util.extend(Sequence, {
      * of actions array
      */
     create: function() {
-        // Copy actions array
-        var actions = util.copy(arguments[0].actions);
-        var prev = actions.shift();
+        // Don't copy actions array, copy the actions
+        var actions = arguments[0].actions;
+        var prev = actions[0].copy();
         
         // Recursively create Sequence with pair of actions
-        while (actions.length > 0) {
-            var now = actions.shift();
+        for (var i=1; i<actions.length; i++) {
+            var now = actions[i].copy();
             if (now) {
                 prev = this.initFromPair(prev, now);
             } else {

@@ -5,7 +5,7 @@
 var util = require('util'),
     path = require('path');
 
-var modules = 'Action ActionInterval ActionInstant'.w();
+var modules = 'Action ActionInterval ActionInstant ActionEase'.w();
 
 /**
  * @memberOf cocos

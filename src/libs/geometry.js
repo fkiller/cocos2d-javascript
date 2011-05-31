@@ -7,6 +7,8 @@ var util = require('util');
 var RE_PAIR = /\{\s*([\d.\-]+)\s*,\s*([\d.\-]+)\s*\}/,
     RE_DOUBLE_PAIR = /\{\s*(\{[\s\d,.\-]+\})\s*,\s*(\{[\s\d,.\-]+\})\s*\}/;
 
+Math.PI_2 = 1.57079632679489661923132169163975144     /* pi/2 */
+
 /** @namespace */
 var geometry = {
     /**
