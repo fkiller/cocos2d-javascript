@@ -33,7 +33,7 @@ var ActionInstant = act.FiniteTimeAction.extend(/** @lends cocos.actions.ActionI
     },
     
     copy: function() {
-        throw "Implement copy()";
+        return this;
     },
     
     reverse: function () {

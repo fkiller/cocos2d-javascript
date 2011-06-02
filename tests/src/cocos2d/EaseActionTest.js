@@ -19,7 +19,13 @@ var transitions = [
     "SpriteEaseExponential",
     "SpriteEaseExponentialInOut",
     "SpriteEaseSine",
-    "SpriteEaseSineInOut"
+    "SpriteEaseSineInOut",
+    "SpriteEaseElastic",
+    "SpriteEaseElasticInOut",
+    "SpriteEaseBounce",
+    "SpriteEaseBounceInOut",
+    "SpriteEaseBack",
+    "SpriteEaseBackInOut"
 ];
 
 var tests = {};
@@ -326,6 +332,181 @@ tests.SpriteEaseSineInOut = SpriteDemo.extend(/** @lends SpriteEaseSineInOut.pro
     }
 });
 
+tests.SpriteEaseElastic = SpriteDemo.extend(/** @lends SpriteEaseElastic.prototype# */{
+    title: 'Elastic In - Out actions',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.SpriteEaseElastic.superclass.onEnter.call(this);
+        
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        var move = actions.MoveBy.create({duration: 3, position: ccp(s.width-130, 0)});
+        var move_back = move.reverse();
+        
+        var move_ease_in = actions.EaseElasticIn.create({action: move.copy()});
+        var move_ease_in_back = move_ease_in.reverse();
+        
+        var move_ease_out = actions.EaseElasticOut.create({action: move.copy()});
+        var move_ease_out_back = move_ease_out.reverse();
+        
+        var delay = actions.DelayTime.create({duration: 0.25});
+        
+        var seq1 = actions.Sequence.create({actions: [move, delay, move_back, delay.copy()]});
+        var seq2 = actions.Sequence.create({actions: [move_ease_in, delay.copy(), move_ease_in_back, delay.copy()]});
+        var seq3 = actions.Sequence.create({actions: [move_ease_out, delay.copy(), move_ease_out_back, delay.copy()]});
+        
+        this.get('grossini').runAction(actions.RepeatForever.create(seq1));        
+        this.get('tamara').runAction(actions.RepeatForever.create(seq2));
+        this.get('kathia').runAction(actions.RepeatForever.create(seq3));
+    }
+});
+
+tests.SpriteEaseElasticInOut = SpriteDemo.extend(/** @lends SpriteEaseElasticInOut.prototype# */{
+    title: 'EaseElasticInOut action',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.SpriteEaseElasticInOut.superclass.onEnter.call(this);
+        
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        var move = actions.MoveBy.create({duration: 3, position: ccp(s.width-130, 0)});
+        
+        var move_ease_inout1 = actions.EaseElasticInOut.create({action: move.copy(), period: 0.3});
+        var move_ease_inout_back1 = move_ease_inout1.reverse();
+        
+        var move_ease_inout2 = actions.EaseElasticInOut.create({action: move.copy(), period: 0.45});
+        var move_ease_inout_back2 = move_ease_inout2.reverse();
+        
+        var move_ease_inout3 = actions.EaseElasticInOut.create({action: move.copy(), period: 0.6});
+        var move_ease_inout_back3 = move_ease_inout3.reverse();
+        
+        var delay = actions.DelayTime.create({duration: 0.25});
+        
+        var seq1 = actions.Sequence.create({actions: [move_ease_inout1, delay, move_ease_inout_back1, delay.copy()]});
+        var seq2 = actions.Sequence.create({actions: [move_ease_inout2, delay.copy(), move_ease_inout_back2, delay.copy()]});
+        var seq3 = actions.Sequence.create({actions: [move_ease_inout3, delay.copy(), move_ease_inout_back3, delay.copy()]});
+        
+        this.get('tamara').runAction(actions.RepeatForever.create(seq1));        
+        this.get('kathia').runAction(actions.RepeatForever.create(seq2));
+        this.get('grossini').runAction(actions.RepeatForever.create(seq3));
+    }
+});
+
+tests.SpriteEaseBounce = SpriteDemo.extend(/** @lends SpriteEaseBounce.prototype# */{
+    title: 'Bounce In - Out actions',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.SpriteEaseBounce.superclass.onEnter.call(this);
+        
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        var move = actions.MoveBy.create({duration: 3, position: ccp(s.width-130, 0)});
+        var move_back = move.reverse();
+        
+        var move_ease_in = actions.EaseBounceIn.create({action: move.copy()});
+        var move_ease_in_back = move_ease_in.reverse();
+        
+        var move_ease_out = actions.EaseBounceOut.create({action: move.copy()});
+        var move_ease_out_back = move_ease_out.reverse();
+        
+        var delay = actions.DelayTime.create({duration: 0.25});
+        
+        var seq1 = actions.Sequence.create({actions: [move, delay, move_back, delay.copy()]});
+        var seq2 = actions.Sequence.create({actions: [move_ease_in, delay.copy(), move_ease_in_back, delay.copy()]});
+        var seq3 = actions.Sequence.create({actions: [move_ease_out, delay.copy(), move_ease_out_back, delay.copy()]});
+        
+        this.get('grossini').runAction(actions.RepeatForever.create(seq1));        
+        this.get('tamara').runAction(actions.RepeatForever.create(seq2));
+        this.get('kathia').runAction(actions.RepeatForever.create(seq3));
+    }
+});
+
+tests.SpriteEaseBounceInOut = SpriteDemo.extend(/** @lends SpriteEaseBounceInOut.prototype# */{
+    title: 'EaseBounceInOut action',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.SpriteEaseBounceInOut.superclass.onEnter.call(this);
+        
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        var move = actions.MoveBy.create({duration: 3, position: ccp(s.width-130, 0)});
+        var move_back = move.reverse();
+        
+        var move_ease = actions.EaseBounceInOut.create({action: move.copy()});
+        var move_ease_back = move_ease.reverse();
+        
+        var delay = actions.DelayTime.create({duration: 0.25});
+        
+        var seq1 = actions.Sequence.create({actions: [move, delay, move_back, delay.copy()]});
+        var seq2 = actions.Sequence.create({actions: [move_ease, delay.copy(), move_ease_back, delay.copy()]});
+        
+        this.positionForTwo();
+        
+        this.get('grossini').runAction(actions.RepeatForever.create(seq1));        
+        this.get('tamara').runAction(actions.RepeatForever.create(seq2));
+    }
+});
+
+tests.SpriteEaseBack = SpriteDemo.extend(/** @lends SpriteEaseBack.prototype# */{
+    title: 'Back In - Out actions',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.SpriteEaseBack.superclass.onEnter.call(this);
+        
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        var move = actions.MoveBy.create({duration: 3, position: ccp(s.width-130, 0)});
+        var move_back = move.reverse();
+        
+        var move_ease_in = actions.EaseBackIn.create({action: move.copy()});
+        var move_ease_in_back = move_ease_in.reverse();
+        
+        var move_ease_out = actions.EaseBackOut.create({action: move.copy()});
+        var move_ease_out_back = move_ease_out.reverse();
+        
+        var delay = actions.DelayTime.create({duration: 0.25});
+        
+        var seq1 = actions.Sequence.create({actions: [move, delay, move_back, delay.copy()]});
+        var seq2 = actions.Sequence.create({actions: [move_ease_in, delay.copy(), move_ease_in_back, delay.copy()]});
+        var seq3 = actions.Sequence.create({actions: [move_ease_out, delay.copy(), move_ease_out_back, delay.copy()]});
+        
+        this.get('grossini').runAction(actions.RepeatForever.create(seq1));        
+        this.get('tamara').runAction(actions.RepeatForever.create(seq2));
+        this.get('kathia').runAction(actions.RepeatForever.create(seq3));
+    }
+});
+
+tests.SpriteEaseBackInOut = SpriteDemo.extend(/** @lends SpriteEaseBackInOut.prototype# */{
+    title: 'EaseBackInOut action',
+    subtitle: '',
+    
+    onEnter: function() {
+        tests.SpriteEaseBackInOut.superclass.onEnter.call(this);
+        
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        var move = actions.MoveBy.create({duration: 3, position: ccp(s.width-130, 0)});
+        var move_back = move.reverse();
+        
+        var move_ease = actions.EaseBackInOut.create({action: move.copy()});
+        var move_ease_back = move_ease.reverse();
+        
+        var delay = actions.DelayTime.create({duration: 0.25});
+        
+        var seq1 = actions.Sequence.create({actions: [move, delay, move_back, delay.copy()]});
+        var seq2 = actions.Sequence.create({actions: [move_ease, delay.copy(), move_ease_back, delay.copy()]});
+        
+        this.positionForTwo();
+        
+        this.get('grossini').runAction(actions.RepeatForever.create(seq1));        
+        this.get('tamara').runAction(actions.RepeatForever.create(seq2));
+    }
+});
 
 exports.main = function () {
     // Initialise test
