@@ -80,6 +80,14 @@ var Texture2D = BObject.extend(/** @lends cocos.Texture2D# */{
      */
     get_contentSize: function () {
         return this.size;
+    },
+
+    get_pixelsWide: function () {
+        return this.size.width;
+    },
+
+    get_pixelsHigh: function () {
+        return this.size.height;
     }
 });
 

@@ -191,6 +191,10 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     },
 
     removeChild: function (opts) {
+        if (opts.isCocosNode) {
+            return this.removeChild({child: opts});
+        }
+
         var child = opts.child,
             cleanup = opts.cleanup;
 
@@ -537,6 +541,44 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
      */
     _dirtyTransform: function () {
         this.set('isTransformDirty', true);
+    },
+
+    /**
+     * Schedules a custom method with an interval time in seconds.
+     * If time is 0 it will be ticked every frame.
+     * If time is 0, it is recommended to use 'scheduleUpdate' instead.
+     * 
+     * If the method is already scheduled, then the interval parameter will
+     * be updated without scheduling it again.
+     *
+     * @opt {String|Function} method Function of method name to schedule
+     * @opt {Float} [interval=0] Interval in seconds
+     */
+    schedule: function (opts) {
+        if (typeof opts == 'string') {
+            return this.schedule({method: opts, interval: 0});
+        }
+
+        opts.interval = opts.interval || 0;
+
+        Scheduler.get('sharedScheduler').schedule({target: this, method: opts.method, interval: opts.interval, paused: this.isRunning});
+    },
+
+    /**
+     * Unschedules a custom method
+     *
+     * @param {String|Function} method
+     */
+    unschedule: function (method) {
+        if (!method) {
+            return;
+        }
+
+        if (typeof method == 'string') {
+            method = this[method];
+        }
+        
+        Scheduler.get('sharedScheduler').unschedule({target: this, method: method});
     }
 
 });
