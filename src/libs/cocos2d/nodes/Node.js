@@ -6,7 +6,6 @@ var util = require('util'),
     evt = require('events'),
     Scheduler = require('../Scheduler').Scheduler,
     ActionManager = require('../ActionManager').ActionManager,
-		Dispatcher = require('../EventDispatcher').EventDispatcher,
     geo = require('geometry'), ccp = geo.ccp;
 
 var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
