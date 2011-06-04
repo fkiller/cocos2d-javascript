@@ -30,7 +30,8 @@ var transitions = [
     "RotateJerk",
     "ReverseSequence",
     "ReverseSequence2",
-    "Speed"
+    "Speed",
+    "Follow"
 ];
 
 var tests = {};
@@ -676,6 +677,48 @@ tests.Speed = ActionDemo.extend(/** @lends Speed.prototype# */{
     }
 });
 
+tests.Follow = ActionDemo.extend(/** @lends Follow.prototype# */{
+    title: 'Follow action',
+    subtitle: 'The sprite should be centered, even though it is being moved',
+    
+    onEnter: function() {
+        tests.Follow.superclass.onEnter.call(this);
+        
+        this.centerSprites(1);
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        this.get('grossini').set('position', ccp(-200, s.height/2));
+        
+        var move = actions.MoveBy.create({duration: 2, position: ccp(s.width*3, 0)});
+        var move_back = move.reverse();
+        var seq = actions.Sequence.create({actions: [move, move_back]});
+        var rep = actions.RepeatForever.create(seq);
+        
+        this.get('grossini').runAction(rep);
+        
+        this.runAction(actions.Follow.create({target: this.get('grossini'), 
+            worldBoundary: new geo.Rect(0, 0, s.width*2-100, s.height)}));
+            
+    },
+    
+    draw: function(ctxt) {
+        var s = cocos.Director.get('sharedDirector').get('winSize');
+        
+        var x = s.width*2 - 100,
+            y = s.height;
+        
+        var vertices = [ccp(x-5, 5), ccp(x-5, y-5), ccp(5, y-5)];
+        ctxt.beginPath();
+        ctxt.moveTo(5, 5);
+        for (var i=0; i<vertices.length; i++) {
+            ctxt.lineTo(vertices[i].x, vertices[i].y);
+        }
+        ctxt.strokeStyle = "#ffffff";
+        ctxt.stroke();
+        ctxt.closePath();
+    }
+});
+        
 exports.main = function () {
     // Initialise test
     var director = cocos.Director.get('sharedDirector');
