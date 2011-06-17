@@ -3,7 +3,9 @@
 "use strict";
 
 var util = require('util'),
-    console = require('system').console;
+    console = require('system').console,
+    geo = require('geometry'),
+    ccp = geo.ccp;
 
 /** 
  * @memberOf cocos.actions
@@ -18,14 +20,20 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
      */
     target: null,
     originalTarget: null,
-
+    
+    /**
+     * Unique tag to identify the action
+     * @type *
+     */
+    tag: null,
+    
     /**
      * Called every frame with it's delta time.
      *
      * @param {Float} dt The delta time
      */
     step: function (dt) {
-        console.warn("Action.step() Override me");
+        window.console.warn("Action.step() Override me");
     },
 
     /**
@@ -34,7 +42,7 @@ var Action = BObject.extend(/** @lends cocos.actions.Action# */{
      * @param {Float} time How much of the animation has played. 0.0 = just started, 1.0 just finished.
      */
     update: function (time) {
-        console.warn("Action.update() Override me");
+        window.console.warn("Action.update() Override me");
     },
 
     /**
@@ -144,6 +152,167 @@ var FiniteTimeAction = Action.extend(/** @lends cocos.actions.FiniteTimeAction# 
     }
 });
 
+var Speed = Action.extend(/** @lends cocos.actions.Speed# */{
+    other: null,
+    
+    /** 
+     * speed of the inner function
+     * @type Float
+     */
+    speed: 1.0,
+    
+    /** 
+     * Changes the speed of an action, making it take longer (speed>1)
+     * or less (speed<1) time.
+     * Useful to simulate 'slow motion' or 'fast forward' effect.
+     * @warning This action can't be Sequenceable because it is not an IntervalAction
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.Action
+     */
+    init: function(opts) {
+        Speed.superclass.init.call(this, opts);
+        
+        this.other = opts.action;
+        this.speed = opts.speed;
+    },
+    
+    startWithTarget: function(target) {
+        Speed.superclass.startWithTarget.call(this, target);
+        this.other.startWithTarget(this.target);
+    },
+    
+    setSpeed: function(speed) {
+        this.speed = speed;
+    },
+    
+    stop: function() {
+        this.other.stop();
+        Speed.superclass.stop.call(this);
+    },
+    
+    step: function(dt) {
+        this.other.step(dt * this.speed);
+    },
+    
+    get_isDone: function() {
+        return this.other.get_isDone();
+    },
+    
+    copy: function() {
+        return Speed.create({action: this.other.copy(), speed: this.speed});
+    },
+    
+    reverse: function() {
+        return Speed.create({action: this.other.reverse(), speed: this.speed});
+    }
+});
+
+var Follow = Action.extend(/** @lends cocos.actions.Follow# */{
+    /**
+     * node to follow
+     */
+    followedNode: null,
+    
+    /**
+     * whether camera should be limited to certain area
+     * @type {Boolean}
+     */
+    boundarySet: false,
+    
+    /**
+     * if screensize is bigger than the boundary - update not needed 
+     * @type {Boolean}
+     */
+    boundaryFullyCovered: false,
+    
+    /**
+     * fast access to the screen dimensions 
+     * @type {geometry.Point}
+     */
+    halfScreenSize: null,
+    fullScreenSize: null,
+    
+    /**
+     * world boundaries
+     * @type {Float}
+     */
+    leftBoundary: 0,
+    rightBoundary: 0,
+    topBoundary: 0,
+    bottomBoundary: 0,
+    
+    /** 
+     * @class Follow an action that "follows" a node.
+     *
+     * Eg:
+     * layer.runAction(cocos.actions.Follow.create({target: hero}))
+     *
+     * @memberOf cocos.actions
+     * @constructs
+     * @extends cocos.actions.Action
+     *
+     * @opt {cocos.nodes.Node} target
+     * @opt {geometry.Rect} worldBoundary
+     */
+    init: function(opts) {
+        Follow.superclass.init.call(this, opts);
+        
+        this.followedNode = opts.target;
+        
+        var s = require('../Director').Director.get('sharedDirector').get('winSize');
+        this.fullScreenSize = geo.ccp(s.width, s.height);
+        this.halfScreenSize = geo.ccpMult(this.fullScreenSize, geo.ccp(0.5, 0.5));
+        
+        if (opts.worldBoundary !== undefined) {
+            this.boundarySet = true;
+            this.leftBoundary = -((opts.worldBoundary.origin.x + opts.worldBoundary.size.width) - this.fullScreenSize.x);
+            this.rightBoundary = -opts.worldBoundary.origin.x;
+            this.topBoundary = -opts.worldBoundary.origin.y;
+            this.bottomBoundary = -((opts.worldBoundary.origin.y+opts.worldBoundary.size.height) - this.fullScreenSize.y);
+            
+            if (this.rightBoundary < this.leftBoundary) {
+                // screen width is larger than world's boundary width
+                //set both in the middle of the world
+                this.rightBoundary = this.leftBoundary = (this.leftBoundary + this.rightBoundary) / 2;
+            }
+            if (this.topBoundary < this.bottomBoundary)
+            {
+                // screen width is larger than world's boundary width
+                //set both in the middle of the world
+                this.topBoundary = this.bottomBoundary = (this.topBoundary + this.bottomBoundary) / 2;
+            }
+            if ((this.topBoundary == this.bottomBoundary) && (this.leftBoundary == this.rightBoundary)) {
+                this.boundaryFullyCovered = true;
+            }
+        }
+    },
+    
+    step: function(dt) {
+        if (this.boundarySet) {
+            // whole map fits inside a single screen, no need to modify the position - unless map boundaries are increased
+            if (this.boundaryFullyCovered) {
+                return;
+            }
+            var tempPos = geo.ccpSub(this.halfScreenSize, this.followedNode.get('position'));
+            this.target.set('position', ccp(
+                Math.min(Math.max(tempPos.x, this.leftBoundary), this.rightBoundary),
+                Math.min(Math.max(tempPos.y, this.bottomBoundary), this.topBoundary))
+            );
+        } else {
+            this.target.set('position', geo.ccpSub(this.halfScreenSize, this.followedNode.get('position')));
+        }
+    },
+    
+    get_isDone: function() {
+        return !this.followedNode.get('isRunning');
+    }
+});
+
+
 exports.Action = Action;
 exports.RepeatForever = RepeatForever;
 exports.FiniteTimeAction = FiniteTimeAction;
+exports.Speed = Speed;
+exports.Follow = Follow;

@@ -195,6 +195,7 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
         for (x in this.hashForMethods) {
             if (this.hashForMethods.hasOwnProperty(x)) {
                 entry = this.hashForMethods[x];
+
                 if (entry) {
                     for (i = 0, len = entry.timers.length; i < len; i++) {
                         var timer = entry.timers[i];
@@ -314,6 +315,7 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
      * All scheduled selectors/update for a given target won't be 'ticked' until the target is resumed.
      * If the target is not present, nothing happens.
      */
+
     pauseTarget: function (target) {
         var element = this.hashForMethods[target.get('id')];
         if (element) {
@@ -331,6 +333,7 @@ var Scheduler = BObject.extend(/** @lends cocos.Scheduler# */{
      * The 'target' will be unpaused, so all schedule selectors/update will be 'ticked' again.
      * If the target is not present, nothing happens.
      */
+
     resumeTarget: function (target) {
         var element = this.hashForMethods[target.get('id')];
         if (element) {

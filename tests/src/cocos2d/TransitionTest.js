@@ -144,8 +144,7 @@ var TransitionDemo = nodes.Layer.extend({
 	
 });
 
-// THIS FAILS RIGHT NOW - THERE IS AN ISSUE WITH THE actions.Sequence OR 
-// actions.Spawn...
+
 tests.TransitionRotoZoomTest = TransitionDemo.extend({
 	title: 'TransitionRotoZoom Test',
 	subtitle: 'rotates and zooms & reverse to next scene',

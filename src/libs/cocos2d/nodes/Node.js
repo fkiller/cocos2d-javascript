@@ -209,6 +209,25 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         }
     },
 
+    removeChildren: function(opts) {
+        var children = this.get('children'),
+            isRunning = this.get('isRunning');
+        
+        // Perform cleanup on each child but can't call removeChild() 
+        // due to Array.splice's destructive nature during iteration.
+        for (var i = 0; i < children.length; i++) {
+            if (opts.cleanup) {
+                children[i].cleanup();
+            }
+            if (isRunning) {
+                children[i].onExit();
+            }
+            children[i].set('parent', null);
+        }
+        // Now safe to empty children list
+        this.children = [];
+    },
+    
     detatchChild: function (opts) {
         var child = opts.child,
             cleanup = opts.cleanup;
@@ -291,7 +310,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
         this.set('scaleX', val);
         this.set('scaleY', val);
     },
-
+		
     scheduleUpdate: function (opts) {
         opts = opts || {};
         var priority = opts.priority || 0;
@@ -364,7 +383,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
 
         // Set alpha value (global only for now)
         context.globalAlpha = this.get('opacity') / 255.0;
-
+        
         // Adjust redraw region by nodes position
         if (rect) {
             var pos = this.get('position');
@@ -377,7 +396,7 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
                 child.visit(context, rect);
             }
         });
-
+        
         this.draw(context, rect);
 
         // Draw foreground nodes
@@ -415,7 +434,14 @@ var Node = BObject.extend(/** @lends cocos.nodes.Node# */{
     runAction: function (action) {
         ActionManager.get('sharedManager').addAction({action: action, target: this, paused: this.get('isRunning')});
     },
-
+    
+    /**
+     * @opts {String} tag Tag of the action to return
+     */
+    getAction: function(opts) {
+        return ActionManager.get('sharedManager').getActionFromTarget({target: this, tag: opts.tag});
+    },
+    
     nodeToParentTransform: function () {
         if (this.isTransformDirty) {
             this.transformMatrix = geo.affineTransformIdentity();

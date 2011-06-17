@@ -95,6 +95,7 @@ var Menu = Layer.extend(/** @lends cocos.nodes.Menu# */{
 
     mouseUp: function (event) {
         var selItem = this.get('selectedItem');
+
         if (selItem) {
             selItem.unselected();
             selItem.activate();

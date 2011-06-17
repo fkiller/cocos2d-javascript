@@ -7,6 +7,8 @@ var util = require('util');
 var RE_PAIR = /\{\s*([\d.\-]+)\s*,\s*([\d.\-]+)\s*\}/,
     RE_DOUBLE_PAIR = /\{\s*(\{[\s\d,.\-]+\})\s*,\s*(\{[\s\d,.\-]+\})\s*\}/;
 
+Math.PI_2 = 1.57079632679489661923132169163975144     /* pi/2 */
+
 /** @namespace */
 var geometry = {
     /**
@@ -94,6 +96,20 @@ var geometry = {
         this.ty = ty;
     },
 
+    /**
+     * @class 
+     * Bezier curve control object
+     *
+     * @param {geometry.Point} controlPoint1
+     * @param {geometry.Point} controlPoint2
+     * @param {geometry.Point} endPoint
+     */
+    BezierConfig: function(p1, p2, ep) {
+        this.controlPoint1 = util.copy(p1);
+        this.controlPoint2 = util.copy(p2);
+        this.endPosition = util.copy(ep);
+    },
+    
     /**
      * Creates a geometry.Point instance
      *

@@ -97,6 +97,32 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
     },
 
     /**
+     * Fetch an action belonging to a cocos.nodes.Node
+     *
+     * @returns {cocos.actions.Action}
+     *
+     * @opts {cocos.nodes.Node} target Target of the action
+     * @opts {String} tag Tag of the action
+     */
+    getActionFromTarget: function(opts) {
+        var tag = opts.tag,
+            targetID = opts.target.get('id');
+
+        var element = this.targets[targetID];
+        if (!element) {
+            return null;
+        }
+        for (var i = 0; i < element.actions.length; i++ ) {
+            if (element.actions[i] && 
+                (element.actions[i].get('tag') === tag)) {
+                return element.actions[i];
+            }
+        }
+        // Not found
+        return null;
+    },
+     
+    /**
      * Remove all actions for a cocos.nodes.Node
      *
      * @param {cocos.nodes.Node} target Node to remove all actions for
@@ -108,7 +134,6 @@ var ActionManager = BObject.extend(/** @lends cocos.ActionManager# */{
         if (!element) {
             return;
         }
-
         // Delete everything in array but don't replace it incase something else has a reference
         element.actions.splice(0, element.actions.length);
     },

@@ -169,9 +169,6 @@ tests.Sprite1 = SpriteDemo.extend(/** @lends Sprite1.prototype# */{
             //action = cocos.FadeOut.create({duration:3, scale:2});
         }
 
-
-
-
         actionBack = action.reverse();
         seq = actions.Sequence.create({actions: [action, actionBack]});
         sprite.runAction(actions.RepeatForever.create(seq));
